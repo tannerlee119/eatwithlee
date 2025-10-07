@@ -11,7 +11,7 @@ export default function AboutPage() {
         <p>
           Welcome to Eat with Lee, where I share my culinary adventures and restaurant
           discoveries. From hidden gems to renowned establishments, I explore the diverse
-          food scene and bring you honest, detailed reviews of my dining experiences.
+          food scene and bring you honest and detailed reviews of my dining experiences.
         </p>
 
         <p>

@@ -182,11 +182,14 @@ export default function AdminPage() {
     setIsGeocoding(true);
     try {
       const response = await fetch(`/api/geocode?address=${encodeURIComponent(address)}`);
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Address not found');
+        throw new Error(data.error || 'Address not found');
       }
 
-      const data = await response.json();
+      console.log('Geocode result:', data);
+
       setFormData({
         ...formData,
         location: {
@@ -195,10 +198,11 @@ export default function AdminPage() {
           lng: data.lng,
         },
       });
-      alert('Coordinates found successfully!');
+      alert(`✓ Coordinates found!\nLat: ${data.lat}\nLng: ${data.lng}`);
     } catch (error) {
       console.error('Geocoding error:', error);
-      alert('Could not find coordinates for this address. Please check the address and try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`Could not find coordinates:\n${errorMessage}\n\nTip: Try adding city/state to the address (e.g., "123 Main St, Los Angeles, CA")`);
     } finally {
       setIsGeocoding(false);
     }
