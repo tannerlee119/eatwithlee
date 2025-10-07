@@ -40,6 +40,19 @@ export default function AdminPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate that coordinates have been set
+    if (!formData.location?.lat || !formData.location?.lng ||
+        formData.location.lat === 0 || formData.location.lng === 0) {
+      alert('⚠️ Please find coordinates for the restaurant address first!\n\nClick the "Find Coordinates" button next to the address field.');
+      return;
+    }
+
+    // Validate that at least one image is uploaded
+    if (!formData.images || formData.images.length === 0) {
+      alert('⚠️ Please upload at least one image for the review.');
+      return;
+    }
+
     try {
       const response = await fetch('/api/reviews', {
         method: 'POST',
@@ -54,7 +67,7 @@ export default function AdminPage() {
       }
 
       const savedReview = await response.json();
-      alert(`Review saved successfully! Slug: ${savedReview.slug}`);
+      alert(`✓ Review saved successfully!\n\nSlug: ${savedReview.slug}\nYou can view it at: /reviews/${savedReview.slug}`);
 
       // Reset form
       setFormData({
@@ -135,14 +148,14 @@ export default function AdminPage() {
     try {
       console.log('Starting upload of', files.length, 'files...');
 
-      const formData = new FormData();
+      const uploadFormData = new FormData();
       Array.from(files).forEach(file => {
-        formData.append('files', file);
+        uploadFormData.append('files', file);
       });
 
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formData,
+        body: uploadFormData,
       });
 
       if (!response.ok) {
@@ -444,10 +457,18 @@ export default function AdminPage() {
             </p>
           </div>
 
-          {(formData.location?.lat !== 0 || formData.location?.lng !== 0) && (
+          {/* Coordinates Status */}
+          {formData.location?.lat && formData.location?.lng &&
+           formData.location.lat !== 0 && formData.location.lng !== 0 ? (
             <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-800">
-                ✓ Coordinates found: {formData.location?.lat}, {formData.location?.lng}
+              <p className="text-sm font-semibold text-green-800">
+                ✓ Coordinates found: {formData.location.lat}, {formData.location.lng}
+              </p>
+            </div>
+          ) : (
+            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm font-semibold text-yellow-800">
+                ⚠️ Coordinates not set yet. Please click "Find Coordinates" button above.
               </p>
             </div>
           )}

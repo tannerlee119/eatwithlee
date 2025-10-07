@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,29 +20,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-
-    // Create uploads directory if it doesn't exist
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
-
     const uploadedUrls: string[] = [];
 
     for (const file of files) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      // Generate unique filename
-      const timestamp = Date.now();
-      const uniqueFilename = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-      const filepath = join(uploadDir, uniqueFilename);
+      // Convert buffer to base64 for Cloudinary
+      const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-      // Write file to public/uploads
-      await writeFile(filepath, buffer);
+      // Upload to Cloudinary
+      const result = await cloudinary.uploader.upload(base64, {
+        folder: 'eat-with-lee',
+        resource_type: 'auto',
+      });
 
-      // Return public URL
-      uploadedUrls.push(`/uploads/${uniqueFilename}`);
+      uploadedUrls.push(result.secure_url);
     }
 
     return NextResponse.json({
