@@ -146,7 +146,7 @@ export default async function ReviewPage({ params }: { params: { slug: string } 
       {/* Author */}
       <div className="border-t border-gray-200 pt-8">
         <p className="text-gray-600">
-          Review by <span className="font-semibold text-gray-900">{review.author}</span>
+          Review by <span className="font-semibold text-gray-900">Tanner Lee</span>
         </p>
       </div>
     </article>
