@@ -4,8 +4,19 @@ const f = createUploadthing();
 
 export const ourFileRouter = {
   imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 10 } })
+    .middleware(async () => {
+      // This code runs on your server before upload
+      console.log("Middleware: Upload starting...");
+
+      // Return metadata for upload
+      return { uploadedBy: "admin" };
+    })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for file:", file.url);
+      // This code RUNS ON YOUR SERVER after upload
+      console.log("Upload complete!");
+      console.log("File URL:", file.url);
+      console.log("Uploaded by:", metadata.uploadedBy);
+
       return { url: file.url };
     }),
 } satisfies FileRouter;

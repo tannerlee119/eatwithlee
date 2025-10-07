@@ -135,19 +135,31 @@ export default function AdminPage() {
 
     setIsUploading(true);
     try {
+      console.log('Starting upload of', files.length, 'files...');
       const uploadedFiles = await startUpload(Array.from(files));
-      if (uploadedFiles) {
+
+      console.log('Upload response:', uploadedFiles);
+
+      if (uploadedFiles && uploadedFiles.length > 0) {
         const urls = uploadedFiles.map(file => file.url);
+        console.log('Uploaded URLs:', urls);
+
+        const newImages = [...(formData.images || []), ...urls];
+        const newCoverImage = formData.coverImage || urls[0];
+
         setFormData({
           ...formData,
-          images: [...(formData.images || []), ...urls],
-          // Set first uploaded image as cover if no cover exists
-          coverImage: formData.coverImage || urls[0],
+          images: newImages,
+          coverImage: newCoverImage,
         });
+
+        alert(`✓ Successfully uploaded ${urls.length} image(s)!`);
+      } else {
+        throw new Error('No files were uploaded');
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload images. Please try again.');
+      alert(`Failed to upload images: ${error instanceof Error ? error.message : 'Unknown error'}\n\nMake sure your UploadThing API keys are set correctly in .env`);
     } finally {
       setIsUploading(false);
     }
@@ -330,42 +342,56 @@ export default function AdminPage() {
 
           {/* Image Preview Grid */}
           {formData.images && formData.images.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {formData.images.map((url, index) => (
-                <div key={index} className="relative group">
-                  <img
-                    src={url}
-                    alt={`Upload ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg border-2 transition-all"
-                    style={{
-                      borderColor: formData.coverImage === url ? '#FF6B35' : '#e5e7eb'
-                    }}
-                  />
-                  {formData.coverImage === url && (
-                    <div className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">
-                      Cover
-                    </div>
-                  )}
-                  <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {formData.coverImage !== url && (
+            <div>
+              <p className="text-sm text-gray-600 mb-3">
+                {formData.images.length} image(s) uploaded. Click "Set Cover" to choose your cover image.
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {formData.images.map((url, index) => (
+                  <div
+                    key={index}
+                    className={`relative group rounded-lg overflow-hidden transition-all ${
+                      formData.coverImage === url
+                        ? 'ring-4 ring-primary ring-offset-2 shadow-xl'
+                        : 'ring-1 ring-gray-200'
+                    }`}
+                  >
+                    <img
+                      src={url}
+                      alt={`Upload ${index + 1}`}
+                      className="w-full h-32 object-cover"
+                    />
+
+                    {/* Cover Badge */}
+                    {formData.coverImage === url && (
+                      <div className="absolute top-0 left-0 right-0 bg-primary text-white text-xs font-bold py-1 px-2 text-center">
+                        ⭐ COVER IMAGE
+                      </div>
+                    )}
+
+                    {/* Hover Controls */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                      {formData.coverImage !== url && (
+                        <button
+                          type="button"
+                          onClick={() => setCoverImage(url)}
+                          className="bg-primary text-white px-3 py-1 rounded text-sm font-semibold hover:bg-primary/90 transition-colors"
+                        >
+                          Set as Cover
+                        </button>
+                      )}
                       <button
                         type="button"
-                        onClick={() => setCoverImage(url)}
-                        className="bg-white text-gray-700 p-1 rounded text-xs hover:bg-gray-100"
+                        onClick={() => removeImage(index)}
+                        className="bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold hover:bg-red-600 transition-colors flex items-center gap-1"
                       >
-                        Set Cover
+                        <X size={14} />
+                        Remove
                       </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="bg-red-500 text-white p-1 rounded hover:bg-red-600"
-                    >
-                      <X size={16} />
-                    </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </div>
