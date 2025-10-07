@@ -54,13 +54,49 @@ Access the admin dashboard at `/admin` to add new restaurant reviews. The form i
 - Tags (cuisines, vibes, food types)
 - Favorite dishes
 
+## Production Database Setup
+
+**IMPORTANT**: SQLite (current setup) does NOT persist on Vercel/Netlify. For production, choose one:
+
+### Option 1: Vercel Postgres (Recommended if using Vercel)
+1. Go to your Vercel project → Storage → Create Database → Postgres
+2. Copy the `DATABASE_URL` to your `.env`
+3. Update `prisma/schema.prisma`:
+   ```prisma
+   datasource db {
+     provider = "postgresql"
+     url      = env("DATABASE_URL")
+   }
+   ```
+4. Run: `npx prisma migrate dev --name postgres_migration`
+5. Deploy!
+
+### Option 2: Supabase (Free tier, works everywhere)
+1. Create account at https://supabase.com
+2. Create new project → Get connection string
+3. Add to `.env`: `DATABASE_URL="postgresql://..."`
+4. Update `prisma/schema.prisma` provider to `postgresql`
+5. Run: `npx prisma migrate dev`
+
+### Option 3: Neon (Generous free tier)
+1. Sign up at https://neon.tech
+2. Create database → Copy connection string
+3. Follow same steps as Supabase
+
+### Option 4: PlanetScale (MySQL-based)
+1. Sign up at https://planetscale.com
+2. Create database
+3. Update provider to `mysql` in schema
+4. Connect and migrate
+
 ## Next Steps
 
-- [ ] Connect to a database (e.g., Supabase, MongoDB)
-- [ ] Add image upload functionality
+- [x] Add image upload functionality
+- [x] Implement address geocoding
+- [x] Add image carousel
+- [ ] Switch to production database (see above)
 - [ ] Implement pagination for reviews
 - [ ] Add search functionality
-- [ ] Integrate live Google Maps API
 - [ ] Add authentication for admin dashboard
 - [ ] Implement filtering by tags
 - [ ] Add social sharing features
