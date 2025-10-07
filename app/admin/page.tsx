@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Review } from '@/lib/types';
+import { useUploadThing } from '@/lib/uploadthing';
+import { Upload, X, Loader2 } from 'lucide-react';
 
 export default function AdminPage() {
   const [formData, setFormData] = useState<Partial<Review>>({
@@ -22,6 +24,7 @@ export default function AdminPage() {
     },
     favoriteDishes: [],
     coverImage: '',
+    images: [],
     author: 'Lee',
   });
 
@@ -31,6 +34,10 @@ export default function AdminPage() {
     foodType: '',
     dish: '',
   });
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [isGeocoding, setIsGeocoding] = useState(false);
+  const { startUpload } = useUploadThing("imageUploader");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,6 +129,81 @@ export default function AdminPage() {
     });
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    try {
+      const uploadedFiles = await startUpload(Array.from(files));
+      if (uploadedFiles) {
+        const urls = uploadedFiles.map(file => file.url);
+        setFormData({
+          ...formData,
+          images: [...(formData.images || []), ...urls],
+          // Set first uploaded image as cover if no cover exists
+          coverImage: formData.coverImage || urls[0],
+        });
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Failed to upload images. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    const newImages = formData.images?.filter((_, i) => i !== index) || [];
+    setFormData({
+      ...formData,
+      images: newImages,
+      // If we removed the cover image, set a new one
+      coverImage: formData.coverImage === formData.images?.[index]
+        ? (newImages[0] || '')
+        : formData.coverImage,
+    });
+  };
+
+  const setCoverImage = (url: string) => {
+    setFormData({
+      ...formData,
+      coverImage: url,
+    });
+  };
+
+  const handleAddressLookup = async () => {
+    const address = formData.location?.address;
+    if (!address) {
+      alert('Please enter an address first');
+      return;
+    }
+
+    setIsGeocoding(true);
+    try {
+      const response = await fetch(`/api/geocode?address=${encodeURIComponent(address)}`);
+      if (!response.ok) {
+        throw new Error('Address not found');
+      }
+
+      const data = await response.json();
+      setFormData({
+        ...formData,
+        location: {
+          address: data.displayName || address,
+          lat: data.lat,
+          lng: data.lng,
+        },
+      });
+      alert('Coordinates found successfully!');
+    } catch (error) {
+      console.error('Geocoding error:', error);
+      alert('Could not find coordinates for this address. Please check the address and try again.');
+    } finally {
+      setIsGeocoding(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
@@ -204,18 +286,84 @@ export default function AdminPage() {
             />
           </div>
 
+        </div>
+
+        {/* Images */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-display font-semibold text-gray-900">Images</h2>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Cover Image URL *
+              Upload Images
             </label>
-            <input
-              type="text"
-              required
-              value={formData.coverImage}
-              onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors cursor-pointer">
+                {isUploading ? (
+                  <>
+                    <Loader2 size={20} className="animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload size={20} />
+                    Choose Images
+                  </>
+                )}
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={isUploading}
+                  className="hidden"
+                />
+              </label>
+              <span className="text-sm text-gray-500">
+                Upload up to 10 images (max 4MB each)
+              </span>
+            </div>
           </div>
+
+          {/* Image Preview Grid */}
+          {formData.images && formData.images.length > 0 && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {formData.images.map((url, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={url}
+                    alt={`Upload ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-lg border-2 transition-all"
+                    style={{
+                      borderColor: formData.coverImage === url ? '#FF6B35' : '#e5e7eb'
+                    }}
+                  />
+                  {formData.coverImage === url && (
+                    <div className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">
+                      Cover
+                    </div>
+                  )}
+                  <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {formData.coverImage !== url && (
+                      <button
+                        type="button"
+                        onClick={() => setCoverImage(url)}
+                        className="bg-white text-gray-700 p-1 rounded text-xs hover:bg-gray-100"
+                      >
+                        Set Cover
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="bg-red-500 text-white p-1 rounded hover:bg-red-600"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Location */}
@@ -226,52 +374,46 @@ export default function AdminPage() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Address *
             </label>
-            <input
-              type="text"
-              required
-              value={formData.location?.address}
-              onChange={(e) => setFormData({
-                ...formData,
-                location: { ...formData.location!, address: e.target.value }
-              })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                required
+                value={formData.location?.address}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  location: { ...formData.location!, address: e.target.value }
+                })}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="Enter restaurant address"
+              />
+              <button
+                type="button"
+                onClick={handleAddressLookup}
+                disabled={isGeocoding}
+                className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:bg-gray-400 flex items-center gap-2"
+              >
+                {isGeocoding ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Finding...
+                  </>
+                ) : (
+                  'Find Coordinates'
+                )}
+              </button>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">
+              Click "Find Coordinates" to automatically get the latitude and longitude
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Latitude *
-              </label>
-              <input
-                type="number"
-                required
-                step="any"
-                value={formData.location?.lat}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  location: { ...formData.location!, lat: parseFloat(e.target.value) }
-                })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
+          {(formData.location?.lat !== 0 || formData.location?.lng !== 0) && (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-sm text-green-800">
+                ✓ Coordinates found: {formData.location?.lat}, {formData.location?.lng}
+              </p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Longitude *
-              </label>
-              <input
-                type="number"
-                required
-                step="any"
-                value={formData.location?.lng}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  location: { ...formData.location!, lng: parseFloat(e.target.value) }
-                })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Tags */}

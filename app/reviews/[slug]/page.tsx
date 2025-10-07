@@ -2,6 +2,7 @@ import { getReviewBySlug, getAllReviews } from '@/lib/db-reviews';
 import { notFound } from 'next/navigation';
 import { MapPin, Star, Clock } from 'lucide-react';
 import RestaurantMap from '@/components/RestaurantMap';
+import ImageCarousel from '@/components/ImageCarousel';
 
 export async function generateStaticParams() {
   const reviews = await getAllReviews();
@@ -54,13 +55,9 @@ export default async function ReviewPage({ params }: { params: { slug: string } 
         </p>
       </header>
 
-      {/* Cover Image */}
-      <div className="mb-12 rounded-xl overflow-hidden shadow-lg">
-        <img
-          src={review.coverImage}
-          alt={review.restaurantName}
-          className="w-full aspect-[16/9] object-cover"
-        />
+      {/* Image Carousel */}
+      <div className="mb-12">
+        <ImageCarousel images={review.images} restaurantName={review.restaurantName} />
       </div>
 
       {/* Tags Section */}
