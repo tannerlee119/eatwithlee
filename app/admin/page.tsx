@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Review } from '@/lib/types';
-import { useUploadThing } from '@/lib/uploadthing';
 import { Upload, X, Loader2 } from 'lucide-react';
 
 export default function AdminPage() {
@@ -37,7 +36,6 @@ export default function AdminPage() {
 
   const [isUploading, setIsUploading] = useState(false);
   const [isGeocoding, setIsGeocoding] = useState(false);
-  const { startUpload } = useUploadThing("imageUploader");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,30 +134,39 @@ export default function AdminPage() {
     setIsUploading(true);
     try {
       console.log('Starting upload of', files.length, 'files...');
-      const uploadedFiles = await startUpload(Array.from(files));
 
-      console.log('Upload response:', uploadedFiles);
+      const formData = new FormData();
+      Array.from(files).forEach(file => {
+        formData.append('files', file);
+      });
 
-      if (uploadedFiles && uploadedFiles.length > 0) {
-        const urls = uploadedFiles.map(file => file.url);
-        console.log('Uploaded URLs:', urls);
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-        const newImages = [...(formData.images || []), ...urls];
-        const newCoverImage = formData.coverImage || urls[0];
-
-        setFormData({
-          ...formData,
-          images: newImages,
-          coverImage: newCoverImage,
-        });
-
-        alert(`✓ Successfully uploaded ${urls.length} image(s)!`);
-      } else {
-        throw new Error('No files were uploaded');
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Upload failed');
       }
+
+      const data = await response.json();
+      console.log('Upload response:', data);
+
+      const urls = data.urls;
+      const newImages = [...(formData.images || []), ...urls];
+      const newCoverImage = formData.coverImage || urls[0];
+
+      setFormData({
+        ...formData,
+        images: newImages,
+        coverImage: newCoverImage,
+      });
+
+      alert(`✓ Successfully uploaded ${urls.length} image(s)!`);
     } catch (error) {
       console.error('Upload error:', error);
-      alert(`Failed to upload images: ${error instanceof Error ? error.message : 'Unknown error'}\n\nMake sure your UploadThing API keys are set correctly in .env`);
+      alert(`Failed to upload images: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsUploading(false);
     }
