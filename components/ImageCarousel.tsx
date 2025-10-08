@@ -69,21 +69,21 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
 
       {/* Thumbnail Navigation */}
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="flex gap-3 overflow-x-auto pb-2">
           {images.map((image, index) => (
             <button
               key={index}
               onClick={() => goToImage(index)}
-              className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden transition-all ${
+              className={`flex-shrink-0 rounded-md overflow-hidden transition-all ${
                 currentIndex === index
-                  ? 'ring-2 ring-primary ring-offset-2'
-                  : 'opacity-60 hover:opacity-100'
+                  ? 'ring-2 ring-primary opacity-100'
+                  : 'opacity-50 hover:opacity-75'
               }`}
             >
               <img
                 src={image}
                 alt={`Thumbnail ${index + 1}`}
-                className="w-full h-full object-cover"
+                className="w-16 h-16 object-cover"
               />
             </button>
           ))}
