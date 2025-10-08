@@ -11,8 +11,22 @@ export async function GET(request: NextRequest) {
   try {
     console.log('Geocoding address:', address);
 
+    // Clean up address - remove common noise words that confuse geocoders
+    const cleanedAddress = address
+      .replace(/\bBUILDING\s+\d+\b/gi, '') // Remove "BUILDING 1", "BUILDING 2", etc.
+      .replace(/\bBLDG\s+\d+\b/gi, '')
+      .replace(/\bSUITE\s+\d+\b/gi, '') // Remove suite numbers
+      .replace(/\bSTE\s+\d+\b/gi, '')
+      .replace(/\bUNIT\s+\d+\b/gi, '') // Remove unit numbers
+      .replace(/\s+,/g, ',') // Clean up extra spaces before commas
+      .replace(/,\s+,/g, ',') // Remove double commas
+      .replace(/\s+/g, ' ') // Normalize spaces
+      .trim();
+
+    console.log('Cleaned address:', cleanedAddress);
+
     // Using Nominatim (OpenStreetMap's free geocoding service)
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&addressdetails=1`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cleanedAddress)}&limit=1&addressdetails=1`;
     console.log('Fetching from:', url);
 
     const response = await fetch(url, {
@@ -30,7 +44,7 @@ export async function GET(request: NextRequest) {
 
     if (!data || data.length === 0) {
       return NextResponse.json({
-        error: 'Address not found. Try adding city/state or using a more specific address.'
+        error: 'Address not found. Try simplifying the address (remove building/suite numbers).'
       }, { status: 404 });
     }
 
