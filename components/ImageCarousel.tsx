@@ -69,7 +69,7 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
 
       {/* Thumbnail Navigation */}
       {images.length > 1 && (
-        <div className="flex gap-3 overflow-x-auto pb-2">
+        <div className="flex gap-3 overflow-x-auto pb-2 pt-1 px-1">
           {images.map((image, index) => (
             <button
               key={index}
