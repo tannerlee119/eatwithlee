@@ -98,8 +98,8 @@ export default function AdminPage() {
       const savedReview = await response.json();
 
       if (editId) {
-        alert(`✓ Review updated successfully!\n\nYou can view it at: /reviews/${savedReview.slug}`);
-        router.push(`/reviews/${savedReview.slug}`);
+        alert(`✓ Review updated successfully!`);
+        router.push('/admin/reviews');
       } else {
         alert(`✓ Review created successfully!\n\nSlug: ${savedReview.slug}\nYou can view it at: /reviews/${savedReview.slug}`);
 
@@ -388,7 +388,7 @@ export default function AdminPage() {
                     handleAddImageUrl();
                   }
                 }}
-                placeholder="https://example.com/image.jpg or Google Photos link"
+                placeholder="https://i.imgur.com/example.jpg"
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
               <button
@@ -400,7 +400,10 @@ export default function AdminPage() {
               </button>
             </div>
             <p className="text-sm text-gray-500 mt-1">
-              Paste direct image links from Google Photos, Imgur, Dropbox, etc. Press Enter or click "Add URL" to add each image.
+              ⚠️ Must be a direct image URL ending in .jpg, .png, .webp, etc. (Google Photos links won't work - upload to Imgur instead)
+            </p>
+            <p className="text-sm text-blue-600 mt-1">
+              💡 Tip: Upload your images to <a href="https://imgur.com/upload" target="_blank" rel="noopener noreferrer" className="underline">Imgur</a>, then right-click the image and select "Copy image address"
             </p>
           </div>
 
