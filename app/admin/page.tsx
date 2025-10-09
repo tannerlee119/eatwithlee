@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
-import { X } from 'lucide-react';
+import { X, ArrowLeft } from 'lucide-react';
 
 export default function AdminPage() {
   const searchParams = useSearchParams();
@@ -264,6 +264,15 @@ export default function AdminPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
+        {editId && (
+          <button
+            onClick={() => router.push('/admin/reviews')}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+          >
+            <ArrowLeft size={20} />
+            Back to Reviews
+          </button>
+        )}
         <h1 className="text-4xl font-display font-bold text-gray-900 mb-2">
           {editId ? 'Edit Review' : 'Admin Dashboard'}
         </h1>
