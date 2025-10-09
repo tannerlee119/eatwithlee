@@ -44,7 +44,7 @@ export default function ContactPage() {
               Follow along for behind-the-scenes content and food adventures
             </p>
             <a
-              href="https://www.instagram.com/"
+              href="https://www.instagram.com/seafoodiereviews"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:text-primary/80 transition-colors font-medium"
