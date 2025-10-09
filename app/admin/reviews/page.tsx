@@ -4,10 +4,22 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Review } from '@/lib/types';
 import { Edit, Trash2, Plus, Star } from 'lucide-react';
+import Toast, { ToastType } from '@/components/Toast';
+
+interface ToastMessage {
+  message: string;
+  type: ToastType;
+}
 
 export default function AdminReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
+
+  const showToast = (message: string, type: ToastType) => {
+    setToast({ message, type });
+  };
 
   useEffect(() => {
     loadReviews();
@@ -20,19 +32,21 @@ export default function AdminReviewsPage() {
       setReviews(data);
     } catch (error) {
       console.error('Error loading reviews:', error);
-      alert('Failed to load reviews');
+      showToast('Failed to load reviews', 'error');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleDelete = async (id: string, restaurantName: string) => {
-    if (!confirm(`Are you sure you want to delete the review for "${restaurantName}"? This cannot be undone.`)) {
-      return;
-    }
+  const handleDeleteClick = (id: string, restaurantName: string) => {
+    setDeleteConfirm({ id, name: restaurantName });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteConfirm) return;
 
     try {
-      const response = await fetch(`/api/reviews/${id}`, {
+      const response = await fetch(`/api/reviews/${deleteConfirm.id}`, {
         method: 'DELETE',
       });
 
@@ -40,11 +54,12 @@ export default function AdminReviewsPage() {
         throw new Error('Failed to delete review');
       }
 
-      alert(' Review deleted successfully!');
-      loadReviews(); // Reload the list
+      showToast('Review deleted successfully!', 'success');
+      loadReviews();
+      setDeleteConfirm(null);
     } catch (error) {
       console.error('Error deleting review:', error);
-      alert('Failed to delete review. Please try again.');
+      showToast('Failed to delete review. Please try again.', 'error');
     }
   };
 
@@ -163,7 +178,7 @@ export default function AdminReviewsPage() {
                         Edit
                       </Link>
                       <button
-                        onClick={() => handleDelete(review.id, review.restaurantName)}
+                        onClick={() => handleDeleteClick(review.id, review.restaurantName)}
                         className="flex items-center gap-1 px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                       >
                         <Trash2 size={14} />
@@ -176,6 +191,41 @@ export default function AdminReviewsPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+            <h3 className="text-xl font-semibold mb-2">Delete Review?</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete the review for <strong>{deleteConfirm.name}</strong>? This cannot be undone.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notifications */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   );

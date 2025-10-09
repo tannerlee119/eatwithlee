@@ -4,6 +4,12 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
 import { X, ArrowLeft } from 'lucide-react';
+import Toast, { ToastType } from '@/components/Toast';
+
+interface ToastMessage {
+  message: string;
+  type: ToastType;
+}
 
 export default function AdminPage() {
   const searchParams = useSearchParams();
@@ -42,6 +48,11 @@ export default function AdminPage() {
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [imageUrlInput, setImageUrlInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
+
+  const showToast = (message: string, type: ToastType) => {
+    setToast({ message, type });
+  };
 
   // Load review data if in edit mode
   useEffect(() => {
@@ -57,7 +68,7 @@ export default function AdminPage() {
         })
         .catch(error => {
           console.error('Error loading review:', error);
-          alert('Failed to load review for editing');
+          showToast('Failed to load review for editing', 'error');
         })
         .finally(() => setIsLoading(false));
     }
@@ -69,13 +80,13 @@ export default function AdminPage() {
     // Validate that coordinates have been set
     if (!formData.location?.lat || !formData.location?.lng ||
         formData.location.lat === 0 || formData.location.lng === 0) {
-      alert('⚠️ Please find coordinates for the restaurant address first!\n\nClick the "Find Coordinates" button next to the address field.');
+      showToast('Please find coordinates for the restaurant address first', 'error');
       return;
     }
 
     // Validate that at least one image is uploaded
     if (!formData.images || formData.images.length === 0) {
-      alert('⚠️ Please upload at least one image for the review.');
+      showToast('Please add at least one image for the review', 'error');
       return;
     }
 
@@ -98,10 +109,10 @@ export default function AdminPage() {
       const savedReview = await response.json();
 
       if (editId) {
-        alert(`✓ Review updated successfully!`);
-        router.push('/admin/reviews');
+        showToast('Review updated successfully!', 'success');
+        setTimeout(() => router.push('/admin/reviews'), 1000);
       } else {
-        alert(`✓ Review created successfully!\n\nSlug: ${savedReview.slug}\nYou can view it at: /reviews/${savedReview.slug}`);
+        showToast(`Review created successfully! Slug: ${savedReview.slug}`, 'success');
 
         // Reset form only on create
         setFormData({
@@ -134,7 +145,7 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error('Error saving review:', error);
-      alert('Failed to save review. Please try again.');
+      showToast('Failed to save review. Please try again.', 'error');
     }
   };
 
@@ -211,16 +222,16 @@ export default function AdminPage() {
       });
 
       setImageUrlInput('');
-      alert('✓ Image URL added!');
+      showToast('Image URL added!', 'success');
     } catch (error) {
-      alert('⚠️ Please enter a valid image URL (must start with http:// or https://)');
+      showToast('Please enter a valid image URL', 'error');
     }
   };
 
   const handleAddressLookup = async () => {
     const address = formData.location?.address;
     if (!address) {
-      alert('Please enter an address first');
+      showToast('Please enter an address first', 'error');
       return;
     }
 
@@ -243,11 +254,11 @@ export default function AdminPage() {
           lng: data.lng,
         },
       });
-      alert(`✓ Coordinates found!\nLat: ${data.lat}\nLng: ${data.lng}`);
+      showToast(`Coordinates found! Lat: ${data.lat}, Lng: ${data.lng}`, 'success');
     } catch (error) {
       console.error('Geocoding error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      alert(`Could not find coordinates:\n${errorMessage}\n\nTip: Try adding city/state to the address (e.g., "123 Main St, Los Angeles, CA")`);
+      showToast(`Could not find coordinates: ${errorMessage}`, 'error');
     } finally {
       setIsGeocoding(false);
     }
@@ -726,6 +737,13 @@ export default function AdminPage() {
           </button>
         </div>
       </form>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
