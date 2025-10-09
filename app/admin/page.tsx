@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
-import { X, ArrowLeft } from 'lucide-react';
+import { X, ArrowLeft, Loader2 } from 'lucide-react';
 import Toast, { ToastType } from '@/components/Toast';
 
 interface ToastMessage {
