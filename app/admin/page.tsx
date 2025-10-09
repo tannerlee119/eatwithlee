@@ -1,10 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
-import { Upload, X, Loader2 } from 'lucide-react';
+import { X } from 'lucide-react';
 
 export default function AdminPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const editId = searchParams.get('edit');
+
   const [formData, setFormData] = useState<Partial<Review>>({
     title: '',
     restaurantName: '',
@@ -34,9 +39,29 @@ export default function AdminPage() {
     dish: '',
   });
 
-  const [isUploading, setIsUploading] = useState(false);
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [imageUrlInput, setImageUrlInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Load review data if in edit mode
+  useEffect(() => {
+    if (editId) {
+      setIsLoading(true);
+      fetch(`/api/reviews`)
+        .then(res => res.json())
+        .then(reviews => {
+          const review = reviews.find((r: Review) => r.id === editId);
+          if (review) {
+            setFormData(review);
+          }
+        })
+        .catch(error => {
+          console.error('Error loading review:', error);
+          alert('Failed to load review for editing');
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [editId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,8 +80,11 @@ export default function AdminPage() {
     }
 
     try {
-      const response = await fetch('/api/reviews', {
-        method: 'POST',
+      const url = editId ? `/api/reviews/${editId}` : '/api/reviews';
+      const method = editId ? 'PATCH' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -68,36 +96,42 @@ export default function AdminPage() {
       }
 
       const savedReview = await response.json();
-      alert(`✓ Review saved successfully!\n\nSlug: ${savedReview.slug}\nYou can view it at: /reviews/${savedReview.slug}`);
 
-      // Reset form
-      setFormData({
-        title: '',
-        restaurantName: '',
-        excerpt: '',
-        content: '',
-        rating: 0,
-        location: {
-          address: '',
-          lat: 0,
-          lng: 0,
-        },
-        tags: {
-          cuisines: [],
-          vibes: [],
-          foodTypes: [],
-        },
-        favoriteDishes: [],
-        coverImage: '',
-        images: [],
-        author: 'Tanner Lee',
-      });
-      setTagInput({
-        cuisine: '',
-        vibe: '',
-        foodType: '',
-        dish: '',
-      });
+      if (editId) {
+        alert(`✓ Review updated successfully!\n\nYou can view it at: /reviews/${savedReview.slug}`);
+        router.push(`/reviews/${savedReview.slug}`);
+      } else {
+        alert(`✓ Review created successfully!\n\nSlug: ${savedReview.slug}\nYou can view it at: /reviews/${savedReview.slug}`);
+
+        // Reset form only on create
+        setFormData({
+          title: '',
+          restaurantName: '',
+          excerpt: '',
+          content: '',
+          rating: 0,
+          location: {
+            address: '',
+            lat: 0,
+            lng: 0,
+          },
+          tags: {
+            cuisines: [],
+            vibes: [],
+            foodTypes: [],
+          },
+          favoriteDishes: [],
+          coverImage: '',
+          images: [],
+          author: 'Tanner Lee',
+        });
+        setTagInput({
+          cuisine: '',
+          vibe: '',
+          foodType: '',
+          dish: '',
+        });
+      }
     } catch (error) {
       console.error('Error saving review:', error);
       alert('Failed to save review. Please try again.');
@@ -140,51 +174,6 @@ export default function AdminPage() {
       ...formData,
       favoriteDishes: formData.favoriteDishes?.filter((_, i) => i !== index),
     });
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    setIsUploading(true);
-    try {
-      console.log('Starting upload of', files.length, 'files...');
-
-      const uploadFormData = new FormData();
-      Array.from(files).forEach(file => {
-        uploadFormData.append('files', file);
-      });
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: uploadFormData,
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Upload failed');
-      }
-
-      const data = await response.json();
-      console.log('Upload response:', data);
-
-      const urls = data.urls;
-      const newImages = [...(formData.images || []), ...urls];
-      const newCoverImage = formData.coverImage || urls[0];
-
-      setFormData({
-        ...formData,
-        images: newImages,
-        coverImage: newCoverImage,
-      });
-
-      alert(`✓ Successfully uploaded ${urls.length} image(s)!`);
-    } catch (error) {
-      console.error('Upload error:', error);
-      alert(`Failed to upload images: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    } finally {
-      setIsUploading(false);
-    }
   };
 
   const removeImage = (index: number) => {
@@ -264,13 +253,21 @@ export default function AdminPage() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+        <p className="text-gray-600">Loading review...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
         <h1 className="text-4xl font-display font-bold text-gray-900 mb-2">
-          Admin Dashboard
+          {editId ? 'Edit Review' : 'Admin Dashboard'}
         </h1>
-        <p className="text-gray-600">Add a new restaurant review</p>
+        <p className="text-gray-600">{editId ? 'Update restaurant review' : 'Add a new restaurant review'}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 rounded-xl shadow-sm border border-gray-200">
@@ -366,53 +363,10 @@ export default function AdminPage() {
         <div className="space-y-4">
           <h2 className="text-2xl font-display font-semibold text-gray-900">Images</h2>
 
-          {/* Upload Images */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Option 1: Upload Images
-            </label>
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors cursor-pointer">
-                {isUploading ? (
-                  <>
-                    <Loader2 size={20} className="animate-spin" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Upload size={20} />
-                    Choose Images
-                  </>
-                )}
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={isUploading}
-                  className="hidden"
-                />
-              </label>
-              <span className="text-sm text-gray-500">
-                Upload up to 10 images (max 4MB each)
-              </span>
-            </div>
-          </div>
-
-          {/* OR divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">OR</span>
-            </div>
-          </div>
-
           {/* Add Image URL */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Option 2: Add Image URL
+              Add Image URLs *
             </label>
             <div className="flex gap-2">
               <input
@@ -437,7 +391,7 @@ export default function AdminPage() {
               </button>
             </div>
             <p className="text-sm text-gray-500 mt-1">
-              Paste direct image links (Google Photos, Imgur, Dropbox, etc.)
+              Paste direct image links from Google Photos, Imgur, Dropbox, etc. Press Enter or click "Add URL" to add each image.
             </p>
           </div>
 
@@ -756,7 +710,7 @@ export default function AdminPage() {
             type="submit"
             className="w-full px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors"
           >
-            Publish Review
+            {editId ? 'Update Review' : 'Publish Review'}
           </button>
         </div>
       </form>

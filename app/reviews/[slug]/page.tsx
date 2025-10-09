@@ -1,8 +1,9 @@
 import { getReviewBySlug, getAllReviews } from '@/lib/db-reviews';
 import { notFound } from 'next/navigation';
-import { MapPin, Star, Clock } from 'lucide-react';
+import { MapPin, Star, Clock, Edit } from 'lucide-react';
 import RestaurantMap from '@/components/RestaurantMap';
 import ImageCarousel from '@/components/ImageCarousel';
+import Link from 'next/link';
 
 export async function generateStaticParams() {
   const reviews = await getAllReviews();
@@ -30,15 +31,24 @@ export default async function ReviewPage({ params }: { params: { slug: string } 
     <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
       <header className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full font-semibold">
-            <Star size={18} fill="currentColor" />
-            <span className="text-lg">{review.rating}/10</span>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full font-semibold">
+              <Star size={18} fill="currentColor" />
+              <span className="text-lg">{review.rating}/10</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <Clock size={16} />
+              <span>{formatDate(review.publishedAt)}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2 text-gray-600">
-            <Clock size={16} />
-            <span>{formatDate(review.publishedAt)}</span>
-          </div>
+          <Link
+            href={`/admin?edit=${review.id}`}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            <Edit size={16} />
+            Edit
+          </Link>
         </div>
 
         <h1 className="text-5xl font-display font-bold mb-4 text-gray-900">

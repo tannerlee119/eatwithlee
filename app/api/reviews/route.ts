@@ -22,9 +22,20 @@ export async function POST(request: NextRequest) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
+    // Convert admin form data to Review format
     const reviewData: Partial<Review> = {
-      ...body,
+      title: body.title,
+      restaurantName: body.restaurantName,
       slug,
+      excerpt: body.excerpt,
+      content: body.content,
+      rating: body.rating,
+      images: body.images,
+      coverImage: body.coverImage,
+      location: body.location,
+      tags: body.tags,
+      favoriteDishes: body.favoriteDishes,
+      author: body.author || 'Tanner Lee',
     };
 
     const review = await createReview(reviewData);
