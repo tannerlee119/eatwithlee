@@ -29,13 +29,14 @@ export async function POST(request: NextRequest) {
       // Convert buffer to base64 for Cloudinary
       const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-      // Upload to Cloudinary with high quality settings
+      // Upload to Cloudinary with NO compression - preserve original quality
       const result = await cloudinary.uploader.upload(base64, {
         folder: 'eat-with-lee',
         resource_type: 'auto',
-        quality: 'auto:best',       // Best quality auto-optimization
-        fetch_format: 'auto',       // Auto-select best format (WebP, AVIF, etc.)
-        flags: 'preserve_transparency', // Preserve image transparency
+        quality: 100,               // Maximum quality, no compression
+        transformation: [
+          { quality: 100 }          // Ensure 100% quality on delivery too
+        ]
       });
 
       uploadedUrls.push(result.secure_url);

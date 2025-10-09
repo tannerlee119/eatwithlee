@@ -36,6 +36,7 @@ export default function AdminPage() {
 
   const [isUploading, setIsUploading] = useState(false);
   const [isGeocoding, setIsGeocoding] = useState(false);
+  const [imageUrlInput, setImageUrlInput] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -205,6 +206,28 @@ export default function AdminPage() {
     });
   };
 
+  const handleAddImageUrl = () => {
+    if (!imageUrlInput.trim()) return;
+
+    // Basic URL validation
+    try {
+      new URL(imageUrlInput);
+      const newImages = [...(formData.images || []), imageUrlInput.trim()];
+      const newCoverImage = formData.coverImage || imageUrlInput.trim();
+
+      setFormData({
+        ...formData,
+        images: newImages,
+        coverImage: newCoverImage,
+      });
+
+      setImageUrlInput('');
+      alert('✓ Image URL added!');
+    } catch (error) {
+      alert('⚠️ Please enter a valid image URL (must start with http:// or https://)');
+    }
+  };
+
   const handleAddressLookup = async () => {
     const address = formData.location?.address;
     if (!address) {
@@ -343,9 +366,10 @@ export default function AdminPage() {
         <div className="space-y-4">
           <h2 className="text-2xl font-display font-semibold text-gray-900">Images</h2>
 
+          {/* Upload Images */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Upload Images
+              Option 1: Upload Images
             </label>
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors cursor-pointer">
@@ -373,6 +397,48 @@ export default function AdminPage() {
                 Upload up to 10 images (max 4MB each)
               </span>
             </div>
+          </div>
+
+          {/* OR divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">OR</span>
+            </div>
+          </div>
+
+          {/* Add Image URL */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Option 2: Add Image URL
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="url"
+                value={imageUrlInput}
+                onChange={(e) => setImageUrlInput(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddImageUrl();
+                  }
+                }}
+                placeholder="https://example.com/image.jpg or Google Photos link"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={handleAddImageUrl}
+                className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                Add URL
+              </button>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">
+              Paste direct image links (Google Photos, Imgur, Dropbox, etc.)
+            </p>
           </div>
 
           {/* Image Preview Grid */}
