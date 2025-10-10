@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
 import { X, ArrowLeft, Loader2 } from 'lucide-react';
@@ -11,7 +11,7 @@ interface ToastMessage {
   type: ToastType;
 }
 
-export default function AdminPage() {
+function AdminForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const editId = searchParams.get('edit');
@@ -745,5 +745,15 @@ export default function AdminPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-cream flex items-center justify-center">
+      <Loader2 className="w-8 h-8 animate-spin text-primary" />
+    </div>}>
+      <AdminForm />
+    </Suspense>
   );
 }
