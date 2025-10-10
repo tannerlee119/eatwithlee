@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Check if the request is for admin pages
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  // Check if the request is for admin pages (but not the login page itself)
+  if (request.nextUrl.pathname.startsWith('/admin') &&
+      !request.nextUrl.pathname.startsWith('/admin/login')) {
     // Check if user is authenticated
     const authCookie = request.cookies.get('admin-auth');
 
