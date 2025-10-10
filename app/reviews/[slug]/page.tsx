@@ -12,8 +12,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function ReviewPage({ params }: { params: { slug: string } }) {
-  const review = await getReviewBySlug(params.slug);
+export default async function ReviewPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const review = await getReviewBySlug(slug);
 
   if (!review) {
     notFound();
