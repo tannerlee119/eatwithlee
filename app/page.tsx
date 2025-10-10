@@ -1,6 +1,8 @@
 import { getAllReviews } from '@/lib/db-reviews';
 import ReviewCard from '@/components/ReviewCard';
 
+export const revalidate = 0; // Disable caching to always show latest reviews
+
 export default async function Home() {
   const reviews = await getAllReviews();
 
