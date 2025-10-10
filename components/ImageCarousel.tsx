@@ -32,39 +32,42 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
   return (
     <div className="space-y-4">
       {/* Main Image Display */}
-      <div className="relative aspect-[16/9] rounded-xl overflow-hidden shadow-lg bg-gray-200">
-        <img
-          src={images[currentIndex]}
-          alt={`${restaurantName} - Image ${currentIndex + 1}`}
-          className="w-full h-full object-cover"
-        />
+      <div className="relative w-full rounded-xl overflow-hidden shadow-lg bg-gray-100">
+        <div className="relative w-full" style={{ minHeight: '400px', maxHeight: '600px' }}>
+          <img
+            src={images[currentIndex]}
+            alt={`${restaurantName} - Image ${currentIndex + 1}`}
+            className="w-full h-full object-contain"
+            style={{ maxHeight: '600px' }}
+          />
 
-        {/* Navigation Arrows */}
-        {images.length > 1 && (
-          <>
-            <button
-              onClick={goToPrevious}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all"
-              aria-label="Previous image"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <button
-              onClick={goToNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all"
-              aria-label="Next image"
-            >
-              <ChevronRight size={24} />
-            </button>
-          </>
-        )}
+          {/* Navigation Arrows */}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={goToPrevious}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all z-10"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button
+                onClick={goToNext}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all z-10"
+                aria-label="Next image"
+              >
+                <ChevronRight size={24} />
+              </button>
+            </>
+          )}
 
-        {/* Image Counter */}
-        {images.length > 1 && (
-          <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-            {currentIndex + 1} / {images.length}
-          </div>
-        )}
+          {/* Image Counter */}
+          {images.length > 1 && (
+            <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm z-10">
+              {currentIndex + 1} / {images.length}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Thumbnail Navigation */}

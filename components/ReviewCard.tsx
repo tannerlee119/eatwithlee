@@ -32,14 +32,14 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
     >
       <article className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-primary/20 transform hover:-translate-y-2">
         {/* Image */}
-        <div className="aspect-[4/3] bg-gray-200 overflow-hidden relative">
+        <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative">
           <img
             src={review.coverImage}
             alt={review.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
           />
           <div
-            className={`absolute inset-0 bg-gradient-to-t from-black/50 to-transparent transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-gradient-to-t from-black/30 to-transparent transition-opacity duration-500 ${
               isHovered ? 'opacity-100' : 'opacity-0'
             }`}
           />
