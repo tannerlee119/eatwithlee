@@ -1,12 +1,17 @@
+'use client';
+
 import Link from 'next/link';
 import { Review } from '@/lib/types';
 import { MapPin, Star } from 'lucide-react';
+import { useState } from 'react';
 
 interface ReviewCardProps {
   review: Review;
+  index?: number;
 }
 
-export default function ReviewCard({ review }: ReviewCardProps) {
+export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -16,14 +21,27 @@ export default function ReviewCard({ review }: ReviewCardProps) {
   };
 
   return (
-    <Link href={`/reviews/${review.slug}`} className="group">
-      <article className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+    <Link
+      href={`/reviews/${review.slug}`}
+      className="group block"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`
+      }}
+    >
+      <article className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-primary/20 transform hover:-translate-y-2">
         {/* Image */}
-        <div className="aspect-[4/3] bg-gray-200 overflow-hidden">
+        <div className="aspect-[4/3] bg-gray-200 overflow-hidden relative">
           <img
             src={review.coverImage}
             alt={review.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+          />
+          <div
+            className={`absolute inset-0 bg-gradient-to-t from-black/50 to-transparent transition-opacity duration-500 ${
+              isHovered ? 'opacity-100' : 'opacity-0'
+            }`}
           />
         </div>
 
@@ -31,8 +49,8 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         <div className="p-6">
           {/* Rating */}
           <div className="flex items-center gap-2 mb-3">
-            <div className="flex items-center gap-1 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
-              <Star size={14} fill="currentColor" />
+            <div className="flex items-center gap-1 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold transform group-hover:scale-110 transition-transform duration-300">
+              <Star size={14} fill="currentColor" className="animate-pulse" />
               <span>{review.rating}</span>
             </div>
             <span className="text-gray-500 text-sm">{formatDate(review.publishedAt)}</span>
@@ -56,10 +74,15 @@ export default function ReviewCard({ review }: ReviewCardProps) {
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
-            {review.tags.cuisines.slice(0, 3).map((cuisine) => (
+            {review.tags.cuisines.slice(0, 3).map((cuisine, idx) => (
               <span
                 key={cuisine}
-                className="text-xs px-3 py-1 bg-gray-100 text-gray-700 rounded-full"
+                className="text-xs px-3 py-1 bg-gray-100 text-gray-700 rounded-full hover:bg-primary hover:text-white transition-all duration-300"
+                style={{
+                  transform: isHovered ? 'translateY(0)' : 'translateY(5px)',
+                  opacity: isHovered ? 1 : 0.8,
+                  transition: `all 0.3s ease ${idx * 0.05}s`
+                }}
               >
                 {cuisine}
               </span>
