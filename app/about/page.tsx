@@ -27,7 +27,7 @@ export default function AboutPage() {
           </h2>
           <div className="flex flex-col gap-4">
             <a
-              href="https://www.instagram.com/"
+              href="https://www.instagram.com/seafoodiereviews"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 text-gray-700 hover:text-primary transition-colors"
@@ -36,7 +36,7 @@ export default function AboutPage() {
               <span className="font-medium">Follow me on Instagram</span>
             </a>
             <a
-              href="https://beli.app/"
+              href="https://beliapp.co/app/tannerlee119"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 text-gray-700 hover:text-primary transition-colors"

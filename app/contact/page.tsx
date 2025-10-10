@@ -25,10 +25,10 @@ export default function ContactPage() {
               Send me your restaurant recommendations or collaboration ideas
             </p>
             <a
-              href="mailto:hello@eatwithlee.com"
+              // href="mailto:hello@eatwithlee.com"
               className="text-primary hover:text-primary/80 transition-colors font-medium"
             >
-              hello@eatwithlee.com
+              COMING SOON
             </a>
           </div>
 
@@ -49,7 +49,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="text-primary hover:text-primary/80 transition-colors font-medium"
             >
-              @eatwithlee
+              @seafoodiereviews
             </a>
           </div>
 
@@ -65,7 +65,7 @@ export default function ContactPage() {
               Check out my curated list of favorite spots and recommendations
             </p>
             <a
-              href="https://beli.app/"
+              href="https://beliapp.co/app/tannerlee119"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:text-primary/80 transition-colors font-medium"
