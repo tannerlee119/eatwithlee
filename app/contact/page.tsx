@@ -9,7 +9,7 @@ export default function ContactPage() {
 
       <div className="prose prose-lg max-w-none space-y-8">
         <p className="text-xl text-gray-700">
-          Have a restaurant suggestion or want to collaborate? I'd love to hear from you!
+          Have a restaurant suggestion or want to collaborate? I&apos;d love to hear from you!
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
@@ -90,7 +90,7 @@ export default function ContactPage() {
             Restaurant Recommendations
           </h3>
           <p className="text-gray-700">
-            Know a hidden gem I should try? I'm always looking for new places to review!
+            Know a hidden gem I should try? I&apos;m always looking for new places to review!
             Drop me a message with your favorite spots and what makes them special.
           </p>
         </div>

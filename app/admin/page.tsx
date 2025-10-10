@@ -411,10 +411,10 @@ export default function AdminPage() {
               </button>
             </div>
             <p className="text-sm text-gray-500 mt-1">
-              ⚠️ Must be a direct image URL ending in .jpg, .png, .webp, etc. (Google Photos links won't work - upload to Imgur instead)
+              ⚠️ Must be a direct image URL ending in .jpg, .png, .webp, etc. (Google Photos links won&apos;t work - upload to Imgur instead)
             </p>
             <p className="text-sm text-blue-600 mt-1">
-              💡 Tip: Upload your images to <a href="https://imgur.com/upload" target="_blank" rel="noopener noreferrer" className="underline">Imgur</a>, then right-click the image and select "Copy image address"
+              💡 Tip: Upload your images to <a href="https://imgur.com/upload" target="_blank" rel="noopener noreferrer" className="underline">Imgur</a>, then right-click the image and select &quot;Copy image address&quot;
             </p>
           </div>
 
@@ -422,7 +422,7 @@ export default function AdminPage() {
           {formData.images && formData.images.length > 0 && (
             <div>
               <p className="text-sm text-gray-600 mb-3">
-                {formData.images.length} image(s) uploaded. Click "Set Cover" to choose your cover image.
+                {formData.images.length} image(s) uploaded. Click &quot;Set Cover&quot; to choose your cover image.
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {formData.images.map((url, index) => (
@@ -511,7 +511,7 @@ export default function AdminPage() {
               </button>
             </div>
             <p className="text-sm text-gray-500 mt-1">
-              Click "Find Coordinates" to automatically get the latitude and longitude
+              Click &quot;Find Coordinates&quot; to automatically get the latitude and longitude
             </p>
           </div>
 
@@ -526,7 +526,7 @@ export default function AdminPage() {
           ) : (
             <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
               <p className="text-sm font-semibold text-yellow-800">
-                ⚠️ Coordinates not set yet. Please click "Find Coordinates" button above.
+                ⚠️ Coordinates not set yet. Please click &quot;Find Coordinates&quot; button above.
               </p>
             </div>
           )}

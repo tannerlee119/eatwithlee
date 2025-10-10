@@ -17,7 +17,7 @@ export default function AboutPage() {
         <p>
           Each review goes beyond just the food—I dive into the atmosphere, service,
           location, and overall experience to give you a complete picture of what to expect.
-          Whether you're looking for the perfect date night spot, a casual lunch destination,
+          Whether you&apos;re looking for the perfect date night spot, a casual lunch destination,
           or just craving something specific, I hope my reviews help guide your next meal.
         </p>
 
