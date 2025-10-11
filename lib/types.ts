@@ -16,6 +16,7 @@ export interface Review {
     lat: number;
     lng: number;
   };
+  locationTag: string;
   tags: {
     cuisines: string[];
     vibes: string[];

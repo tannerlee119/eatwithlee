@@ -24,6 +24,7 @@ model Review {
   address        String
   lat            Float
   lng            Float
+  locationTag    String   @default("") // e.g. "Seattle", "Capitol Hill", etc.
   cuisines       String   // JSON array stored as string
   vibes          String   // JSON array stored as string
   foodTypes      String   // JSON array stored as string

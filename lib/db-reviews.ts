@@ -19,6 +19,7 @@ function dbToReview(dbReview: any): Review {
       lat: dbReview.lat,
       lng: dbReview.lng,
     },
+    locationTag: dbReview.locationTag || '',
     tags: {
       cuisines: JSON.parse(dbReview.cuisines || '[]'),
       vibes: JSON.parse(dbReview.vibes || '[]'),
@@ -45,6 +46,7 @@ function reviewToDb(review: Partial<Review>) {
     address: review.location?.address,
     lat: review.location?.lat,
     lng: review.location?.lng,
+    locationTag: review.locationTag || '',
     cuisines: JSON.stringify(review.tags?.cuisines || []),
     vibes: JSON.stringify(review.tags?.vibes || []),
     foodTypes: JSON.stringify(review.tags?.foodTypes || []),

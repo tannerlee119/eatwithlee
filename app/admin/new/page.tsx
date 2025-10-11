@@ -28,6 +28,7 @@ function AdminForm() {
       lat: 0,
       lng: 0,
     },
+    locationTag: '',
     tags: {
       cuisines: [],
       vibes: [],
@@ -494,6 +495,22 @@ function AdminForm() {
         {/* Location */}
         <div className="space-y-4">
           <h2 className="text-2xl font-display font-semibold text-gray-900">Location</h2>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Location Tag
+            </label>
+            <input
+              type="text"
+              value={formData.locationTag}
+              onChange={(e) => setFormData({ ...formData, locationTag: e.target.value })}
+              className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              placeholder="e.g., Seattle, Capitol Hill, Fremont"
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              Add a location tag to help categorize by city or neighborhood
+            </p>
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">

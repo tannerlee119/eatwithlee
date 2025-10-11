@@ -71,7 +71,9 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
           {/* Location */}
           <div className="flex items-center gap-1 text-gray-600 text-sm mb-3">
             <MapPin size={14} />
-            <span className="line-clamp-1">{review.location.address}</span>
+            <span className="line-clamp-1">
+              {review.locationTag ? `${review.locationTag} • ` : ''}{review.location.address}
+            </span>
           </div>
 
           {/* Excerpt */}
