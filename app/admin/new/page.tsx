@@ -309,7 +309,7 @@ function AdminForm() {
               <option value="list">List / Round-Up</option>
             </select>
             <p className="text-sm text-gray-500 mt-1">
-              Choose "Restaurant Review" for a single restaurant, or "List / Round-Up" for compilations like "Top 5 Sandwiches in Seattle"
+              Choose &quot;Restaurant Review&quot; for a single restaurant, or &quot;List / Round-Up&quot; for compilations like &quot;Top 5 Sandwiches in Seattle&quot;
             </p>
           </div>
 
