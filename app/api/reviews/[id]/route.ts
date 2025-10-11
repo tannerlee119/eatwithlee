@@ -20,6 +20,7 @@ export async function PATCH(
 
     // Convert admin form data to Review format
     const reviewData: Partial<Review> = {
+      contentType: body.contentType,
       title: body.title,
       restaurantName: body.restaurantName,
       slug: slug || body.slug,
@@ -29,6 +30,7 @@ export async function PATCH(
       images: body.images,
       coverImage: body.coverImage,
       location: body.location,
+      locationTag: body.locationTag,
       tags: body.tags,
       favoriteDishes: body.favoriteDishes,
       author: body.author || 'Tanner Lee',
