@@ -1,5 +1,8 @@
+export type ContentType = 'review' | 'list';
+
 export interface Review {
   id: string;
+  contentType: ContentType;
   title: string;
   restaurantName: string;
   slug: string;

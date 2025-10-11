@@ -17,6 +17,7 @@ function AdminForm() {
   const editId = searchParams.get('edit');
 
   const [formData, setFormData] = useState<Partial<Review>>({
+    contentType: 'review',
     title: '',
     restaurantName: '',
     excerpt: '',
@@ -292,6 +293,24 @@ function AdminForm() {
         {/* Basic Info */}
         <div className="space-y-4">
           <h2 className="text-2xl font-display font-semibold text-gray-900">Basic Information</h2>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Content Type *
+            </label>
+            <select
+              required
+              value={formData.contentType}
+              onChange={(e) => setFormData({ ...formData, contentType: e.target.value as 'review' | 'list' })}
+              className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              <option value="review">Restaurant Review</option>
+              <option value="list">List / Round-Up</option>
+            </select>
+            <p className="text-sm text-gray-500 mt-1">
+              Choose "Restaurant Review" for a single restaurant, or "List / Round-Up" for compilations like "Top 5 Sandwiches in Seattle"
+            </p>
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">

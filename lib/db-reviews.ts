@@ -5,6 +5,7 @@ import { Review } from './types';
 function dbToReview(dbReview: any): Review {
   return {
     id: dbReview.id,
+    contentType: dbReview.contentType || 'review',
     title: dbReview.title,
     restaurantName: dbReview.restaurantName,
     slug: dbReview.slug,
@@ -32,6 +33,7 @@ function dbToReview(dbReview: any): Review {
 // Helper to convert App Review to DB format
 function reviewToDb(review: Partial<Review>) {
   return {
+    contentType: review.contentType || 'review',
     title: review.title,
     restaurantName: review.restaurantName,
     slug: review.slug,

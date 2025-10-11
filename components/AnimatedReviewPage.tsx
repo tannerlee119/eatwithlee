@@ -1,7 +1,7 @@
 'use client';
 
 import { Review } from '@/lib/types';
-import { MapPin, Star, Clock, ArrowLeft } from 'lucide-react';
+import { MapPin, Star, Clock, ArrowLeft, ListOrdered } from 'lucide-react';
 import RestaurantMap from '@/components/RestaurantMap';
 import ImageCarousel from '@/components/ImageCarousel';
 import Link from 'next/link';
@@ -47,11 +47,17 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
           animation: 'fadeInUp 0.6s ease-out 0.1s both'
         }}
       >
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-4 mb-4 flex-wrap">
           <div className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full font-semibold transform hover:scale-110 transition-transform duration-300">
             <Star size={18} fill="currentColor" />
             <span className="text-lg">{review.rating}/10</span>
           </div>
+          {review.contentType === 'list' && (
+            <div className="flex items-center gap-2 bg-secondary text-gray-900 px-4 py-2 rounded-full font-bold">
+              <ListOrdered size={18} />
+              <span>LIST</span>
+            </div>
+          )}
           <div className="flex items-center gap-2 text-gray-600">
             <Clock size={16} />
             <span>{formatDate(review.publishedAt)}</span>

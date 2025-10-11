@@ -12,6 +12,7 @@ datasource db {
 
 model Review {
   id             String   @id @default(cuid())
+  contentType    String   @default("review") // "review" or "list"
   title          String
   restaurantName String
   slug           String   @unique

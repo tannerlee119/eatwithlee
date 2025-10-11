@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Review } from '@/lib/types';
-import { MapPin, Star } from 'lucide-react';
+import { MapPin, Star, ListOrdered } from 'lucide-react';
 import { useState } from 'react';
 
 interface ReviewCardProps {
@@ -43,6 +43,13 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
               isHovered ? 'opacity-100' : 'opacity-0'
             }`}
           />
+          {/* Content Type Badge */}
+          {review.contentType === 'list' && (
+            <div className="absolute top-4 left-4 flex items-center gap-1 bg-secondary text-gray-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
+              <ListOrdered size={14} />
+              <span>LIST</span>
+            </div>
+          )}
         </div>
 
         {/* Content */}
