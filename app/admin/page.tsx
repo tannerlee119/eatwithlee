@@ -214,7 +214,7 @@ export default function AdminReviewsPage() {
                         href={`/reviews/${review.slug}`}
                         className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors"
                       >
-                        View
+                        {review.isDraft ? 'Preview' : 'View'}
                       </Link>
                       <Link
                         href={`/admin/new?edit=${review.id}`}
