@@ -42,6 +42,12 @@
 - [ ] Style tags to match existing tag design (rounded pills with colors)
 - [ ] Ensure tags don't clutter the card design (limit to 3 tags max)
 
+### **Phase 8: Tag Accessibility & Readability**
+- [ ] Fix low contrast on tag hover states (especially vibes tags)
+- [ ] Ensure text remains readable when hovering over tags
+- [ ] Improve color contrast ratios to meet accessibility standards
+- [ ] Test all tag types (cuisines, vibes, foodTypes) for readability
+
 ---
 
 ## Key Features Overview
