@@ -102,7 +102,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
             {review.tags.cuisines.map((cuisine, idx) => (
               <span
                 key={cuisine}
-                className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary hover:text-white transition-all duration-300 cursor-default"
+                className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/30 hover:text-primary hover:font-semibold transition-all duration-300 cursor-default"
                 style={{
                   animation: `fadeIn 0.4s ease-out ${0.4 + idx * 0.1}s both`
                 }}
@@ -120,7 +120,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
             {review.tags.vibes.map((vibe, idx) => (
               <span
                 key={vibe}
-                className="px-3 py-1 bg-secondary/30 text-gray-800 rounded-full text-sm font-medium hover:bg-secondary hover:text-white transition-all duration-300 cursor-default"
+                className="px-3 py-1 bg-secondary/30 text-gray-800 rounded-full text-sm font-medium hover:bg-secondary/80 hover:text-gray-900 hover:font-semibold transition-all duration-300 cursor-default"
                 style={{
                   animation: `fadeIn 0.4s ease-out ${0.4 + idx * 0.1}s both`
                 }}
@@ -138,7 +138,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
             {review.tags.foodTypes.map((type, idx) => (
               <span
                 key={type}
-                className="px-3 py-1 bg-accent text-gray-800 rounded-full text-sm font-medium hover:bg-accent/70 transition-all duration-300 cursor-default"
+                className="px-3 py-1 bg-accent text-gray-800 rounded-full text-sm font-medium hover:bg-accent/90 hover:text-gray-900 hover:font-semibold transition-all duration-300 cursor-default"
                 style={{
                   animation: `fadeIn 0.4s ease-out ${0.4 + idx * 0.1}s both`
                 }}
