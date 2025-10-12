@@ -16,6 +16,7 @@ export default function AdminReviewsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
+  const [activeTab, setActiveTab] = useState<'published' | 'drafts'>('published');
 
   const showToast = (message: string, type: ToastType) => {
     setToast({ message, type });
@@ -71,6 +72,10 @@ export default function AdminReviewsPage() {
     });
   };
 
+  const filteredReviews = reviews.filter(review =>
+    activeTab === 'published' ? !review.isDraft : review.isDraft
+  );
+
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
@@ -97,9 +102,43 @@ export default function AdminReviewsPage() {
         </Link>
       </div>
 
-      {reviews.length === 0 ? (
+      {/* Tabs */}
+      <div className="mb-6 border-b border-gray-200">
+        <div className="flex gap-8">
+          <button
+            onClick={() => setActiveTab('published')}
+            className={`pb-4 px-1 font-medium transition-colors relative ${
+              activeTab === 'published'
+                ? 'text-primary'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Published ({reviews.filter(r => !r.isDraft).length})
+            {activeTab === 'published' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('drafts')}
+            className={`pb-4 px-1 font-medium transition-colors relative ${
+              activeTab === 'drafts'
+                ? 'text-primary'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Drafts ({reviews.filter(r => r.isDraft).length})
+            {activeTab === 'drafts' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {filteredReviews.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-600 mb-4">No reviews yet</p>
+          <p className="text-gray-600 mb-4">
+            {activeTab === 'published' ? 'No published reviews yet' : 'No drafts yet'}
+          </p>
           <Link
             href="/admin/new"
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
@@ -131,7 +170,7 @@ export default function AdminReviewsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {reviews.map((review) => (
+              {filteredReviews.map((review) => (
                 <tr key={review.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -141,8 +180,15 @@ export default function AdminReviewsPage() {
                         className="w-16 h-16 object-cover rounded-lg"
                       />
                       <div>
-                        <div className="font-medium text-gray-900">
-                          {review.restaurantName}
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-gray-900">
+                            {review.restaurantName}
+                          </span>
+                          {review.isDraft && (
+                            <span className="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">
+                              DRAFT
+                            </span>
+                          )}
                         </div>
                         <div className="text-sm text-gray-500">
                           {review.location.address}

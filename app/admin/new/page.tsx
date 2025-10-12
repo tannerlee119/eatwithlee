@@ -76,18 +76,18 @@ function AdminForm() {
     }
   }, [editId]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, isDraft: boolean = false) => {
     e.preventDefault();
 
-    // Validate that coordinates have been set
-    if (!formData.location?.lat || !formData.location?.lng ||
-        formData.location.lat === 0 || formData.location.lng === 0) {
+    // Validate that coordinates have been set (only for published reviews)
+    if (!isDraft && (!formData.location?.lat || !formData.location?.lng ||
+        formData.location.lat === 0 || formData.location.lng === 0)) {
       showToast('Please find coordinates for the restaurant address first', 'error');
       return;
     }
 
-    // Validate that at least one image is uploaded
-    if (!formData.images || formData.images.length === 0) {
+    // Validate that at least one image is uploaded (only for published reviews)
+    if (!isDraft && (!formData.images || formData.images.length === 0)) {
       showToast('Please add at least one image for the review', 'error');
       return;
     }
@@ -101,7 +101,7 @@ function AdminForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, isDraft }),
       });
 
       if (!response.ok) {
@@ -111,13 +111,14 @@ function AdminForm() {
       const savedReview = await response.json();
 
       if (editId) {
-        showToast('Review updated successfully!', 'success');
+        showToast(isDraft ? 'Draft saved successfully!' : 'Review updated successfully!', 'success');
         setTimeout(() => router.push('/admin'), 1000);
       } else {
-        showToast(`Review created successfully! Slug: ${savedReview.slug}`, 'success');
+        showToast(isDraft ? `Draft saved successfully! Slug: ${savedReview.slug}` : `Review published successfully! Slug: ${savedReview.slug}`, 'success');
 
         // Reset form only on create
         setFormData({
+          contentType: 'review',
           title: '',
           restaurantName: '',
           excerpt: '',
@@ -128,6 +129,7 @@ function AdminForm() {
             lat: 0,
             lng: 0,
           },
+          locationTag: '',
           tags: {
             cuisines: [],
             vibes: [],
@@ -763,12 +765,29 @@ function AdminForm() {
 
         {/* Submit */}
         <div className="pt-6 border-t border-gray-200">
-          <button
-            type="submit"
-            className="w-full px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors"
-          >
-            {editId ? 'Update Review' : 'Publish Review'}
-          </button>
+          {formData.isDraft && editId && (
+            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm font-semibold text-yellow-800">
+                📝 This is a draft. It will not appear on the public site until published.
+              </p>
+            </div>
+          )}
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={(e) => handleSubmit(e, true)}
+              className="flex-1 px-6 py-3 bg-gray-500 text-white rounded-lg font-semibold hover:bg-gray-600 transition-colors"
+            >
+              {editId ? 'Save as Draft' : 'Save as Draft'}
+            </button>
+            <button
+              type="submit"
+              onClick={(e) => handleSubmit(e, false)}
+              className="flex-1 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+            >
+              {editId ? 'Publish Review' : 'Publish Review'}
+            </button>
+          </div>
         </div>
       </form>
       {toast && (

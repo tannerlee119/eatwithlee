@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
 
     // Convert admin form data to Review format
     const reviewData: Partial<Review> = {
+      contentType: body.contentType,
+      isDraft: body.isDraft,
       title: body.title,
       restaurantName: body.restaurantName,
       slug,
@@ -33,6 +35,7 @@ export async function POST(request: NextRequest) {
       images: body.images,
       coverImage: body.coverImage,
       location: body.location,
+      locationTag: body.locationTag,
       tags: body.tags,
       favoriteDishes: body.favoriteDishes,
       author: body.author || 'Tanner Lee',

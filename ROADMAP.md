@@ -2,11 +2,11 @@
 
 ## 📋 Upcoming Features: Drafts + Image Captions
 
-### **Phase 1: Database Setup - Drafts**
-- [ ] Add `isDraft` boolean field to Prisma schema (default: false)
-- [ ] Update TypeScript `Review` interface to include `isDraft`
-- [ ] Run database migration for isDraft
-- [ ] Update database helper functions to handle `isDraft`
+### **Phase 1: Database Setup - Drafts** ✅
+- [x] Add `isDraft` boolean field to Prisma schema (default: false)
+- [x] Update TypeScript `Review` interface to include `isDraft`
+- [x] Run database migration for isDraft
+- [x] Update database helper functions to handle `isDraft`
 
 ### **Phase 2: Database Setup - Image Captions**
 - [ ] Change `images` field structure to support captions (array of `{url, caption}` objects)
@@ -14,24 +14,26 @@
 - [ ] Update TypeScript types for images with captions
 - [ ] Update database helper functions to handle image captions
 
-### **Phase 3: Admin Form - Drafts**
-- [ ] Add "Save as Draft" button next to "Publish Review" button
-- [ ] Update form submission handler to set `isDraft` based on button clicked
-- [ ] Show draft status indicator when editing a draft
+### **Phase 3: Admin Form - Drafts** ✅
+- [x] Add "Save as Draft" button next to "Publish Review" button
+- [x] Update form submission handler to set `isDraft` based on button clicked
+- [x] Show draft status indicator when editing a draft
+- [x] Relax validation for drafts (coordinates and images not required)
+- [x] Update API routes to handle `isDraft` field
 
 ### **Phase 4: Admin Form - Image Captions**
 - [ ] Add caption input field for each uploaded image
 - [ ] Allow editing captions in the image preview grid
 - [ ] Store caption along with image URL
 
-### **Phase 5: Admin Dashboard - Tabs**
-- [ ] Create tabs component (Published / Drafts)
-- [ ] Filter reviews by `isDraft` status based on active tab
-- [ ] Add visual badge/indicator for draft reviews in table
-- [ ] Show draft count on Drafts tab
+### **Phase 5: Admin Dashboard - Tabs** ✅
+- [x] Create tabs component (Published / Drafts)
+- [x] Filter reviews by `isDraft` status based on active tab
+- [x] Add visual badge/indicator for draft reviews in table
+- [x] Show draft count on Drafts tab
 
 ### **Phase 6: Public View**
-- [ ] Update home page to only show published reviews (`isDraft = false`)
+- [x] Update home page to only show published reviews (`isDraft = false`)
 - [ ] Update ImageCarousel to display captions below images
 - [ ] Style captions nicely (italic, smaller text, centered)
 - [ ] Ensure draft reviews are not accessible via direct URL on public pages
@@ -115,4 +117,27 @@ export interface Review {
 
 ---
 
-*Last updated: October 11, 2025*
+---
+
+## ✅ Completed Features
+
+### Draft System (Phases 1, 3, 5, 6-partial)
+- ✅ Database schema with `isDraft` field
+- ✅ Admin form with "Save as Draft" and "Publish Review" buttons
+- ✅ Relaxed validation for drafts (no coordinates/images required)
+- ✅ Admin dashboard tabs for Published/Drafts filtering
+- ✅ Draft badge indicators in admin table
+- ✅ Home page filters out draft reviews from public view
+- ✅ Draft status indicator when editing existing drafts
+
+### Review Card Enhancements (Phase 7)
+- ✅ Display tags on review cards (cuisines + vibes)
+- ✅ Styled with colored pill badges matching design system
+
+### Tag Accessibility (Phase 8)
+- ✅ Improved contrast on all tag hover states
+- ✅ Readable text colors for all tag types
+
+---
+
+*Last updated: October 12, 2025*

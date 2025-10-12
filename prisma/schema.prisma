@@ -13,6 +13,7 @@ datasource db {
 model Review {
   id             String   @id @default(cuid())
   contentType    String   @default("review") // "review" or "list"
+  isDraft        Boolean  @default(false) // true for drafts, false for published
   title          String
   restaurantName String
   slug           String   @unique

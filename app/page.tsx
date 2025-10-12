@@ -4,7 +4,10 @@ import ReviewCard from '@/components/ReviewCard';
 export const revalidate = 0; // Disable caching to always show latest reviews
 
 export default async function Home() {
-  const reviews = await getAllReviews();
+  const allReviews = await getAllReviews();
+
+  // Filter to only show published reviews (not drafts)
+  const reviews = allReviews.filter(review => !review.isDraft);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">

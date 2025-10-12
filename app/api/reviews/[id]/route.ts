@@ -21,6 +21,7 @@ export async function PATCH(
     // Convert admin form data to Review format
     const reviewData: Partial<Review> = {
       contentType: body.contentType,
+      isDraft: body.isDraft,
       title: body.title,
       restaurantName: body.restaurantName,
       slug: slug || body.slug,

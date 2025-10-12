@@ -3,6 +3,7 @@ export type ContentType = 'review' | 'list';
 export interface Review {
   id: string;
   contentType: ContentType;
+  isDraft: boolean;
   title: string;
   restaurantName: string;
   slug: string;
