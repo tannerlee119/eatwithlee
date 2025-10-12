@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Review } from '@/lib/types';
 import { Edit, Trash2, Plus, Star } from 'lucide-react';
@@ -12,6 +13,7 @@ interface ToastMessage {
 }
 
 export default function AdminReviewsPage() {
+  const searchParams = useSearchParams();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState<ToastMessage | null>(null);
@@ -24,7 +26,15 @@ export default function AdminReviewsPage() {
 
   useEffect(() => {
     loadReviews();
-  }, []);
+
+    // Check for success message in URL params
+    const message = searchParams.get('message');
+    if (message) {
+      showToast(message, 'success');
+      // Clean up URL without the message param
+      window.history.replaceState({}, '', '/admin');
+    }
+  }, [searchParams]);
 
   const loadReviews = async () => {
     try {
@@ -212,7 +222,7 @@ export default function AdminReviewsPage() {
                     <div className="flex items-center justify-end gap-2">
                       <Link
                         href={`/reviews/${review.slug}`}
-                        className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                        className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                       >
                         {review.isDraft ? 'Preview' : 'View'}
                       </Link>

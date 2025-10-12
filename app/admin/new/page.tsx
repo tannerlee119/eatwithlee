@@ -110,47 +110,46 @@ function AdminForm() {
 
       const savedReview = await response.json();
 
-      if (editId) {
-        showToast(isDraft ? 'Draft saved successfully!' : 'Review updated successfully!', 'success');
-        setTimeout(() => router.push('/admin'), 1000);
-      } else {
-        showToast(isDraft ? `Draft saved successfully! Slug: ${savedReview.slug}` : `Review published successfully! Slug: ${savedReview.slug}`, 'success');
+      const successMessage = editId
+        ? (isDraft ? 'Draft saved successfully!' : 'Review updated successfully!')
+        : (isDraft ? 'Draft saved successfully!' : 'Review published successfully!');
 
-        if (isDraft) {
-          // Redirect to admin dashboard after saving draft
-          setTimeout(() => router.push('/admin'), 1000);
-        } else {
-          // Reset form only on create published review
-          setFormData({
-            contentType: 'review',
-            title: '',
-            restaurantName: '',
-            excerpt: '',
-            content: '',
-            rating: 0,
-            location: {
-              address: '',
-              lat: 0,
-              lng: 0,
-            },
-            locationTag: '',
-            tags: {
-              cuisines: [],
-              vibes: [],
-              foodTypes: [],
-            },
-            favoriteDishes: [],
-            coverImage: '',
-            images: [],
-            author: 'Tanner Lee',
-          });
-          setTagInput({
-            cuisine: '',
-            vibe: '',
-            foodType: '',
-            dish: '',
-          });
-        }
+      if (editId || isDraft) {
+        // Redirect to admin dashboard with success message
+        router.push(`/admin?message=${encodeURIComponent(successMessage)}`);
+      } else {
+        // For new published reviews, show toast and reset form
+        showToast(`Review published successfully! Slug: ${savedReview.slug}`, 'success');
+
+        setFormData({
+          contentType: 'review',
+          title: '',
+          restaurantName: '',
+          excerpt: '',
+          content: '',
+          rating: 0,
+          location: {
+            address: '',
+            lat: 0,
+            lng: 0,
+          },
+          locationTag: '',
+          tags: {
+            cuisines: [],
+            vibes: [],
+            foodTypes: [],
+          },
+          favoriteDishes: [],
+          coverImage: '',
+          images: [],
+          author: 'Tanner Lee',
+        });
+        setTagInput({
+          cuisine: '',
+          vibe: '',
+          foodType: '',
+          dish: '',
+        });
       }
     } catch (error) {
       console.error('Error saving review:', error);
