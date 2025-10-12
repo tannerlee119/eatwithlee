@@ -16,6 +16,8 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
+    console.log('POST /api/reviews - body.tags:', body.tags);
+
     // Generate slug from restaurant name
     const slug = body.restaurantName
       .toLowerCase()
@@ -40,6 +42,8 @@ export async function POST(request: NextRequest) {
       favoriteDishes: body.favoriteDishes,
       author: body.author || 'Tanner Lee',
     };
+
+    console.log('POST /api/reviews - reviewData.tags:', reviewData.tags);
 
     const review = await createReview(reviewData);
     return NextResponse.json(review, { status: 201 });
