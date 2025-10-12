@@ -102,7 +102,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
             {review.tags.cuisines.map((cuisine, idx) => (
               <span
                 key={cuisine}
-                className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/30 hover:text-primary hover:font-semibold transition-all duration-300 cursor-default"
+                className="px-3 py-1 bg-primary/10 text-orange-700 rounded-full text-sm font-semibold hover:bg-primary/30 transition-all duration-300 cursor-default"
                 style={{
                   animation: `fadeIn 0.4s ease-out ${0.4 + idx * 0.1}s both`
                 }}

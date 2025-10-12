@@ -36,17 +36,17 @@
 - [ ] Style captions nicely (italic, smaller text, centered)
 - [ ] Ensure draft reviews are not accessible via direct URL on public pages
 
-### **Phase 7: Review Card Enhancements**
-- [ ] Display tags on review cards (currently only shown on individual review pages)
-- [ ] Show 2-3 top tags from cuisines, vibes, or foodTypes on cards
-- [ ] Style tags to match existing tag design (rounded pills with colors)
-- [ ] Ensure tags don't clutter the card design (limit to 3 tags max)
+### **Phase 7: Review Card Enhancements** ✅
+- [x] Display tags on review cards (currently only shown on individual review pages)
+- [x] Show 2-3 top tags from cuisines, vibes, or foodTypes on cards
+- [x] Style tags to match existing tag design (rounded pills with colors)
+- [x] Ensure tags don't clutter the card design (limit to 3 tags max)
 
-### **Phase 8: Tag Accessibility & Readability**
-- [ ] Fix low contrast on tag hover states (especially vibes tags)
-- [ ] Ensure text remains readable when hovering over tags
-- [ ] Improve color contrast ratios to meet accessibility standards
-- [ ] Test all tag types (cuisines, vibes, foodTypes) for readability
+### **Phase 8: Tag Accessibility & Readability** ✅
+- [x] Fix low contrast on tag hover states (especially vibes tags)
+- [x] Ensure text remains readable when hovering over tags
+- [x] Improve color contrast ratios to meet accessibility standards
+- [x] Test all tag types (cuisines, vibes, foodTypes) for readability
 
 ---
 

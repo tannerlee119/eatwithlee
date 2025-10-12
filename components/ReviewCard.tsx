@@ -83,10 +83,11 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
-            {review.tags.cuisines.slice(0, 3).map((cuisine, idx) => (
+            {/* Show cuisines first */}
+            {review.tags.cuisines.slice(0, 2).map((cuisine, idx) => (
               <span
                 key={cuisine}
-                className="text-xs px-3 py-1 bg-gray-100 text-gray-700 rounded-full hover:bg-primary hover:text-white transition-all duration-300"
+                className="text-xs px-3 py-1 bg-primary/10 text-orange-700 rounded-full font-semibold hover:bg-primary/30 transition-all duration-300"
                 style={{
                   transform: isHovered ? 'translateY(0)' : 'translateY(5px)',
                   opacity: isHovered ? 1 : 0.8,
@@ -94,6 +95,20 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
                 }}
               >
                 {cuisine}
+              </span>
+            ))}
+            {/* Show all vibes */}
+            {review.tags.vibes.map((vibe, idx) => (
+              <span
+                key={vibe}
+                className="text-xs px-3 py-1 bg-secondary/40 text-gray-800 rounded-full font-semibold hover:bg-secondary/80 hover:text-gray-900 transition-all duration-300"
+                style={{
+                  transform: isHovered ? 'translateY(0)' : 'translateY(5px)',
+                  opacity: isHovered ? 1 : 0.8,
+                  transition: `all 0.3s ease ${(review.tags.cuisines.slice(0, 2).length + idx) * 0.05}s`
+                }}
+              >
+                {vibe}
               </span>
             ))}
           </div>
