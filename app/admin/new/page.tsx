@@ -65,7 +65,16 @@ function AdminForm() {
         .then(reviews => {
           const review = reviews.find((r: Review) => r.id === editId);
           if (review) {
-            setFormData(review);
+            // Ensure tags object exists with all required arrays
+            const loadedData = {
+              ...review,
+              tags: {
+                cuisines: review.tags?.cuisines || [],
+                vibes: review.tags?.vibes || [],
+                foodTypes: review.tags?.foodTypes || [],
+              }
+            };
+            setFormData(loadedData);
           }
         })
         .catch(error => {

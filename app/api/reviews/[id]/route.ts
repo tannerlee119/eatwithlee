@@ -10,6 +10,8 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
 
+    console.log('PATCH /api/reviews/[id] - body.tags:', body.tags);
+
     // Generate slug from restaurant name if it changed
     const slug = body.restaurantName
       ? body.restaurantName
@@ -36,6 +38,8 @@ export async function PATCH(
       favoriteDishes: body.favoriteDishes,
       author: body.author || 'Tanner Lee',
     };
+
+    console.log('PATCH /api/reviews/[id] - reviewData.tags:', reviewData.tags);
 
     const review = await updateReview(id, reviewData);
     return NextResponse.json(review);
