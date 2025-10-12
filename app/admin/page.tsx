@@ -184,11 +184,17 @@ export default function AdminReviewsPage() {
                 <tr key={review.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <img
-                        src={review.coverImage}
-                        alt={review.restaurantName}
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
+                      {review.coverImage ? (
+                        <img
+                          src={review.coverImage}
+                          alt={review.restaurantName}
+                          className="w-16 h-16 object-cover rounded-lg"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                          <span className="text-gray-400 text-xs">No image</span>
+                        </div>
+                      )}
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-medium text-gray-900">
