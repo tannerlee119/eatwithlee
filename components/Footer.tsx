@@ -46,7 +46,7 @@ export default function Footer() {
               <span className="text-sm">Instagram</span>
             </a>
             <a
-              href="https://beli.app/"
+              href="https://beliapp.co/app/tannerlee119"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-primary transition-colors text-sm font-semibold"
