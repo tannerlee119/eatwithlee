@@ -3,6 +3,17 @@ import { Review } from './types';
 
 // Helper to convert DB Review to App Review format
 function dbToReview(dbReview: any): Review {
+  // Parse images and handle backward compatibility
+  const parsedImages = JSON.parse(dbReview.images || '[]');
+  const images = parsedImages.map((img: any) => {
+    // If it's already an object with url and caption, use it
+    if (typeof img === 'object' && img.url) {
+      return { url: img.url, caption: img.caption || '' };
+    }
+    // If it's a string (old format), convert to new format
+    return { url: img, caption: '' };
+  });
+
   return {
     id: dbReview.id,
     contentType: dbReview.contentType || 'review',
@@ -13,7 +24,7 @@ function dbToReview(dbReview: any): Review {
     excerpt: dbReview.excerpt,
     content: dbReview.content,
     rating: dbReview.rating,
-    images: JSON.parse(dbReview.images || '[]'),
+    images,
     coverImage: dbReview.coverImage,
     location: {
       address: dbReview.address,

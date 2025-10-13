@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ImageWithCaption } from '@/lib/types';
 
 interface ImageCarouselProps {
-  images: string[];
+  images: ImageWithCaption[];
   restaurantName: string;
 }
 
@@ -12,6 +13,8 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
   const [currentIndex, setCurrentIndex] = useState(0);
 
   if (!images || images.length === 0) return null;
+
+  const currentImage = images[currentIndex];
 
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) =>
@@ -35,8 +38,8 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
       <div className="relative w-full rounded-xl overflow-hidden shadow-lg bg-gray-100">
         <div className="relative w-full" style={{ minHeight: '400px', maxHeight: '600px' }}>
           <img
-            src={images[currentIndex]}
-            alt={`${restaurantName} - Image ${currentIndex + 1}`}
+            src={currentImage.url}
+            alt={currentImage.caption || `${restaurantName} - Image ${currentIndex + 1}`}
             className="w-full h-full object-contain"
             style={{ maxHeight: '600px' }}
           />
@@ -68,6 +71,15 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
             </div>
           )}
         </div>
+
+        {/* Caption */}
+        {currentImage.caption && (
+          <div className="px-4 py-3 bg-white/95 backdrop-blur-sm">
+            <p className="text-sm text-gray-700 italic text-center">
+              {currentImage.caption}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Thumbnail Navigation */}
@@ -84,8 +96,8 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
               }`}
             >
               <img
-                src={image}
-                alt={`Thumbnail ${index + 1}`}
+                src={image.url}
+                alt={image.caption || `Thumbnail ${index + 1}`}
                 className="w-16 h-16 object-cover"
               />
             </button>

@@ -1,5 +1,10 @@
 export type ContentType = 'review' | 'list';
 
+export interface ImageWithCaption {
+  url: string;
+  caption: string;
+}
+
 export interface Review {
   id: string;
   contentType: ContentType;
@@ -10,7 +15,7 @@ export interface Review {
   excerpt: string;
   content: string;
   rating: number;
-  images: string[];
+  images: ImageWithCaption[];
   coverImage: string;
   location: {
     address: string;

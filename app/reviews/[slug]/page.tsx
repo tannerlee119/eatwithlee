@@ -13,7 +13,8 @@ export default async function ReviewPage({ params }: { params: Promise<{ slug: s
   const { slug } = await params;
   const review = await getReviewBySlug(slug);
 
-  if (!review) {
+  // Block access to drafts and non-existent reviews
+  if (!review || review.isDraft) {
     notFound();
   }
 
