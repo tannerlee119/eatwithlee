@@ -8,11 +8,11 @@
 - [x] Run database migration for isDraft
 - [x] Update database helper functions to handle `isDraft`
 
-### **Phase 2: Database Setup - Image Captions**
-- [ ] Change `images` field structure to support captions (array of `{url, caption}` objects)
-- [ ] Update Prisma schema to store image captions as JSON
-- [ ] Update TypeScript types for images with captions
-- [ ] Update database helper functions to handle image captions
+### **Phase 2: Database Setup - Image Captions** ✅
+- [x] Change `images` field structure to support captions (array of `{url, caption}` objects)
+- [x] Update Prisma schema to store image captions as JSON (no change needed - already JSON)
+- [x] Update TypeScript types for images with captions
+- [x] Update database helper functions to handle image captions with backward compatibility
 
 ### **Phase 3: Admin Form - Drafts** ✅
 - [x] Add "Save as Draft" button next to "Publish Review" button
@@ -21,10 +21,11 @@
 - [x] Relax validation for drafts (coordinates and images not required)
 - [x] Update API routes to handle `isDraft` field
 
-### **Phase 4: Admin Form - Image Captions**
-- [ ] Add caption input field for each uploaded image
-- [ ] Allow editing captions in the image preview grid
-- [ ] Store caption along with image URL
+### **Phase 4: Admin Form - Image Captions** ✅
+- [x] Add caption input field for each uploaded image
+- [x] Allow editing captions in the image preview grid
+- [x] Store caption along with image URL
+- [x] Captions are optional and can be added/edited anytime
 
 ### **Phase 5: Admin Dashboard - Tabs** ✅
 - [x] Create tabs component (Published / Drafts)
@@ -32,11 +33,11 @@
 - [x] Add visual badge/indicator for draft reviews in table
 - [x] Show draft count on Drafts tab
 
-### **Phase 6: Public View**
+### **Phase 6: Public View** ✅
 - [x] Update home page to only show published reviews (`isDraft = false`)
-- [ ] Update ImageCarousel to display captions below images
-- [ ] Style captions nicely (italic, smaller text, centered)
-- [ ] Ensure draft reviews are not accessible via direct URL on public pages
+- [x] Update ImageCarousel to display captions below images
+- [x] Style captions nicely (italic, smaller text, centered)
+- [x] Ensure draft reviews are not accessible via direct URL on public pages
 
 ### **Phase 7: Review Card Enhancements** ✅
 - [x] Display tags on review cards (currently only shown on individual review pages)
@@ -121,7 +122,7 @@ export interface Review {
 
 ## ✅ Completed Features
 
-### Draft System (Phases 1, 3, 5, 6-partial)
+### Draft System (Phases 1, 3, 5, 6) ✅ COMPLETE
 - ✅ Database schema with `isDraft` field
 - ✅ Admin form with "Save as Draft" and "Publish Review" buttons
 - ✅ Relaxed validation for drafts (no coordinates/images required)
@@ -129,15 +130,24 @@ export interface Review {
 - ✅ Draft badge indicators in admin table
 - ✅ Home page filters out draft reviews from public view
 - ✅ Draft status indicator when editing existing drafts
+- ✅ Block direct URL access to draft reviews (404 page)
 
 ### Review Card Enhancements (Phase 7)
 - ✅ Display tags on review cards (cuisines + vibes)
 - ✅ Styled with colored pill badges matching design system
 
-### Tag Accessibility (Phase 8)
+### Tag Accessibility (Phase 8) ✅ COMPLETE
 - ✅ Improved contrast on all tag hover states
 - ✅ Readable text colors for all tag types
 
+### Image Captions (Phases 2, 4, 6) ✅ COMPLETE
+- ✅ TypeScript types updated with `ImageWithCaption` interface
+- ✅ Database helpers with backward compatibility (old string arrays → new objects)
+- ✅ Admin form with optional caption inputs for each image
+- ✅ Captions can be added/edited anytime (not required)
+- ✅ ImageCarousel displays captions below images
+- ✅ Styled captions (italic, centered, subtle background)
+
 ---
 
-*Last updated: October 12, 2025*
+*Last updated: October 13, 2025*

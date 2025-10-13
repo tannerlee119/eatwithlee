@@ -210,8 +210,8 @@ function AdminForm() {
       ...formData,
       images: newImages,
       // If we removed the cover image, set a new one
-      coverImage: formData.coverImage === formData.images?.[index]
-        ? (newImages[0] || '')
+      coverImage: formData.coverImage === formData.images?.[index]?.url
+        ? (newImages[0]?.url || '')
         : formData.coverImage,
     });
   };
@@ -223,13 +223,23 @@ function AdminForm() {
     });
   };
 
+  const updateImageCaption = (index: number, caption: string) => {
+    const newImages = [...(formData.images || [])];
+    newImages[index] = { ...newImages[index], caption };
+    setFormData({
+      ...formData,
+      images: newImages,
+    });
+  };
+
   const handleAddImageUrl = () => {
     if (!imageUrlInput.trim()) return;
 
     // Basic URL validation
     try {
       new URL(imageUrlInput);
-      const newImages = [...(formData.images || []), imageUrlInput.trim()];
+      const newImage = { url: imageUrlInput.trim(), caption: '' };
+      const newImages = [...(formData.images || []), newImage];
       const newCoverImage = formData.coverImage || imageUrlInput.trim();
 
       setFormData({
@@ -457,48 +467,67 @@ function AdminForm() {
               <p className="text-sm text-gray-600 mb-3">
                 {formData.images.length} image(s) uploaded. Click &quot;Set Cover&quot; to choose your cover image.
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {formData.images.map((url, index) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {formData.images.map((image, index) => (
                   <div
                     key={index}
-                    className={`relative group rounded-lg overflow-hidden transition-all ${
-                      formData.coverImage === url
-                        ? 'ring-4 ring-primary ring-offset-2 shadow-xl'
-                        : 'ring-1 ring-gray-200'
+                    className={`relative rounded-lg border-2 transition-all ${
+                      formData.coverImage === image.url
+                        ? 'border-primary shadow-lg'
+                        : 'border-gray-200'
                     }`}
                   >
-                    <img
-                      src={url}
-                      alt={`Upload ${index + 1}`}
-                      className="w-full h-32 object-cover"
-                    />
+                    <div className="p-3 space-y-3">
+                      {/* Image Preview */}
+                      <div className="relative group rounded-lg overflow-hidden">
+                        <img
+                          src={image.url}
+                          alt={image.caption || `Upload ${index + 1}`}
+                          className="w-full h-48 object-cover"
+                        />
 
-                    {/* Cover Badge */}
-                    {formData.coverImage === url && (
-                      <div className="absolute top-0 left-0 right-0 bg-primary text-white text-xs font-bold py-1 px-2 text-center">
-                        ⭐ COVER IMAGE
+                        {/* Cover Badge */}
+                        {formData.coverImage === image.url && (
+                          <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold py-1 px-2 rounded">
+                            ⭐ COVER
+                          </div>
+                        )}
+
+                        {/* Hover Controls */}
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          {formData.coverImage !== image.url && (
+                            <button
+                              type="button"
+                              onClick={() => setCoverImage(image.url)}
+                              className="bg-primary text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-primary/90 transition-colors"
+                            >
+                              Set as Cover
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="bg-red-500 text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-red-600 transition-colors flex items-center gap-1"
+                          >
+                            <X size={14} />
+                            Remove
+                          </button>
+                        </div>
                       </div>
-                    )}
 
-                    {/* Hover Controls */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-                      {formData.coverImage !== url && (
-                        <button
-                          type="button"
-                          onClick={() => setCoverImage(url)}
-                          className="bg-primary text-white px-3 py-1 rounded text-sm font-semibold hover:bg-primary/90 transition-colors"
-                        >
-                          Set as Cover
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold hover:bg-red-600 transition-colors flex items-center gap-1"
-                      >
-                        <X size={14} />
-                        Remove
-                      </button>
+                      {/* Caption Input */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">
+                          Caption (optional)
+                        </label>
+                        <input
+                          type="text"
+                          value={image.caption}
+                          onChange={(e) => updateImageCaption(index, e.target.value)}
+                          placeholder="Add a caption for this image..."
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                        />
+                      </div>
                     </div>
                   </div>
                 ))}
