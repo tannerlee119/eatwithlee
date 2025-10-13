@@ -315,7 +315,7 @@ function AdminForm() {
         <p className="text-gray-600">{editId ? 'Update restaurant review' : 'Create a new restaurant review'}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+      <form onSubmit={(e) => e.preventDefault()} className="space-y-8 bg-white p-8 rounded-xl shadow-sm border border-gray-200">
         {/* Basic Info */}
         <div className="space-y-4">
           <h2 className="text-2xl font-display font-semibold text-gray-900">Basic Information</h2>
@@ -823,7 +823,7 @@ function AdminForm() {
               {editId ? 'Save as Draft' : 'Save as Draft'}
             </button>
             <button
-              type="submit"
+              type="button"
               onClick={(e) => handleSubmit(e, false)}
               className="flex-1 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors"
             >
