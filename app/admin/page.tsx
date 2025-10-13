@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Review } from '@/lib/types';
@@ -12,7 +12,7 @@ interface ToastMessage {
   type: ToastType;
 }
 
-export default function AdminReviewsPage() {
+function AdminReviewsContent() {
   const searchParams = useSearchParams();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -290,5 +290,17 @@ export default function AdminReviewsPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function AdminReviewsPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+        <p className="text-gray-600">Loading...</p>
+      </div>
+    }>
+      <AdminReviewsContent />
+    </Suspense>
   );
 }
