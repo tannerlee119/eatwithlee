@@ -52,6 +52,9 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
             <Star size={18} fill="currentColor" />
             <span className="text-lg">{review.rating}/10</span>
           </div>
+          <div className="bg-gray-800 text-white px-4 py-2 rounded-full font-semibold text-lg">
+            {'$'.repeat(review.priceRange)}
+          </div>
           {review.contentType === 'list' && (
             <div className="flex items-center gap-2 bg-secondary text-gray-900 px-4 py-2 rounded-full font-bold">
               <ListOrdered size={18} />

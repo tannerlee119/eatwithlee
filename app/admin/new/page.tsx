@@ -31,6 +31,7 @@ function AdminForm() {
     locationTag: '',
     website: '',
     instagram: '',
+    priceRange: 2,
     tags: {
       cuisines: [],
       vibes: [],
@@ -382,20 +383,38 @@ function AdminForm() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Rating (0-10) *
-            </label>
-            <input
-              type="number"
-              required
-              min="0"
-              max="10"
-              step="0.1"
-              value={formData.rating}
-              onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Rating (0-10) *
+              </label>
+              <input
+                type="number"
+                required
+                min="0"
+                max="10"
+                step="0.1"
+                value={formData.rating}
+                onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Price Range *
+              </label>
+              <select
+                value={formData.priceRange}
+                onChange={(e) => setFormData({ ...formData, priceRange: parseInt(e.target.value) })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              >
+                <option value={1}>$ - Budget-friendly</option>
+                <option value={2}>$$ - Moderate</option>
+                <option value={3}>$$$ - Upscale</option>
+                <option value={4}>$$$$ - Fine Dining</option>
+              </select>
+            </div>
           </div>
 
           <div>

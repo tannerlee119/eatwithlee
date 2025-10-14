@@ -25,6 +25,7 @@ export interface Review {
   locationTag: string;
   website: string;
   instagram: string;
+  priceRange: number;
   tags: {
     cuisines: string[];
     vibes: string[];

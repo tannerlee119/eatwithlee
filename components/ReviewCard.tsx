@@ -54,11 +54,14 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
 
         {/* Content */}
         <div className="p-6">
-          {/* Rating */}
+          {/* Rating and Price */}
           <div className="flex items-center gap-2 mb-3">
             <div className="flex items-center gap-1 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold transform group-hover:scale-110 transition-transform duration-300">
               <Star size={14} fill="currentColor" className="animate-pulse" />
               <span>{review.rating}</span>
+            </div>
+            <div className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold">
+              {'$'.repeat(review.priceRange)}
             </div>
             <span className="text-gray-500 text-sm">{formatDate(review.publishedAt)}</span>
           </div>

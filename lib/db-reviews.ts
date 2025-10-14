@@ -34,6 +34,7 @@ function dbToReview(dbReview: any): Review {
     locationTag: dbReview.locationTag || '',
     website: dbReview.website || '',
     instagram: dbReview.instagram || '',
+    priceRange: dbReview.priceRange || 2,
     tags: {
       cuisines: JSON.parse(dbReview.cuisines || '[]'),
       vibes: JSON.parse(dbReview.vibes || '[]'),
@@ -64,6 +65,7 @@ function reviewToDb(review: Partial<Review>) {
     locationTag: review.locationTag || '',
     website: review.website || '',
     instagram: review.instagram || '',
+    priceRange: review.priceRange || 2,
     cuisines: JSON.stringify(review.tags?.cuisines || []),
     vibes: JSON.stringify(review.tags?.vibes || []),
     foodTypes: JSON.stringify(review.tags?.foodTypes || []),
