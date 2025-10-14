@@ -29,6 +29,8 @@ function AdminForm() {
       lng: 0,
     },
     locationTag: '',
+    website: '',
+    instagram: '',
     tags: {
       cuisines: [],
       vibes: [],
@@ -143,6 +145,8 @@ function AdminForm() {
             lng: 0,
           },
           locationTag: '',
+          website: '',
+          instagram: '',
           tags: {
             cuisines: [],
             vibes: [],
@@ -553,6 +557,38 @@ function AdminForm() {
             />
             <p className="text-sm text-gray-500 mt-1">
               Add a location tag to help categorize by city or neighborhood
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Website (optional)
+            </label>
+            <input
+              type="url"
+              value={formData.website}
+              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              placeholder="https://restaurant-website.com"
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              Restaurant's official website
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Instagram (optional)
+            </label>
+            <input
+              type="text"
+              value={formData.instagram}
+              onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              placeholder="@restaurantname or full URL"
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              Instagram handle (@username) or full profile URL
             </p>
           </div>
 

@@ -23,6 +23,8 @@ export interface Review {
     lng: number;
   };
   locationTag: string;
+  website: string;
+  instagram: string;
   tags: {
     cuisines: string[];
     vibes: string[];
