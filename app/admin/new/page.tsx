@@ -591,7 +591,7 @@ function AdminForm() {
               placeholder="https://restaurant-website.com"
             />
             <p className="text-sm text-gray-500 mt-1">
-              Restaurant's official website
+              Restaurant&apos;s official website
             </p>
           </div>
 
