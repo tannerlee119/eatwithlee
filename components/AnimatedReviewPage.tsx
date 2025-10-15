@@ -196,7 +196,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
       {/* Social Links */}
       {(review.website || review.instagram) && (
         <div
-          className="mb-12 flex items-center gap-4"
+          className="mb-12 flex flex-col gap-3"
           style={{
             animation: 'fadeInUp 0.6s ease-out 0.55s both'
           }}
