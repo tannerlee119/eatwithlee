@@ -2,6 +2,8 @@ import { getReviewBySlug, getAllReviews } from '@/lib/db-reviews';
 import { notFound } from 'next/navigation';
 import AnimatedReviewPage from '@/components/AnimatedReviewPage';
 
+export const revalidate = 0;
+
 export async function generateStaticParams() {
   const reviews = await getAllReviews();
   return reviews.map((review) => ({
