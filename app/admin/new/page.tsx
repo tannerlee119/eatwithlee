@@ -41,6 +41,7 @@ function AdminForm() {
     coverImage: '',
     images: [],
     author: 'Tanner Lee',
+    publishedAt: new Date().toISOString().slice(0, 16),
   });
 
   const [tagInput, setTagInput] = useState({
@@ -157,6 +158,7 @@ function AdminForm() {
           coverImage: '',
           images: [],
           author: 'Tanner Lee',
+          publishedAt: new Date().toISOString().slice(0, 16),
         });
         setTagInput({
           cuisine: '',
@@ -381,6 +383,22 @@ function AdminForm() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               placeholder="e.g., Tanner Lee"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Publish Date & Time *
+            </label>
+            <input
+              type="datetime-local"
+              required
+              value={formData.publishedAt?.slice(0, 16)}
+              onChange={(e) => setFormData({ ...formData, publishedAt: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              Set the publication date and time for this review
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-6">

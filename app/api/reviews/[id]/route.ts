@@ -40,6 +40,7 @@ export async function PATCH(
       tags: body.tags,
       favoriteDishes: body.favoriteDishes,
       author: body.author || 'Tanner Lee',
+      publishedAt: body.publishedAt,
     };
 
     console.log('PATCH /api/reviews/[id] - reviewData.tags:', reviewData.tags);

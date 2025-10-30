@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
       tags: body.tags,
       favoriteDishes: body.favoriteDishes,
       author: body.author || 'Tanner Lee',
+      publishedAt: body.publishedAt,
     };
 
     console.log('POST /api/reviews - reviewData.tags:', reviewData.tags);

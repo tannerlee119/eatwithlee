@@ -48,7 +48,7 @@ function dbToReview(dbReview: any): Review {
 
 // Helper to convert App Review to DB format
 function reviewToDb(review: Partial<Review>) {
-  return {
+  const dbData: any = {
     contentType: review.contentType || 'review',
     isDraft: review.isDraft !== undefined ? review.isDraft : false,
     title: review.title,
@@ -72,6 +72,13 @@ function reviewToDb(review: Partial<Review>) {
     favoriteDishes: JSON.stringify(review.favoriteDishes || []),
     author: review.author || 'Lee',
   };
+
+  // Only include publishedAt if it's provided
+  if (review.publishedAt) {
+    dbData.publishedAt = new Date(review.publishedAt);
+  }
+
+  return dbData;
 }
 
 export async function getAllReviews(): Promise<Review[]> {
