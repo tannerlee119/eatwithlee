@@ -13,8 +13,8 @@ interface RestaurantMapProps {
 export default function RestaurantMap({ lat, lng, name, address }: RestaurantMapProps) {
   const [mapUrl, setMapUrl] = useState<string>('');
   const [error, setError] = useState<string>('');
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-  const appleMapsUrl = `https://maps.apple.com/?ll=${lat},${lng}&q=${encodeURIComponent(name)}`;
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ' ' + address)}`;
+  const appleMapsUrl = `https://maps.apple.com/?q=${encodeURIComponent(name + ' ' + address)}`;
 
   useEffect(() => {
     // Fetch Google Maps API key from server
