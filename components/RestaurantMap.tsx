@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { MapPin, ExternalLink } from 'lucide-react';
 
 interface RestaurantMapProps {
@@ -11,61 +11,56 @@ interface RestaurantMapProps {
 }
 
 export default function RestaurantMap({ lat, lng, name, address }: RestaurantMapProps) {
-  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const [mapUrl, setMapUrl] = useState<string>('');
+  const [error, setError] = useState<string>('');
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
   const appleMapsUrl = `https://maps.apple.com/?ll=${lat},${lng}&q=${encodeURIComponent(name)}`;
 
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    // Fetch Google Maps API key from server
+    fetch('/api/maps-config')
+      .then(res => res.json())
+      .then(data => {
+        if (data.apiKey) {
+          const zoom = 15;
+          const width = 800;
+          const height = 384;
 
-    // Create static map image URL using OpenStreetMap static tiles
-    const zoom = 15;
-    const width = mapContainerRef.current.offsetWidth;
-    const height = 384; // h-96 = 384px
-
-    // Using Mapbox static API (free tier available)
-    // Alternative: Can use other static map providers
-    const staticMapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-l-restaurant+FF6B35(${lng},${lat})/${lng},${lat},${zoom},0/${width}x${height}@2x?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw`;
-
-    const img = document.createElement('img');
-    img.src = staticMapUrl;
-    img.alt = `Map of ${name}`;
-    img.className = 'w-full h-full object-cover';
-    img.onerror = () => {
-      // Fallback to OpenStreetMap tile-based static map
-      const tileUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.01},${lat-0.01},${lng+0.01},${lat+0.01}&layer=mapnik&marker=${lat},${lng}`;
-      mapContainerRef.current!.innerHTML = `
-        <iframe
-          width="100%"
-          height="100%"
-          frameborder="0"
-          scrolling="no"
-          src="${tileUrl}"
-          title="Map showing location of ${name}"
-        ></iframe>
-      `;
-    };
-
-    mapContainerRef.current.appendChild(img);
-
-    return () => {
-      if (mapContainerRef.current) {
-        mapContainerRef.current.innerHTML = '';
-      }
-    };
-  }, [lat, lng, name]);
+          // Google Maps Static API URL with custom marker
+          const url = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${width}x${height}&scale=2&markers=color:0xFF6B35|${lat},${lng}&key=${data.apiKey}`;
+          console.log('Map URL:', url);
+          setMapUrl(url);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load map config:', err);
+        setError('Failed to load map configuration');
+      });
+  }, [lat, lng]);
 
   return (
     <div className="space-y-4">
       {/* Static Map with Pin */}
-      <div
-        ref={mapContainerRef}
-        className="w-full h-96 bg-gray-200 rounded-xl overflow-hidden border border-gray-300 relative"
-      >
-        {/* Loading state */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <MapPin size={48} className="text-gray-400 animate-pulse" />
-        </div>
+      <div className="w-full h-96 bg-gray-200 rounded-xl overflow-hidden border border-gray-300 relative">
+        {mapUrl ? (
+          <img
+            src={mapUrl}
+            alt={`Map of ${name}`}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              console.error('Map image failed to load');
+              setError('Map failed to load. Check Google Cloud Console: Maps Static API must be enabled.');
+            }}
+          />
+        ) : error ? (
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <p className="text-red-600 text-sm text-center">{error}</p>
+          </div>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <MapPin size={48} className="text-gray-400 animate-pulse" />
+          </div>
+        )}
       </div>
 
       {/* Map Links */}
