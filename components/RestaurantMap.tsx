@@ -26,8 +26,8 @@ export default function RestaurantMap({ lat, lng, name, address }: RestaurantMap
           const width = 800;
           const height = 384;
 
-          // Google Maps Static API URL with custom marker
-          const url = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${width}x${height}&scale=2&markers=color:0xFF6B35|${lat},${lng}&key=${data.apiKey}`;
+          // Google Maps Static API URL with default marker
+          const url = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${width}x${height}&scale=2&markers=${lat},${lng}&key=${data.apiKey}`;
           console.log('Map URL:', url);
           setMapUrl(url);
         }
