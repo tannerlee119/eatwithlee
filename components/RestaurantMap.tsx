@@ -13,10 +13,13 @@ interface RestaurantMapProps {
 export default function RestaurantMap({ lat, lng, name, address }: RestaurantMapProps) {
   const [mapUrl, setMapUrl] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [imageKey, setImageKey] = useState(0);
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ' ' + address)}`;
   const appleMapsUrl = `https://maps.apple.com/?q=${encodeURIComponent(name + ' ' + address)}`;
 
   useEffect(() => {
+    setError('');
+
     // Fetch Google Maps API key from server
     fetch('/api/maps-config')
       .then(res => res.json())
@@ -28,7 +31,6 @@ export default function RestaurantMap({ lat, lng, name, address }: RestaurantMap
 
           // Google Maps Static API URL with small marker
           const url = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${width}x${height}&scale=2&markers=size:mid|${lat},${lng}&key=${data.apiKey}`;
-          console.log('Map URL:', url);
           setMapUrl(url);
         }
       })
@@ -44,12 +46,19 @@ export default function RestaurantMap({ lat, lng, name, address }: RestaurantMap
       <div className="w-full h-96 bg-gray-200 rounded-xl overflow-hidden border border-gray-300 relative">
         {mapUrl ? (
           <img
+            key={imageKey}
             src={mapUrl}
             alt={`Map of ${name}`}
             className="w-full h-full object-cover"
+            onLoad={() => setError('')}
             onError={(e) => {
-              console.error('Map image failed to load');
-              setError('Map failed to load. Check Google Cloud Console: Maps Static API must be enabled.');
+              console.error('Map image failed to load, retrying...');
+              // Retry once after a brief delay
+              if (imageKey === 0) {
+                setTimeout(() => setImageKey(1), 500);
+              } else {
+                setError('Map failed to load. Try refreshing the page.');
+              }
             }}
           />
         ) : error ? (
