@@ -22,7 +22,7 @@ export default function RestaurantMap({ lat, lng, name, address }: RestaurantMap
       .then(res => res.json())
       .then(data => {
         if (data.apiKey) {
-          const zoom = 15;
+          const zoom = 14;
           const width = 800;
           const height = 384;
 
