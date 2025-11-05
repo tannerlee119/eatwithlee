@@ -162,7 +162,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
           }}
         >
           <h3 className="font-display font-semibold text-xl mb-4 text-gray-900">
-            Must-Try Dishes
+            Favorite Dishes
           </h3>
           <ul className="space-y-2">
             {review.favoriteDishes.map((dish, index) => (
