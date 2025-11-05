@@ -67,18 +67,18 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
           </div>
         </div>
 
-        <h1 className="text-5xl font-display font-bold mb-4 text-gray-900 hover:text-primary transition-colors duration-300">
+        <h1 className="text-5xl font-display font-bold mb-6 text-gray-900 hover:text-primary transition-colors duration-300">
           {review.restaurantName}
         </h1>
 
-        <div className="flex items-start gap-2 text-gray-700 mb-6">
+        <p className="text-xl text-gray-700 leading-relaxed mb-6">
+          {review.excerpt}
+        </p>
+
+        <div className="flex items-start gap-2 text-gray-700">
           <MapPin size={20} className="mt-1 flex-shrink-0" />
           <span className="text-lg">{review.location.address}</span>
         </div>
-
-        <p className="text-xl text-gray-700 leading-relaxed">
-          {review.excerpt}
-        </p>
       </header>
 
       {/* Image Carousel */}
