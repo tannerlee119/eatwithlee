@@ -3,8 +3,9 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
-import { X, ArrowLeft, Loader2, GripVertical } from 'lucide-react';
+import { X, ArrowLeft, Loader2, GripVertical, Crop } from 'lucide-react';
 import Toast, { ToastType } from '@/components/Toast';
+import ImageCropper from '@/components/ImageCropper';
 import {
   DndContext,
   closestCenter,
@@ -35,9 +36,10 @@ interface SortableImageProps {
   onSetCover: () => void;
   onRemove: () => void;
   onUpdateCaption: (caption: string) => void;
+  onCrop: () => void;
 }
 
-function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCaption }: SortableImageProps) {
+function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCaption, onCrop }: SortableImageProps) {
   const {
     attributes,
     listeners,
@@ -95,6 +97,16 @@ function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCa
                 className="bg-primary text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-primary/90 transition-colors"
               >
                 Set as Cover
+              </button>
+            )}
+            {isCover && (
+              <button
+                type="button"
+                onClick={onCrop}
+                className="bg-blue-600 text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-blue-700 transition-colors flex items-center gap-1"
+              >
+                <Crop size={14} />
+                Crop
               </button>
             )}
             <button
@@ -170,6 +182,7 @@ function AdminForm() {
   const [imageUrlInput, setImageUrlInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
+  const [cropperState, setCropperState] = useState<{ imageUrl: string; imageIndex: number } | null>(null);
 
   // Drag and drop sensors
   const sensors = useSensors(
@@ -438,6 +451,27 @@ function AdminForm() {
     }
   };
 
+  const handleCropImage = (imageIndex: number) => {
+    const image = formData.images?.[imageIndex];
+    if (image) {
+      setCropperState({ imageUrl: image.url, imageIndex });
+    }
+  };
+
+  const handleCropComplete = (cropData: { x: number; y: number; zoom: number }) => {
+    setFormData({
+      ...formData,
+      coverImageCrop: cropData,
+    });
+
+    setCropperState(null);
+    showToast('Crop settings saved!', 'success');
+  };
+
+  const handleCropCancel = () => {
+    setCropperState(null);
+  };
+
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
@@ -667,6 +701,7 @@ function AdminForm() {
                         onSetCover={() => setCoverImage(image.url)}
                         onRemove={() => removeImage(index)}
                         onUpdateCaption={(caption) => updateImageCaption(index, caption)}
+                        onCrop={() => handleCropImage(index)}
                       />
                     ))}
                   </div>
@@ -1009,6 +1044,14 @@ function AdminForm() {
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}
+        />
+      )}
+      {cropperState && (
+        <ImageCropper
+          imageUrl={cropperState.imageUrl}
+          initialCrop={formData.coverImageCrop}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
         />
       )}
     </div>

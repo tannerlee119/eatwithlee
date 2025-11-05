@@ -21,6 +21,7 @@ model Review {
   content        String
   rating         Float
   coverImage     String
+  coverImageCrop String?  // JSON object stored as string {x, y, zoom}
   images         String   // JSON array stored as string
   address        String
   lat            Float

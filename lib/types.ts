@@ -17,6 +17,11 @@ export interface Review {
   rating: number;
   images: ImageWithCaption[];
   coverImage: string;
+  coverImageCrop?: {
+    x: number;
+    y: number;
+    zoom: number;
+  };
   location: {
     address: string;
     lat: number;

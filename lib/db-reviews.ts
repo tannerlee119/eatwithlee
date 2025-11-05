@@ -26,6 +26,7 @@ function dbToReview(dbReview: any): Review {
     rating: dbReview.rating,
     images,
     coverImage: dbReview.coverImage,
+    coverImageCrop: dbReview.coverImageCrop ? JSON.parse(dbReview.coverImageCrop) : undefined,
     location: {
       address: dbReview.address,
       lat: dbReview.lat,
@@ -59,6 +60,7 @@ function reviewToDb(review: Partial<Review>) {
     rating: review.rating,
     images: JSON.stringify(review.images || []),
     coverImage: review.coverImage,
+    coverImageCrop: review.coverImageCrop ? JSON.stringify(review.coverImageCrop) : null,
     address: review.location?.address,
     lat: review.location?.lat,
     lng: review.location?.lng,
