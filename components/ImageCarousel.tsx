@@ -68,13 +68,26 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
     <div className="space-y-4">
       {/* Main Image Display */}
       <div className="relative w-full rounded-xl overflow-hidden shadow-lg bg-gray-100">
-        <div className="relative w-full" style={{ minHeight: '400px', maxHeight: '600px' }}>
-          <img
-            src={currentImage.url}
-            alt={currentImage.caption || `${restaurantName} - Image ${currentIndex + 1}`}
-            className="w-full h-full object-contain"
-            style={{ maxHeight: '600px' }}
-          />
+        <div className="relative w-full overflow-hidden" style={{ minHeight: '400px', height: '600px' }}>
+          {/* Image Container with Sliding Animation */}
+          {images.map((image, index) => (
+            <div
+              key={image.url}
+              className={`absolute inset-0 transition-transform duration-1000 ease-in-out ${
+                index === currentIndex
+                  ? 'translate-x-0'
+                  : index < currentIndex
+                  ? '-translate-x-full'
+                  : 'translate-x-full'
+              }`}
+            >
+              <img
+                src={image.url}
+                alt={image.caption || `${restaurantName} - Image ${index + 1}`}
+                className="w-full h-full object-contain"
+              />
+            </div>
+          ))}
 
           {/* Navigation Arrows */}
           {images.length > 1 && (
@@ -115,7 +128,10 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
 
         {/* Caption */}
         {currentImage.caption && (
-          <div className="px-4 py-3 bg-white/95 backdrop-blur-sm">
+          <div
+            key={currentIndex}
+            className="px-4 py-3 bg-white/95 backdrop-blur-sm animate-fadeIn"
+          >
             <p className="text-sm text-gray-700 italic text-center">
               {currentImage.caption}
             </p>
