@@ -3,12 +3,127 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
-import { X, ArrowLeft, Loader2 } from 'lucide-react';
+import { X, ArrowLeft, Loader2, GripVertical } from 'lucide-react';
 import Toast, { ToastType } from '@/components/Toast';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface ToastMessage {
   message: string;
   type: ToastType;
+}
+
+interface SortableImageProps {
+  image: { url: string; caption: string };
+  index: number;
+  isCover: boolean;
+  onSetCover: () => void;
+  onRemove: () => void;
+  onUpdateCaption: (caption: string) => void;
+}
+
+function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCaption }: SortableImageProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: image.url });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`relative rounded-lg border-2 transition-all ${
+        isCover ? 'border-primary shadow-lg' : 'border-gray-200'
+      }`}
+    >
+      <div className="p-3 space-y-3">
+        {/* Drag Handle & Image Preview */}
+        <div className="relative group rounded-lg overflow-hidden">
+          {/* Drag Handle */}
+          <div
+            {...attributes}
+            {...listeners}
+            className="absolute top-2 left-2 z-20 bg-white/90 p-1.5 rounded cursor-move hover:bg-white transition-colors"
+          >
+            <GripVertical size={20} className="text-gray-600" />
+          </div>
+
+          <img
+            src={image.url}
+            alt={image.caption || `Upload ${index + 1}`}
+            className="w-full h-48 object-cover"
+          />
+
+          {/* Cover Badge */}
+          {isCover && (
+            <div className="absolute top-2 right-2 bg-primary text-white text-xs font-bold py-1 px-2 rounded">
+              ⭐ COVER
+            </div>
+          )}
+
+          {/* Hover Controls */}
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            {!isCover && (
+              <button
+                type="button"
+                onClick={onSetCover}
+                className="bg-primary text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-primary/90 transition-colors"
+              >
+                Set as Cover
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onRemove}
+              className="bg-red-500 text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-red-600 transition-colors flex items-center gap-1"
+            >
+              <X size={14} />
+              Remove
+            </button>
+          </div>
+        </div>
+
+        {/* Caption Input */}
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">
+            Caption (optional)
+          </label>
+          <input
+            type="text"
+            value={image.caption}
+            onChange={(e) => onUpdateCaption(e.target.value)}
+            placeholder="Add a caption for this image..."
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function AdminForm() {
@@ -55,6 +170,14 @@ function AdminForm() {
   const [imageUrlInput, setImageUrlInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const showToast = (message: string, type: ToastType) => {
     setToast({ message, type });
@@ -298,6 +421,23 @@ function AdminForm() {
     }
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = formData.images?.findIndex((img) => img.url === active.id) ?? -1;
+      const newIndex = formData.images?.findIndex((img) => img.url === over.id) ?? -1;
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newImages = arrayMove(formData.images || [], oldIndex, newIndex);
+        setFormData({
+          ...formData,
+          images: newImages,
+        });
+      }
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
@@ -506,73 +646,32 @@ function AdminForm() {
           {formData.images && formData.images.length > 0 && (
             <div>
               <p className="text-sm text-gray-600 mb-3">
-                {formData.images.length} image(s) uploaded. Click &quot;Set Cover&quot; to choose your cover image.
+                {formData.images.length} image(s) uploaded. Drag to reorder. Click &quot;Set Cover&quot; to choose your cover image.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {formData.images.map((image, index) => (
-                  <div
-                    key={index}
-                    className={`relative rounded-lg border-2 transition-all ${
-                      formData.coverImage === image.url
-                        ? 'border-primary shadow-lg'
-                        : 'border-gray-200'
-                    }`}
-                  >
-                    <div className="p-3 space-y-3">
-                      {/* Image Preview */}
-                      <div className="relative group rounded-lg overflow-hidden">
-                        <img
-                          src={image.url}
-                          alt={image.caption || `Upload ${index + 1}`}
-                          className="w-full h-48 object-cover"
-                        />
-
-                        {/* Cover Badge */}
-                        {formData.coverImage === image.url && (
-                          <div className="absolute top-2 left-2 bg-primary text-white text-xs font-bold py-1 px-2 rounded">
-                            ⭐ COVER
-                          </div>
-                        )}
-
-                        {/* Hover Controls */}
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                          {formData.coverImage !== image.url && (
-                            <button
-                              type="button"
-                              onClick={() => setCoverImage(image.url)}
-                              className="bg-primary text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-primary/90 transition-colors"
-                            >
-                              Set as Cover
-                            </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="bg-red-500 text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-red-600 transition-colors flex items-center gap-1"
-                          >
-                            <X size={14} />
-                            Remove
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Caption Input */}
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">
-                          Caption (optional)
-                        </label>
-                        <input
-                          type="text"
-                          value={image.caption}
-                          onChange={(e) => updateImageCaption(index, e.target.value)}
-                          placeholder="Add a caption for this image..."
-                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                        />
-                      </div>
-                    </div>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={formData.images.map(img => img.url)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {formData.images.map((image, index) => (
+                      <SortableImage
+                        key={image.url}
+                        image={image}
+                        index={index}
+                        isCover={formData.coverImage === image.url}
+                        onSetCover={() => setCoverImage(image.url)}
+                        onRemove={() => removeImage(index)}
+                        onUpdateCaption={(caption) => updateImageCaption(index, caption)}
+                      />
+                    ))}
                   </div>
-                ))}
-              </div>
+                </SortableContext>
+              </DndContext>
             </div>
           )}
         </div>

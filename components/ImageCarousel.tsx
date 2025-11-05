@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { ImageWithCaption } from '@/lib/types';
 
 interface ImageCarouselProps {
@@ -11,26 +11,58 @@ interface ImageCarouselProps {
 
 export default function ImageCarousel({ images, restaurantName }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [direction, setDirection] = useState<'left' | 'right'>('right');
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   if (!images || images.length === 0) return null;
 
   const currentImage = images[currentIndex];
 
   const goToPrevious = () => {
+    setDirection('left');
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? images.length - 1 : prevIndex - 1
     );
   };
 
   const goToNext = () => {
+    setDirection('right');
     setCurrentIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
 
   const goToImage = (index: number) => {
+    setDirection(index > currentIndex ? 'right' : 'left');
     setCurrentIndex(index);
   };
+
+  const togglePause = () => {
+    setIsPaused(!isPaused);
+  };
+
+  // Auto-rotation effect
+  useEffect(() => {
+    // Only auto-rotate if there's more than one image and not paused
+    if (images.length <= 1 || isPaused) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      return;
+    }
+
+    intervalRef.current = setInterval(() => {
+      goToNext();
+    }, 5000); // 5 seconds
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [currentIndex, isPaused, images.length]);
 
   return (
     <div className="space-y-4">
@@ -64,10 +96,19 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
             </>
           )}
 
-          {/* Image Counter */}
+          {/* Image Counter & Pause Button */}
           {images.length > 1 && (
-            <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm z-10">
-              {currentIndex + 1} / {images.length}
+            <div className="absolute bottom-4 right-4 flex items-center gap-2 z-10">
+              <button
+                onClick={togglePause}
+                className="bg-black/60 hover:bg-black/80 text-white p-2 rounded-full transition-all"
+                aria-label={isPaused ? 'Play slideshow' : 'Pause slideshow'}
+              >
+                {isPaused ? <Play size={18} /> : <Pause size={18} />}
+              </button>
+              <div className="bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+                {currentIndex + 1} / {images.length}
+              </div>
             </div>
           )}
         </div>
