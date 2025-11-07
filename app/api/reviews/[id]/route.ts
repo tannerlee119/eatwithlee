@@ -32,6 +32,7 @@ export async function PATCH(
       rating: body.rating,
       images: body.images,
       coverImage: body.coverImage,
+      coverImageCrop: body.coverImageCrop,
       location: body.location,
       locationTag: body.locationTag,
       website: body.website || '',
