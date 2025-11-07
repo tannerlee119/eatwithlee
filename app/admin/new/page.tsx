@@ -454,11 +454,13 @@ function AdminForm() {
   const handleCropImage = (imageIndex: number) => {
     const image = formData.images?.[imageIndex];
     if (image) {
+      console.log('Opening cropper with formData.coverImageCrop:', formData.coverImageCrop);
       setCropperState({ imageUrl: image.url, imageIndex });
     }
   };
 
   const handleCropComplete = (cropData: { x: number; y: number; zoom: number }) => {
+    console.log('Saving crop data:', cropData);
     setFormData({
       ...formData,
       coverImageCrop: cropData,

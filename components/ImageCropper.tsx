@@ -19,9 +19,11 @@ interface Area {
 }
 
 export default function ImageCropper({ imageUrl, initialCrop, onCropComplete, onCancel }: ImageCropperProps) {
-  const [crop, setCrop] = useState(initialCrop ? { x: initialCrop.x, y: initialCrop.y } : { x: 0, y: 0 });
+  console.log('ImageCropper initialCrop:', initialCrop);
+  // Initialize with default center position
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(initialCrop?.zoom || 1);
-  const [croppedArea, setCroppedArea] = useState<Area | null>(null);
+  const [croppedAreaPercent, setCroppedAreaPercent] = useState<Area | null>(null);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -34,17 +36,27 @@ export default function ImageCropper({ imageUrl, initialCrop, onCropComplete, on
   };
 
   const onCropCompleteInternal = useCallback(
-    (croppedAreaPercent: Area, croppedAreaPx: Area) => {
-      setCroppedArea(croppedAreaPercent);
+    (croppedArea: Area, croppedAreaPx: Area) => {
+      setCroppedAreaPercent(croppedArea);
       setCroppedAreaPixels(croppedAreaPx);
     },
     []
   );
 
   const saveCropData = () => {
-    // Save the crop area in percentages (easier for CSS)
-    if (croppedArea) {
-      onCropComplete({ x: croppedArea.x, y: croppedArea.y, zoom });
+    // Save the cropped area percentages and zoom
+    // croppedAreaPercent gives us the position of the crop window as percentages
+    // which we can use directly for CSS background-position
+    console.log('Cropped area percent:', croppedAreaPercent);
+    console.log('Zoom:', zoom);
+    if (croppedAreaPercent) {
+      // Convert the crop area to center position for background-position
+      // background-position expects the center point, not top-left corner
+      const centerX = croppedAreaPercent.x + croppedAreaPercent.width / 2;
+      const centerY = croppedAreaPercent.y + croppedAreaPercent.height / 2;
+      const cropData = { x: centerX, y: centerY, zoom };
+      console.log('Sending crop data:', cropData);
+      onCropComplete(cropData);
     }
   };
 
