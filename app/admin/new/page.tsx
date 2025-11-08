@@ -260,8 +260,13 @@ function AdminForm() {
         body: JSON.stringify(payload),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
       if (!response.ok) {
-        throw new Error('Failed to save review');
+        const errorData = await response.json();
+        console.error('Error response:', errorData);
+        throw new Error(errorData.details || 'Failed to save review');
       }
 
       const savedReview = await response.json();
