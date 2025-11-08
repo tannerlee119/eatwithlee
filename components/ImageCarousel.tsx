@@ -15,9 +15,7 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  if (!images || images.length === 0) return null;
-
-  const currentImage = images[currentIndex];
+  const currentImage = images?.[currentIndex];
 
   const goToPrevious = () => {
     setDirection('left');
@@ -63,6 +61,8 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
       }
     };
   }, [currentIndex, isPaused, images.length]);
+
+  if (!images || images.length === 0) return null;
 
   return (
     <div className="space-y-4">
