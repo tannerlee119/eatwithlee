@@ -19,13 +19,11 @@ interface Area {
 }
 
 export default function ImageCropper({ imageUrl, initialCrop, onCropComplete, onCancel }: ImageCropperProps) {
-  console.log('ImageCropper initialCrop:', initialCrop);
   // Initialize with default center position
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(initialCrop?.zoom || 1);
   const [croppedAreaPercent, setCroppedAreaPercent] = useState<Area | null>(null);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
 
   const onCropChange = (crop: { x: number; y: number }) => {
     setCrop(crop);
@@ -44,18 +42,25 @@ export default function ImageCropper({ imageUrl, initialCrop, onCropComplete, on
   );
 
   const saveCropData = () => {
-    // Save the cropped area percentages and zoom
-    // croppedAreaPercent gives us the position of the crop window as percentages
-    // which we can use directly for CSS background-position
-    console.log('Cropped area percent:', croppedAreaPercent);
-    console.log('Zoom:', zoom);
+    // For background-position to work correctly with zoom, we need to calculate
+    // the position of the crop area relative to the zoomed image
     if (croppedAreaPercent) {
-      // Convert the crop area to center position for background-position
-      // background-position expects the center point, not top-left corner
+      // The croppedAreaPercent gives us where the 4:3 crop window sits on the original image
+      // For CSS background-position:
+      // - At zoom 1, background-size is 100% and we want to shift the image
+      // - At zoom > 1, background-size increases and we need to reposition
+
+      // Calculate the center of the cropped area
       const centerX = croppedAreaPercent.x + croppedAreaPercent.width / 2;
       const centerY = croppedAreaPercent.y + croppedAreaPercent.height / 2;
-      const cropData = { x: centerX, y: centerY, zoom };
-      console.log('Sending crop data:', cropData);
+
+      // For background-position with zoom, we need to invert the logic
+      // because we're positioning the image, not the crop window
+      const bgPosX = centerX;
+      const bgPosY = centerY;
+
+      const cropData = { x: bgPosX, y: bgPosY, zoom };
+      console.log('ImageCropper - croppedArea:', croppedAreaPercent, 'cropData:', cropData);
       onCropComplete(cropData);
     }
   };

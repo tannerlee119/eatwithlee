@@ -34,22 +34,26 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
         {/* Image */}
         <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative">
           {review.coverImageCrop ? (
-            <div
-              className="w-full h-full"
-              style={{
-                backgroundImage: `url(${review.coverImage})`,
-                backgroundSize: `${review.coverImageCrop.zoom * 100}%`,
-                backgroundPosition: `${review.coverImageCrop.x}% ${review.coverImageCrop.y}%`,
-                backgroundRepeat: 'no-repeat',
-                transition: 'background-size 0.7s ease-out',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundSize = `${review.coverImageCrop!.zoom * 110}%`;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundSize = `${review.coverImageCrop!.zoom * 100}%`;
-              }}
-            />
+            <div className="w-full h-full relative overflow-hidden">
+              <img
+                src={review.coverImage}
+                alt={review.title}
+                className="absolute transition-all duration-700 ease-out"
+                style={{
+                  width: `${review.coverImageCrop.zoom * 100}%`,
+                  height: 'auto',
+                  left: '50%',
+                  top: '50%',
+                  transform: `translate(-${review.coverImageCrop.x}%, -${review.coverImageCrop.y}%)`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.width = `${review.coverImageCrop!.zoom * 110}%`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.width = `${review.coverImageCrop!.zoom * 100}%`;
+                }}
+              />
+            </div>
           ) : (
             <img
               src={review.coverImage}
