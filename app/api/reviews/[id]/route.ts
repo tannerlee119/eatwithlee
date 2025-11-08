@@ -11,6 +11,7 @@ export async function PATCH(
     const body = await request.json();
 
     console.log('PATCH /api/reviews/[id] - body.tags:', body.tags);
+    console.log('PATCH /api/reviews/[id] - body.coverImageCrop:', body.coverImageCrop);
 
     // Generate slug from restaurant name if it changed
     const slug = body.restaurantName

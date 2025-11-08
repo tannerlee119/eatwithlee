@@ -205,6 +205,7 @@ function AdminForm() {
         .then(reviews => {
           const review = reviews.find((r: Review) => r.id === editId);
           if (review) {
+            console.log('Loading review - coverImageCrop from API:', review.coverImageCrop);
             // Ensure tags object exists with all required arrays
             const loadedData = {
               ...review,
@@ -214,6 +215,7 @@ function AdminForm() {
                 foodTypes: review.tags?.foodTypes || [],
               }
             };
+            console.log('Loading review - loadedData.coverImageCrop:', loadedData.coverImageCrop);
             setFormData(loadedData);
           }
         })
@@ -241,16 +243,21 @@ function AdminForm() {
       return;
     }
 
+    console.log('handleSubmit - formData.coverImageCrop:', formData.coverImageCrop);
+
     try {
       const url = editId ? `/api/reviews/${editId}` : '/api/reviews';
       const method = editId ? 'PATCH' : 'POST';
+
+      const payload = { ...formData, isDraft };
+      console.log('handleSubmit - Sending payload with coverImageCrop:', payload.coverImageCrop);
 
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...formData, isDraft }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -460,11 +467,13 @@ function AdminForm() {
   };
 
   const handleCropComplete = (cropData: { x: number; y: number; zoom: number }) => {
-    console.log('Saving crop data:', cropData);
-    setFormData({
+    console.log('handleCropComplete - Saving crop data:', cropData);
+    const updatedFormData = {
       ...formData,
       coverImageCrop: cropData,
-    });
+    };
+    console.log('handleCropComplete - Updated formData.coverImageCrop:', updatedFormData.coverImageCrop);
+    setFormData(updatedFormData);
 
     setCropperState(null);
     showToast('Crop settings saved!', 'success');

@@ -80,7 +80,7 @@ export default function ImageCropper({ imageUrl, initialCrop, onCropComplete, on
             image={imageUrl}
             crop={crop}
             zoom={zoom}
-            aspect={16 / 9}
+            aspect={4 / 3}
             onCropChange={onCropChange}
             onZoomChange={onZoomChange}
             onCropComplete={onCropCompleteInternal}

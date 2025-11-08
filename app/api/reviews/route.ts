@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     console.log('POST /api/reviews - body.tags:', body.tags);
+    console.log('POST /api/reviews - body.coverImageCrop:', body.coverImageCrop);
 
     // Generate slug from restaurant name
     const slug = body.restaurantName
