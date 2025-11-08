@@ -51,7 +51,12 @@ export async function PATCH(
     return NextResponse.json(review);
   } catch (error) {
     console.error('Error updating review:', error);
-    return NextResponse.json({ error: 'Failed to update review' }, { status: 500 });
+    console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    return NextResponse.json({
+      error: 'Failed to update review',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 
