@@ -168,7 +168,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
       {/* Favorite Dishes */}
       {review.favoriteDishes.length > 0 && (
         <div
-          className="mb-12 p-6 bg-green-50 rounded-xl border border-green-200 hover:border-primary/30 transition-all duration-300"
+          className="mb-12 p-6 bg-green-50 rounded-xl border border-green-200"
           style={{
             animation: 'fadeInUp 0.6s ease-out 0.5s both'
           }}
@@ -180,7 +180,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
             {review.favoriteDishes.map((dish, index) => (
               <li
                 key={index}
-                className="flex items-center gap-3 hover:translate-x-2 transition-transform duration-300"
+                className="flex items-center gap-3"
                 style={{
                   animation: `fadeIn 0.4s ease-out ${0.55 + index * 0.1}s both`
                 }}
@@ -196,7 +196,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
       {/* Least Favorite Dishes */}
       {review.leastFavoriteDishes && review.leastFavoriteDishes.length > 0 && (
         <div
-          className="mb-12 p-6 bg-red-50 rounded-xl border border-red-200 hover:border-primary/30 transition-all duration-300"
+          className="mb-12 p-6 bg-red-50 rounded-xl border border-red-200"
           style={{
             animation: 'fadeInUp 0.6s ease-out 0.55s both'
           }}
@@ -208,7 +208,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
             {review.leastFavoriteDishes.map((dish, index) => (
               <li
                 key={index}
-                className="flex items-center gap-3 hover:translate-x-2 transition-transform duration-300"
+                className="flex items-center gap-3"
                 style={{
                   animation: `fadeIn 0.4s ease-out ${0.6 + index * 0.1}s both`
                 }}
