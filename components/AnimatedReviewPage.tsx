@@ -153,12 +153,24 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
         </div>
       </div>
 
+      {/* Review Content */}
+      <div
+        className="prose prose-lg max-w-none mb-12"
+        style={{
+          animation: 'fadeInUp 0.6s ease-out 0.4s both'
+        }}
+      >
+        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+          {review.content}
+        </p>
+      </div>
+
       {/* Favorite Dishes */}
       {review.favoriteDishes.length > 0 && (
         <div
-          className="mb-12 p-6 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary/30 transition-all duration-300"
+          className="mb-12 p-6 bg-green-50 rounded-xl border border-green-200 hover:border-primary/30 transition-all duration-300"
           style={{
-            animation: 'fadeInUp 0.6s ease-out 0.4s both'
+            animation: 'fadeInUp 0.6s ease-out 0.5s both'
           }}
         >
           <h3 className="font-display font-semibold text-xl mb-4 text-gray-900">
@@ -170,10 +182,10 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
                 key={index}
                 className="flex items-center gap-3 hover:translate-x-2 transition-transform duration-300"
                 style={{
-                  animation: `fadeIn 0.4s ease-out ${0.5 + index * 0.1}s both`
+                  animation: `fadeIn 0.4s ease-out ${0.55 + index * 0.1}s both`
                 }}
               >
-                <span className="text-primary text-xl">•</span>
+                <span className="text-green-600 text-xl">•</span>
                 <span className="text-gray-800 text-lg">{dish}</span>
               </li>
             ))}
@@ -181,17 +193,33 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
         </div>
       )}
 
-      {/* Review Content */}
-      <div
-        className="prose prose-lg max-w-none mb-12"
-        style={{
-          animation: 'fadeInUp 0.6s ease-out 0.5s both'
-        }}
-      >
-        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-          {review.content}
-        </p>
-      </div>
+      {/* Least Favorite Dishes */}
+      {review.leastFavoriteDishes && review.leastFavoriteDishes.length > 0 && (
+        <div
+          className="mb-12 p-6 bg-red-50 rounded-xl border border-red-200 hover:border-primary/30 transition-all duration-300"
+          style={{
+            animation: 'fadeInUp 0.6s ease-out 0.55s both'
+          }}
+        >
+          <h3 className="font-display font-semibold text-xl mb-4 text-gray-900">
+            Least Favorite Dishes
+          </h3>
+          <ul className="space-y-2">
+            {review.leastFavoriteDishes.map((dish, index) => (
+              <li
+                key={index}
+                className="flex items-center gap-3 hover:translate-x-2 transition-transform duration-300"
+                style={{
+                  animation: `fadeIn 0.4s ease-out ${0.6 + index * 0.1}s both`
+                }}
+              >
+                <span className="text-red-600 text-xl">•</span>
+                <span className="text-gray-800 text-lg">{dish}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Social Links */}
       {(review.website || review.instagram) && (

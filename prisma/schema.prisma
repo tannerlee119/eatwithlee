@@ -32,9 +32,10 @@ model Review {
   priceRange     Int      @default(2) // 1-4 dollar signs (1=$, 2=$$, 3=$$$, 4=$$$$)
   cuisines       String   // JSON array stored as string
   vibes          String   // JSON array stored as string
-  foodTypes      String   // JSON array stored as string
-  favoriteDishes String   // JSON array stored as string
-  author         String   @default("Lee")
+  foodTypes        String   // JSON array stored as string
+  favoriteDishes   String   // JSON array stored as string
+  leastFavoriteDishes String @default("[]") // JSON array stored as string
+  author           String   @default("Lee")
   publishedAt    DateTime @default(now())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

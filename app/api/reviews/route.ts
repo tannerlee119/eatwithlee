@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
       priceRange: body.priceRange || 2,
       tags: body.tags,
       favoriteDishes: body.favoriteDishes,
+      leastFavoriteDishes: body.leastFavoriteDishes,
       author: body.author || 'Tanner Lee',
       publishedAt: body.publishedAt,
     };

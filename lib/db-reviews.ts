@@ -42,6 +42,7 @@ function dbToReview(dbReview: any): Review {
       foodTypes: JSON.parse(dbReview.foodTypes || '[]'),
     },
     favoriteDishes: JSON.parse(dbReview.favoriteDishes || '[]'),
+    leastFavoriteDishes: JSON.parse(dbReview.leastFavoriteDishes || '[]'),
     publishedAt: dbReview.publishedAt.toISOString(),
     author: dbReview.author,
   };
@@ -72,6 +73,7 @@ function reviewToDb(review: Partial<Review>) {
     vibes: JSON.stringify(review.tags?.vibes || []),
     foodTypes: JSON.stringify(review.tags?.foodTypes || []),
     favoriteDishes: JSON.stringify(review.favoriteDishes || []),
+    leastFavoriteDishes: JSON.stringify(review.leastFavoriteDishes || []),
     author: review.author || 'Lee',
   };
 

@@ -37,6 +37,7 @@ export interface Review {
     foodTypes: string[];
   };
   favoriteDishes: string[];
+  leastFavoriteDishes: string[];
   publishedAt: string;
   author: string;
 }

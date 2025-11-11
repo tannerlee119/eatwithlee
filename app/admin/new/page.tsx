@@ -165,6 +165,7 @@ function AdminForm() {
       foodTypes: [],
     },
     favoriteDishes: [],
+    leastFavoriteDishes: [],
     coverImage: '',
     images: [],
     author: 'Tanner Lee',
@@ -176,6 +177,7 @@ function AdminForm() {
     vibe: '',
     foodType: '',
     dish: '',
+    leastFavoriteDish: '',
   });
 
   const [isGeocoding, setIsGeocoding] = useState(false);
@@ -303,6 +305,7 @@ function AdminForm() {
             foodTypes: [],
           },
           favoriteDishes: [],
+          leastFavoriteDishes: [],
           coverImage: '',
           images: [],
           author: 'Tanner Lee',
@@ -313,6 +316,7 @@ function AdminForm() {
           vibe: '',
           foodType: '',
           dish: '',
+          leastFavoriteDish: '',
         });
       }
     } catch (error) {
@@ -356,6 +360,22 @@ function AdminForm() {
     setFormData({
       ...formData,
       favoriteDishes: formData.favoriteDishes?.filter((_, i) => i !== index),
+    });
+  };
+
+  const addLeastFavoriteDish = (dish: string) => {
+    if (dish.trim()) {
+      setFormData({
+        ...formData,
+        leastFavoriteDishes: [...(formData.leastFavoriteDishes || []), dish.trim()],
+      });
+    }
+  };
+
+  const removeLeastFavoriteDish = (index: number) => {
+    setFormData({
+      ...formData,
+      leastFavoriteDishes: formData.leastFavoriteDishes?.filter((_, i) => i !== index),
     });
   };
 
@@ -1019,6 +1039,53 @@ function AdminForm() {
                 <button
                   type="button"
                   onClick={() => removeDish(index)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Least Favorite Dishes */}
+        <div className="space-y-3">
+          <label className="block text-sm font-semibold text-gray-700">
+            Least Favorite Dishes
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={tagInput.leastFavoriteDish}
+              onChange={(e) => setTagInput({ ...tagInput, leastFavoriteDish: e.target.value })}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  addLeastFavoriteDish(tagInput.leastFavoriteDish);
+                  setTagInput({ ...tagInput, leastFavoriteDish: '' });
+                }
+              }}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              placeholder="Add least favorite dish (press Enter)"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                addLeastFavoriteDish(tagInput.leastFavoriteDish);
+                setTagInput({ ...tagInput, leastFavoriteDish: '' });
+              }}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+            >
+              Add
+            </button>
+          </div>
+          <ul className="space-y-2">
+            {formData.leastFavoriteDishes?.map((dish, index) => (
+              <li key={index} className="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-lg">
+                <span>{dish}</span>
+                <button
+                  type="button"
+                  onClick={() => removeLeastFavoriteDish(index)}
                   className="text-red-500 hover:text-red-700"
                 >
                   Remove

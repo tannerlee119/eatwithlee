@@ -30,8 +30,11 @@ export default function RestaurantMap({ lat, lng, name, address }: RestaurantMap
           const height = 384;
 
           // Google Maps Static API URL with small marker
-          const url = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${width}x${height}&scale=2&markers=size:mid|${lat},${lng}&key=${data.apiKey}`;
+          const url = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${width}x${height}&scale=2&markers=size:mid%7C${lat},${lng}&key=${data.apiKey}`;
+          console.log('Map URL generated:', url.replace(data.apiKey, 'API_KEY_HIDDEN'));
           setMapUrl(url);
+        } else {
+          setError('Map API key not configured');
         }
       })
       .catch(err => {
