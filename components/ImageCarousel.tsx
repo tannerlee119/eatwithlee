@@ -63,7 +63,7 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
   return (
     <div className="space-y-4">
       {/* Main Image Display */}
-      <div className="relative w-full rounded-2xl overflow-hidden border border-gray-200 bg-black">
+      <div className="relative w-full rounded-2xl overflow-hidden border border-gray-200 bg-gray-50">
         <div className="relative w-full flex items-center justify-center overflow-hidden aspect-[4/3] sm:aspect-[16/9]">
           {/* Image Container with Fade Animation */}
           {images.map((image, index) => (

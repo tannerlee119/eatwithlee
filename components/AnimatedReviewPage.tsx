@@ -47,6 +47,10 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
           animation: 'fadeInUp 0.6s ease-out 0.1s both'
         }}
       >
+        <h1 className="text-4xl md:text-5xl font-display font-semibold mb-4 text-gray-900 tracking-tight">
+          {review.restaurantName}
+        </h1>
+
         <div className="flex items-center gap-3 mb-4 flex-wrap">
           <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-semibold text-gray-900">
             <Star size={16} fill="currentColor" className="text-yellow-500" />
@@ -66,10 +70,6 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
             <span>{formatDate(review.publishedAt)}</span>
           </div>
         </div>
-
-        <h1 className="text-4xl md:text-5xl font-display font-semibold mb-4 text-gray-900 tracking-tight">
-          {review.restaurantName}
-        </h1>
 
         <p className="text-xl text-gray-700 leading-relaxed mb-6">
           {review.excerpt}
