@@ -79,14 +79,13 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
           </h2>
 
           {/* Rating, Price, Date */}
-          <div className="flex items-center gap-2 mb-3 text-xs text-gray-600">
-            <div className="flex items-center gap-1">
-              <Star size={12} className="text-gray-400" />
-              <span>{review.rating}/10</span>
+          <div className="flex items-center gap-3 mb-3 text-sm text-gray-700">
+            <div className="flex items-center gap-1.5">
+              <Star size={13} className="text-gray-400" />
+              <span className="font-medium">{review.rating}/10</span>
             </div>
-            <span>·</span>
-            <span>{'$'.repeat(review.priceRange)}</span>
-            <span className="text-[11px] text-gray-400">
+            <span className="font-medium">{'$'.repeat(review.priceRange)}</span>
+            <span className="text-xs text-gray-400">
               {formatDate(review.publishedAt)}
             </span>
           </div>
