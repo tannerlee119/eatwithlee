@@ -51,13 +51,15 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
           {review.restaurantName}
         </h1>
 
-        <div className="flex items-center gap-3 mb-4 flex-wrap">
-          <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-semibold text-gray-900">
-            <Star size={16} fill="currentColor" className="text-yellow-500" />
-            <span>{review.rating}/10</span>
+        <div className="flex items-center gap-3 mb-4 flex-wrap text-base text-gray-800">
+          <div className="flex items-center gap-1.5">
+            <Star size={15} className="text-gray-400" />
+            <span className="font-medium">{review.rating}/10</span>
           </div>
-          <div className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm font-medium text-gray-800">
-            {'$'.repeat(review.priceRange)}
+          <span className="font-medium">{'$'.repeat(review.priceRange)}</span>
+          <div className="flex items-center gap-1 text-sm text-gray-500">
+            <Clock size={15} />
+            <span>{formatDate(review.publishedAt)}</span>
           </div>
           {review.contentType === 'list' && (
             <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-gray-700">
@@ -65,10 +67,6 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
               <span>List</span>
             </div>
           )}
-          <div className="flex items-center gap-2 text-gray-600">
-            <Clock size={16} />
-            <span>{formatDate(review.publishedAt)}</span>
-          </div>
         </div>
 
         <p className="text-xl text-gray-700 leading-relaxed mb-6">
