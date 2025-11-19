@@ -199,7 +199,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
                   animation: `fadeIn 0.4s ease-out ${0.55 + index * 0.1}s both`
                 }}
               >
-                <span className="flex h-2 w-2 rounded-full bg-gray-400" />
+                <span className="flex h-2 w-2 rounded-full bg-green-500" />
                 <span className="text-gray-800 text-base">{dish}</span>
               </li>
             ))}

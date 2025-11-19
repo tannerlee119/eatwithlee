@@ -81,7 +81,7 @@ export default function RestaurantMap({ lat, lng, name, address }: RestaurantMap
           href={googleMapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
         >
           <ExternalLink size={16} />
           Open in Google Maps
@@ -90,7 +90,7 @@ export default function RestaurantMap({ lat, lng, name, address }: RestaurantMap
           href={appleMapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors text-sm"
         >
           <ExternalLink size={16} />
           Open in Apple Maps
