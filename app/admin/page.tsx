@@ -213,9 +213,9 @@ function AdminReviewsContent() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-700">
-                      <Star size={14} className="text-gray-400" />
-                      <span>{review.rating}/10</span>
+                    <div className="flex items-center gap-1 text-primary font-semibold">
+                      <Star size={16} fill="currentColor" />
+                      {review.rating}/10
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">

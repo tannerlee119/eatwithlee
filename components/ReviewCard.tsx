@@ -73,22 +73,23 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
 
         {/* Content */}
         <div className="p-5">
-          {/* Rating and Price */}
-          <div className="flex items-center gap-2 mb-3">
-            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-900 text-white">
-              <Star size={14} fill="currentColor" />
-              <span>{review.rating}/10</span>
-            </div>
-            <div className="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-              {'$'.repeat(review.priceRange)}
-            </div>
-            <span className="text-gray-500 text-sm">{formatDate(review.publishedAt)}</span>
-          </div>
-
           {/* Title & Restaurant */}
-          <h2 className="text-xl font-display font-semibold mb-1.5 text-gray-900 group-hover:text-gray-950 transition-colors line-clamp-2">
+          <h2 className="text-xl font-display font-semibold mb-3 text-gray-900 group-hover:text-gray-950 transition-colors line-clamp-2">
             {review.restaurantName}
           </h2>
+
+          {/* Rating, Price, Date */}
+          <div className="flex items-center gap-2 mb-3 text-xs text-gray-600">
+            <div className="flex items-center gap-1">
+              <Star size={12} className="text-gray-400" />
+              <span>{review.rating}/10</span>
+            </div>
+            <span>·</span>
+            <span>{'$'.repeat(review.priceRange)}</span>
+            <span className="text-[11px] text-gray-400">
+              {formatDate(review.publishedAt)}
+            </span>
+          </div>
 
           {/* Location */}
           {review.locationTag && (
