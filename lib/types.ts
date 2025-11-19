@@ -30,6 +30,7 @@ export interface Review {
   locationTag: string;
   website: string;
   instagram: string;
+  yelp: string;
   priceRange: number;
   tags: {
     cuisines: string[];

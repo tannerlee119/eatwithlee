@@ -158,6 +158,7 @@ function AdminForm() {
     locationTag: '',
     website: '',
     instagram: '',
+    yelp: '',
     priceRange: 2,
     tags: {
       cuisines: [],
@@ -299,6 +300,7 @@ function AdminForm() {
           locationTag: '',
           website: '',
           instagram: '',
+          yelp: '',
           tags: {
             cuisines: [],
             vibes: [],
@@ -796,6 +798,22 @@ function AdminForm() {
             />
             <p className="text-sm text-gray-500 mt-1">
               Instagram handle (@username) or full profile URL
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Yelp (optional)
+            </label>
+            <input
+              type="url"
+              value={formData.yelp}
+              onChange={(e) => setFormData({ ...formData, yelp: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              placeholder="https://www.yelp.com/biz/restaurant-name"
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              Restaurant&apos;s Yelp page URL
             </p>
           </div>
 

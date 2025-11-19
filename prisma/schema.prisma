@@ -29,6 +29,7 @@ model Review {
   locationTag    String   @default("") // e.g. "Seattle", "Capitol Hill", etc.
   website        String   @default("") // Restaurant website URL
   instagram      String   @default("") // Restaurant Instagram handle or URL
+  yelp           String   @default("") // Restaurant Yelp URL
   priceRange     Int      @default(2) // 1-4 dollar signs (1=$, 2=$$, 3=$$$, 4=$$$$)
   cuisines       String   // JSON array stored as string
   vibes          String   // JSON array stored as string

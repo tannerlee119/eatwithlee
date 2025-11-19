@@ -1,7 +1,7 @@
 'use client';
 
 import { Review } from '@/lib/types';
-import { MapPin, Star, Clock, ArrowLeft, ListOrdered, Globe, Instagram } from 'lucide-react';
+import { MapPin, Star, Clock, ArrowLeft, ListOrdered, Globe, Instagram, MessageCircle } from 'lucide-react';
 import RestaurantMap from '@/components/RestaurantMap';
 import ImageCarousel from '@/components/ImageCarousel';
 import Link from 'next/link';
@@ -236,7 +236,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
       )}
 
       {/* Social Links */}
-      {(review.website || review.instagram) && (
+      {(review.website || review.instagram || review.yelp) && (
         <div
           className="mb-12 flex items-center gap-3"
           style={{
@@ -263,6 +263,17 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
             >
               <Instagram size={16} className="text-gray-900" />
               <span className="text-gray-900 font-medium">Instagram</span>
+            </a>
+          )}
+          {review.yelp && (
+            <a
+              href={review.yelp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-300 hover:scale-105 text-sm"
+            >
+              <MessageCircle size={16} className="text-gray-900" />
+              <span className="text-gray-900 font-medium">Yelp</span>
             </a>
           )}
         </div>
