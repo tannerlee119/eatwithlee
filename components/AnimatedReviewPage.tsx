@@ -88,6 +88,14 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
           animation: 'fadeInUp 0.6s ease-out 0.2s both'
         }}
       >
+        <div className="mb-4 flex items-baseline justify-between">
+          <h2 className="text-xs font-semibold tracking-[0.2em] text-gray-500 uppercase">
+            Photos
+          </h2>
+          <span className="text-xs text-gray-400">
+            {review.images.length} {review.images.length === 1 ? 'image' : 'images'}
+          </span>
+        </div>
         <ImageCarousel images={review.images} restaurantName={review.restaurantName} />
       </div>
 
