@@ -9,9 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#FF6B35',
-        secondary: '#F7C59F',
-        accent: '#EFEFD0',
+        // Refined, more neutral-leaning palette
+        primary: '#EA580C', // deep, warm accent for buttons/links
+        secondary: '#0F172A', // slate-900 for strong text accents
+        accent: '#F3F4F6', // light gray for subtle backgrounds
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],

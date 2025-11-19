@@ -30,7 +30,7 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
         animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`
       }}
     >
-      <article className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-primary/20 transform hover:-translate-y-2">
+      <article className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-gray-300">
         {/* Image */}
         <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative">
           {review.coverImageCrop ? (
@@ -58,14 +58,10 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             <img
               src={review.coverImage}
               alt={review.title}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+              className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             />
           )}
-          <div
-            className={`absolute inset-0 bg-gradient-to-t from-black/30 to-transparent transition-opacity duration-500 ${
-              isHovered ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-60" />
           {/* Content Type Badge */}
           {review.contentType === 'list' && (
             <div className="absolute top-4 left-4 flex items-center gap-1 bg-secondary text-gray-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
@@ -76,21 +72,21 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-5">
           {/* Rating and Price */}
           <div className="flex items-center gap-2 mb-3">
-            <div className="flex items-center gap-1 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold transform group-hover:scale-110 transition-transform duration-300">
-              <Star size={14} fill="currentColor" className="animate-pulse" />
-              <span>{review.rating}</span>
+            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-900 text-white">
+              <Star size={14} fill="currentColor" />
+              <span>{review.rating}/10</span>
             </div>
-            <div className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold">
+            <div className="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
               {'$'.repeat(review.priceRange)}
             </div>
             <span className="text-gray-500 text-sm">{formatDate(review.publishedAt)}</span>
           </div>
 
           {/* Title & Restaurant */}
-          <h2 className="text-2xl font-display font-bold mb-2 text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
+          <h2 className="text-xl font-display font-semibold mb-1.5 text-gray-900 group-hover:text-gray-950 transition-colors line-clamp-2">
             {review.restaurantName}
           </h2>
 
@@ -113,11 +109,11 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             {review.tags.cuisines.slice(0, 2).map((cuisine, idx) => (
               <span
                 key={cuisine}
-                className="text-xs px-3 py-1 bg-primary/10 text-orange-700 rounded-full font-semibold hover:bg-primary/30 transition-all duration-300"
+                className="text-[11px] px-3 py-1 rounded-full font-medium bg-accent text-gray-800 border border-gray-200"
                 style={{
-                  transform: isHovered ? 'translateY(0)' : 'translateY(5px)',
-                  opacity: isHovered ? 1 : 0.8,
-                  transition: `all 0.3s ease ${idx * 0.05}s`
+                  transform: isHovered ? 'translateY(0)' : 'translateY(3px)',
+                  opacity: isHovered ? 1 : 0.9,
+                  transition: `all 0.25s ease ${idx * 0.04}s`
                 }}
               >
                 {cuisine}
@@ -127,11 +123,11 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             {review.tags.vibes.map((vibe, idx) => (
               <span
                 key={vibe}
-                className="text-xs px-3 py-1 bg-secondary/40 text-gray-800 rounded-full font-semibold hover:bg-secondary/80 hover:text-gray-900 transition-all duration-300"
+                className="text-[11px] px-3 py-1 rounded-full font-medium bg-white text-gray-700 border border-gray-200"
                 style={{
-                  transform: isHovered ? 'translateY(0)' : 'translateY(5px)',
-                  opacity: isHovered ? 1 : 0.8,
-                  transition: `all 0.3s ease ${(review.tags.cuisines.slice(0, 2).length + idx) * 0.05}s`
+                  transform: isHovered ? 'translateY(0)' : 'translateY(3px)',
+                  opacity: isHovered ? 1 : 0.9,
+                  transition: `all 0.25s ease ${(review.tags.cuisines.slice(0, 2).length + idx) * 0.04}s`
                 }}
               >
                 {vibe}

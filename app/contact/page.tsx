@@ -16,7 +16,7 @@ export default function ContactPage() {
           {/* Email */}
           <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <Mail size={24} className="text-primary" />
+              <Mail size={24} className="text-secondary" />
               <h2 className="text-xl font-display font-semibold text-gray-900">
                 Email
               </h2>
@@ -26,7 +26,7 @@ export default function ContactPage() {
             </p>
             <a
               // href="mailto:hello@eatwithlee.com"
-              className="text-primary hover:text-primary/80 transition-colors font-medium"
+              className="text-secondary hover:text-gray-900 transition-colors font-medium"
             >
               COMING SOON
             </a>
@@ -35,7 +35,7 @@ export default function ContactPage() {
           {/* Instagram */}
           <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <Instagram size={24} className="text-primary" />
+              <Instagram size={24} className="text-secondary" />
               <h2 className="text-xl font-display font-semibold text-gray-900">
                 Instagram
               </h2>
@@ -47,7 +47,7 @@ export default function ContactPage() {
               href="https://www.instagram.com/seafoodiereviews"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 transition-colors font-medium"
+              className="text-secondary hover:text-gray-900 transition-colors font-medium"
             >
               @seafoodiereviews
             </a>
@@ -56,7 +56,7 @@ export default function ContactPage() {
           {/* Beli */}
           <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <span className="text-2xl font-bold text-primary">B</span>
+              <span className="text-2xl font-bold text-secondary">B</span>
               <h2 className="text-xl font-display font-semibold text-gray-900">
                 Beli
               </h2>
@@ -68,7 +68,7 @@ export default function ContactPage() {
               href="https://beliapp.co/app/tannerlee119"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 transition-colors font-medium"
+              className="text-secondary hover:text-gray-900 transition-colors font-medium"
             >
               View My Beli Profile
             </a>
@@ -85,7 +85,7 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 mt-8">
+        <div className="bg-accent border border-gray-200 rounded-xl p-6 mt-8">
           <h3 className="text-lg font-display font-semibold text-gray-900 mb-2">
             Restaurant Recommendations
           </h3>
