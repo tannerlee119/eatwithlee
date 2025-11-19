@@ -182,12 +182,12 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
       {/* Favorite Dishes */}
       {review.favoriteDishes.length > 0 && (
         <div
-          className="mb-12 p-6 bg-green-50 rounded-xl border border-green-200"
+          className="mb-12 p-6 bg-accent rounded-xl border border-gray-200"
           style={{
             animation: 'fadeInUp 0.6s ease-out 0.5s both'
           }}
         >
-          <h3 className="font-display font-semibold text-xl mb-4 text-gray-900">
+          <h3 className="font-display font-semibold text-lg mb-3 text-gray-900 tracking-wide uppercase">
             Favorite Dishes
           </h3>
           <ul className="space-y-2">
@@ -199,8 +199,8 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
                   animation: `fadeIn 0.4s ease-out ${0.55 + index * 0.1}s both`
                 }}
               >
-                <span className="text-green-600 text-xl">•</span>
-                <span className="text-gray-800 text-lg">{dish}</span>
+                <span className="flex h-2 w-2 rounded-full bg-gray-400" />
+                <span className="text-gray-800 text-base">{dish}</span>
               </li>
             ))}
           </ul>
@@ -210,12 +210,12 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
       {/* Least Favorite Dishes */}
       {review.leastFavoriteDishes && review.leastFavoriteDishes.length > 0 && (
         <div
-          className="mb-12 p-6 bg-red-50 rounded-xl border border-red-200"
+          className="mb-12 p-6 bg-accent rounded-xl border border-gray-200"
           style={{
             animation: 'fadeInUp 0.6s ease-out 0.55s both'
           }}
         >
-          <h3 className="font-display font-semibold text-xl mb-4 text-gray-900">
+          <h3 className="font-display font-semibold text-lg mb-3 text-gray-900 tracking-wide uppercase">
             Least Favorite Dishes
           </h3>
           <ul className="space-y-2">
@@ -227,8 +227,8 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
                   animation: `fadeIn 0.4s ease-out ${0.6 + index * 0.1}s both`
                 }}
               >
-                <span className="text-red-600 text-xl">•</span>
-                <span className="text-gray-800 text-lg">{dish}</span>
+                <span className="flex h-2 w-2 rounded-full bg-red-500" />
+                <span className="text-gray-800 text-base">{dish}</span>
               </li>
             ))}
           </ul>
