@@ -38,6 +38,7 @@ export async function PATCH(
       locationTag: body.locationTag,
       website: body.website || '',
       instagram: body.instagram || '',
+      yelp: body.yelp || '',
       priceRange: body.priceRange || 2,
       tags: body.tags,
       favoriteDishes: body.favoriteDishes,
