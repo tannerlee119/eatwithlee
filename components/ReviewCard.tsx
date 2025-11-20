@@ -74,7 +74,7 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
         {/* Content */}
         <div className="p-5">
           {/* Title & Restaurant */}
-          <h2 className="text-xl font-display font-semibold mb-3 text-gray-900 group-hover:text-gray-950 transition-colors line-clamp-2">
+          <h2 className="text-2xl font-display font-semibold mb-3 text-gray-900 group-hover:text-gray-950 transition-colors line-clamp-2">
             {review.restaurantName}
           </h2>
 
