@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pause, Play, X } from 'lucide-react';
 import { ImageWithCaption } from '@/lib/types';
 
 interface ImageCarouselProps {
@@ -246,10 +246,10 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
               ref={closeButtonRef}
               type="button"
               onClick={closeModal}
-              className="absolute -top-12 right-0 flex items-center justify-center rounded-full bg-black/70 text-white w-9 h-9 text-xl hover:bg-black/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="absolute top-4 right-4 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               aria-label="Close full screen image viewer"
             >
-              ×
+              <X size={18} />
             </button>
             {images.length > 1 && (
               <>
