@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense, useCallback } from 'react';
+import { useState, useEffect, Suspense, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
 import { X, ArrowLeft, Loader2, GripVertical, Crop, Save, Eye, MapPin, Globe, Instagram, DollarSign, Tag, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -183,6 +183,7 @@ function AdminForm() {
   const [cropperState, setCropperState] = useState<{ imageUrl: string; imageIndex: number } | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const contentTextareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   // Drag and drop sensors
   const sensors = useSensors(
@@ -256,6 +257,14 @@ function AdminForm() {
 
     return () => clearTimeout(timeoutId);
   }, [formData, editId, isLoading]);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!contentTextareaRef.current) return;
+    const textarea = contentTextareaRef.current;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }, [formData.content, isLoading]);
 
   const handleSubmit = async (e: React.FormEvent, isDraft: boolean = false) => {
     e.preventDefault();
@@ -568,6 +577,7 @@ function AdminForm() {
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-secondary mb-1.5">Full Review Content</label>
                   <textarea
+                    ref={contentTextareaRef}
                     rows={12}
                     value={formData.content}
                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
@@ -681,6 +691,7 @@ function AdminForm() {
 
               <div className="space-y-4">
                 <UploadDropzone
+                  config={{ mode: 'auto' }}
                   endpoint="imageUploader"
                   onClientUploadComplete={(res) => {
                     if (res) {
@@ -697,15 +708,16 @@ function AdminForm() {
                     showToast(`Upload failed: ${error.message}`, 'error');
                   }}
                   appearance={{
-                    button: "bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg text-sm font-medium w-auto mx-auto",
-                    container: "border-2 border-dashed border-border bg-surface hover:bg-accent transition-colors rounded-xl p-8",
-                    label: "text-secondary font-medium mb-2",
-                    allowedContent: "text-muted text-xs",
+                    container: "border-2 border-dashed border-border bg-surface hover:bg-accent/60 transition-colors rounded-xl p-6 text-center",
+                    uploadIcon: "text-primary mx-auto h-10 w-10",
+                    label: "mt-4 inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-medium cursor-pointer",
+                    allowedContent: "text-muted text-xs mt-2",
+                    button: "hidden"
                   }}
                   content={{
-                    button: "Choose Files",
-                    label: "Drag & Drop Images",
-                    allowedContent: "JPG, PNG, WEBP, HEIC (Max 4MB)"
+                    label: "Click to choose files or drag & drop",
+                    allowedContent: "JPEG or PNG (max 4MB)",
+                    button: () => null
                   }}
                 />
 

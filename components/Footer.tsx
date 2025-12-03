@@ -34,7 +34,7 @@ export default function Footer() {
           {/* Social Links */}
           <div className="flex justify-center items-center gap-6">
             <a
-              href="https://www.instagram.com/"
+              href="https://www.instagram.com/seafoodiereviews"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-900 transition-colors flex items-center gap-2 text-gray-500"
