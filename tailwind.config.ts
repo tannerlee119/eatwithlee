@@ -11,7 +11,7 @@ const config: Config = {
       colors: {
         // Refined, more neutral-leaning palette
         primary: {
-          DEFAULT: '#EA580C', // Orange-600 - Deep, professional orange
+          DEFAULT: '#0F172A', // Slate-900 - Premium monochrome
           foreground: '#FFFFFF',
         },
         secondary: {

@@ -505,7 +505,7 @@ function AdminForm() {
                     type="text"
                     value={formData.restaurantName}
                     onChange={(e) => setFormData({ ...formData, restaurantName: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                     placeholder="e.g. The Pink Door"
                   />
                 </div>
@@ -516,7 +516,7 @@ function AdminForm() {
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                     placeholder="Catchy title for the review"
                   />
                 </div>
@@ -530,7 +530,7 @@ function AdminForm() {
                     step="0.1"
                     value={formData.rating}
                     onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
-                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                   />
                 </div>
 
@@ -560,7 +560,7 @@ function AdminForm() {
                     rows={2}
                     value={formData.excerpt}
                     onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"
                     placeholder="Brief summary for the card preview..."
                   />
                 </div>
@@ -571,7 +571,7 @@ function AdminForm() {
                     rows={12}
                     value={formData.content}
                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-serif text-lg leading-relaxed"
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-serif text-lg leading-relaxed"
                     placeholder="Write your delicious review here..."
                   />
                 </div>
@@ -593,7 +593,7 @@ function AdminForm() {
                       type="text"
                       value={formData.location?.address}
                       onChange={(e) => setFormData({ ...formData, location: { ...formData.location!, address: e.target.value } })}
-                      className="flex-1 px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      className="flex-1 px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                       placeholder="Full address"
                     />
                     <button
@@ -620,7 +620,7 @@ function AdminForm() {
                     type="text"
                     value={formData.locationTag}
                     onChange={(e) => setFormData({ ...formData, locationTag: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                     placeholder="e.g. Capitol Hill"
                   />
                 </div>
@@ -633,7 +633,7 @@ function AdminForm() {
                       type="url"
                       value={formData.website}
                       onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                      className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                       placeholder="https://..."
                     />
                   </div>
@@ -647,7 +647,7 @@ function AdminForm() {
                       type="text"
                       value={formData.instagram}
                       onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
-                      className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                       placeholder="@eatwithlee"
                     />
                   </div>
@@ -661,7 +661,7 @@ function AdminForm() {
                       type="url"
                       value={formData.yelp}
                       onChange={(e) => setFormData({ ...formData, yelp: e.target.value })}
-                      className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                       placeholder="https://www.yelp.com/biz/..."
                     />
                   </div>
@@ -697,9 +697,15 @@ function AdminForm() {
                     showToast(`Upload failed: ${error.message}`, 'error');
                   }}
                   appearance={{
-                    button: "bg-primary text-primary-foreground hover:bg-primary/90",
-                    container: "border-2 border-dashed border-border bg-surface hover:bg-accent transition-colors rounded-xl",
-                    label: "text-primary hover:text-primary/80",
+                    button: "bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg text-sm font-medium w-auto mx-auto",
+                    container: "border-2 border-dashed border-border bg-surface hover:bg-accent transition-colors rounded-xl p-8",
+                    label: "text-secondary font-medium mb-2",
+                    allowedContent: "text-muted text-xs",
+                  }}
+                  content={{
+                    button: "Choose Files",
+                    label: "Drag & Drop Images",
+                    allowedContent: "JPG, PNG, WEBP, HEIC (Max 4MB)"
                   }}
                 />
 
