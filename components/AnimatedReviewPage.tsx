@@ -31,279 +31,205 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
       {/* Back Button */}
       <Link
         href="/"
-        className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-8 transition-all duration-300 hover:gap-3"
-        style={{
-          animation: 'fadeIn 0.5s ease-out'
-        }}
+        className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 mb-12 transition-all duration-300 hover:-translate-x-1 group"
+        style={{ animation: 'fadeIn 0.5s ease-out' }}
       >
-        <ArrowLeft size={20} />
-        <span>Back to Reviews</span>
+        <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
+        <span className="font-medium tracking-wide text-sm uppercase">Back to Reviews</span>
       </Link>
 
       {/* Header */}
       <header
-        className="mb-8"
-        style={{
-          animation: 'fadeInUp 0.6s ease-out 0.1s both'
-        }}
+        className="mb-12 text-center max-w-2xl mx-auto"
+        style={{ animation: 'fadeInUp 0.6s ease-out 0.1s both' }}
       >
-        <h1 className="text-4xl md:text-5xl font-display font-semibold mb-4 text-gray-900 tracking-tight">
+        <div className="flex items-center justify-center gap-3 mb-6 text-sm font-medium tracking-widest text-slate-500 uppercase">
+          <span>{review.locationTag || 'Seattle, WA'}</span>
+          <span className="w-1 h-1 rounded-full bg-slate-300" />
+          <span>{formatDate(review.publishedAt)}</span>
+        </div>
+
+        <h1 className="text-5xl md:text-7xl font-display font-bold mb-8 text-slate-900 tracking-tight leading-none">
           {review.restaurantName}
         </h1>
 
-        <div className="flex items-center gap-3 mb-4 flex-wrap text-base text-gray-800">
-          <div className="flex items-center gap-1.5">
-            <Star size={15} className="text-gray-400" />
-            <span className="font-medium">{review.rating}/10</span>
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="flex items-center gap-1.5 bg-slate-900 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-md">
+            <Star size={14} fill="currentColor" />
+            <span>{review.rating}/10</span>
           </div>
-          <span className="font-medium">{'$'.repeat(review.priceRange)}</span>
-          <div className="flex items-center gap-1 text-sm text-gray-500">
-            <Clock size={15} />
-            <span>{formatDate(review.publishedAt)}</span>
+          <div className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
+            <span>{'$'.repeat(review.priceRange)}</span>
           </div>
           {review.contentType === 'list' && (
-            <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-gray-700">
-              <ListOrdered size={16} />
+            <div className="flex items-center gap-1.5 bg-slate-100 text-slate-900 px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider">
+              <ListOrdered size={14} />
               <span>List</span>
             </div>
           )}
         </div>
 
-        <p className="text-xl text-gray-700 leading-relaxed mb-6">
+        <p className="text-xl md:text-2xl text-slate-600 leading-relaxed font-light">
           {review.excerpt}
         </p>
-
-        <div className="flex items-start gap-2 text-gray-700">
-          <MapPin size={20} className="mt-1 flex-shrink-0" />
-          <span className="text-lg">{review.location.address}</span>
-        </div>
       </header>
 
       {/* Image Carousel */}
       <div
-        className="mb-12"
-        style={{
-          animation: 'fadeInUp 0.6s ease-out 0.2s both'
-        }}
+        className="mb-16 rounded-2xl overflow-hidden shadow-2xl"
+        style={{ animation: 'fadeInUp 0.6s ease-out 0.2s both' }}
       >
-        <div className="mb-4 flex items-baseline justify-between">
-          <h2 className="text-xs font-semibold tracking-[0.2em] text-gray-500 uppercase">
-            Photos
-          </h2>
-          <span className="text-xs text-gray-400">
-            {review.images.length} {review.images.length === 1 ? 'image' : 'images'}
-          </span>
-        </div>
         <ImageCarousel images={review.images} restaurantName={review.restaurantName} />
       </div>
 
-      {/* Tags Section */}
-      <div
-        className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-6"
-        style={{
-          animation: 'fadeInUp 0.6s ease-out 0.3s both'
-        }}
-      >
-        {/* Cuisines */}
-        <div>
-          <h3 className="font-display font-semibold text-base mb-3 text-gray-900 tracking-wide uppercase">
-            Cuisines
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {review.tags.cuisines.map((cuisine, idx) => (
-              <span
-                key={cuisine}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-accent text-gray-800 border border-gray-200"
-                style={{
-                  animation: `fadeIn 0.4s ease-out ${0.4 + idx * 0.1}s both`
-                }}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {/* Main Content */}
+        <div className="lg:col-span-8">
+          <div
+            className="prose prose-lg prose-slate max-w-none mb-16 first-letter:text-5xl first-letter:font-display first-letter:font-bold first-letter:mr-3 first-letter:float-left"
+            style={{ animation: 'fadeInUp 0.6s ease-out 0.4s both' }}
+          >
+            <p className="whitespace-pre-wrap leading-relaxed text-slate-700">
+              {review.content}
+            </p>
+          </div>
+
+          {/* Dishes Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            {review.favoriteDishes.length > 0 && (
+              <div
+                className="p-8 bg-slate-50 rounded-2xl border border-slate-100"
+                style={{ animation: 'fadeInUp 0.6s ease-out 0.5s both' }}
               >
-                {cuisine}
-              </span>
-            ))}
+                <h3 className="font-display font-bold text-xl mb-6 text-slate-900 tracking-wide uppercase flex items-center gap-2">
+                  <span className="text-green-500">●</span> Highlights
+                </h3>
+                <ul className="space-y-3">
+                  {review.favoriteDishes.map((dish, index) => (
+                    <li key={index} className="text-slate-700 font-medium flex items-start gap-3">
+                      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-slate-300 flex-shrink-0" />
+                      {dish}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {review.leastFavoriteDishes && review.leastFavoriteDishes.length > 0 && (
+              <div
+                className="p-8 bg-white rounded-2xl border border-slate-200"
+                style={{ animation: 'fadeInUp 0.6s ease-out 0.55s both' }}
+              >
+                <h3 className="font-display font-bold text-xl mb-6 text-slate-900 tracking-wide uppercase flex items-center gap-2">
+                  <span className="text-red-500">●</span> Misses
+                </h3>
+                <ul className="space-y-3">
+                  {review.leastFavoriteDishes.map((dish, index) => (
+                    <li key={index} className="text-slate-600 flex items-start gap-3">
+                      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-slate-300 flex-shrink-0" />
+                      {dish}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Vibes */}
-        <div>
-          <h3 className="font-display font-semibold text-base mb-3 text-gray-900 tracking-wide uppercase">
-            Vibes
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {review.tags.vibes.map((vibe, idx) => (
-              <span
-                key={vibe}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-white text-gray-700 border border-gray-200 cursor-default"
-                style={{
-                  animation: `fadeIn 0.4s ease-out ${0.4 + idx * 0.1}s both`
-                }}
-              >
-                {vibe}
-              </span>
-            ))}
+        {/* Sidebar */}
+        <div className="lg:col-span-4 space-y-10">
+          {/* Location */}
+          <div style={{ animation: 'fadeInUp 0.6s ease-out 0.6s both' }}>
+            <h3 className="font-display font-bold text-lg mb-4 text-slate-900 uppercase tracking-wider">Location</h3>
+            <div className="bg-white p-1 rounded-xl border border-slate-200 shadow-sm mb-4">
+              <RestaurantMap
+                lat={review.location.lat}
+                lng={review.location.lng}
+                name={review.restaurantName}
+                address={review.location.address}
+              />
+            </div>
+            <div className="flex items-start gap-3 text-slate-600">
+              <MapPin size={18} className="mt-1 flex-shrink-0" />
+              <span className="text-sm font-medium">{review.location.address}</span>
+            </div>
           </div>
-        </div>
 
-        {/* Food Types */}
-        <div>
-          <h3 className="font-display font-semibold text-base mb-3 text-gray-900 tracking-wide uppercase">
-            Food Types
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {review.tags.foodTypes.map((type, idx) => (
-              <span
-                key={type}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-accent text-gray-800 border border-gray-200 cursor-default"
-                style={{
-                  animation: `fadeIn 0.4s ease-out ${0.4 + idx * 0.1}s both`
-                }}
-              >
-                {type}
-              </span>
-            ))}
+          {/* Tags */}
+          <div style={{ animation: 'fadeInUp 0.6s ease-out 0.7s both' }}>
+            <h3 className="font-display font-bold text-lg mb-4 text-slate-900 uppercase tracking-wider">Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              {review.tags.cuisines.map((tag) => (
+                <span key={tag} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white">
+                  {tag}
+                </span>
+              ))}
+              {review.tags.vibes.map((tag) => (
+                <span key={tag} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                  {tag}
+                </span>
+              ))}
+              {review.tags.foodTypes.map((tag) => (
+                <span key={tag} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-slate-600 border border-slate-200">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
+
+          {/* Social Links */}
+          {(review.website || review.instagram || review.yelp) && (
+            <div style={{ animation: 'fadeInUp 0.6s ease-out 0.8s both' }}>
+              <h3 className="font-display font-bold text-lg mb-4 text-slate-900 uppercase tracking-wider">Connect</h3>
+              <div className="flex flex-col gap-3">
+                {review.website && (
+                  <a
+                    href={review.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-4 py-3 bg-white border border-slate-200 rounded-xl hover:border-slate-900 hover:shadow-md transition-all group"
+                  >
+                    <Globe size={18} className="text-slate-400 group-hover:text-slate-900 transition-colors" />
+                    <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900">Website</span>
+                  </a>
+                )}
+                {review.instagram && (
+                  <a
+                    href={review.instagram.startsWith('http') ? review.instagram : `https://instagram.com/${review.instagram.replace('@', '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-4 py-3 bg-white border border-slate-200 rounded-xl hover:border-slate-900 hover:shadow-md transition-all group"
+                  >
+                    <Instagram size={18} className="text-slate-400 group-hover:text-slate-900 transition-colors" />
+                    <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900">Instagram</span>
+                  </a>
+                )}
+                {review.yelp && (
+                  <a
+                    href={review.yelp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-4 py-3 bg-white border border-slate-200 rounded-xl hover:border-slate-900 hover:shadow-md transition-all group"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="text-slate-400 group-hover:text-slate-900 transition-colors">
+                      <path d="M20.16 12.594l-4.995 1.433c-.96.276-1.74-.8-1.176-1.63l2.905-4.308a1.072 1.072 0 0 1 1.596-.206 9.194 9.194 0 0 1 2.364 3.252 1.073 1.073 0 0 1-.686 1.459zm-5.025 3.152l4.942 1.606a1.072 1.072 0 0 1 .636 1.48 9.316 9.316 0 0 1-2.47 3.169 1.073 1.073 0 0 1-1.592-.26l-2.76-4.409c-.528-.847.288-1.894 1.236-1.584zm-4.796-4.368L5.454 2.916a1.072 1.072 0 0 1 .466-1.5A14.973 14.973 0 0 1 11.184.003a1.07 1.07 0 0 1 1.153 1.068v9.768c0 1.096-1.45 1.483-1.998.535zm-.857 4.17L4.44 16.806a1.073 1.073 0 0 1-1.324-.92 9.218 9.218 0 0 1 .43-3.997 1.07 1.07 0 0 1 1.485-.62l4.668 2.279c.9.438.763 1.76-.207 2.000zm.886 1.477c.669-.744 1.901-.246 1.866.752l-.19 5.188a1.073 1.073 0 0 1-1.247 1.02 9.314 9.314 0 0 1-3.722-1.502 1.072 1.072 0 0 1-.187-1.6l3.477-3.864z"/>
+                    </svg>
+                    <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900">Yelp</span>
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Review Content */}
+      {/* Author Footer */}
       <div
-        className="prose prose-lg max-w-none mb-12"
-        style={{
-          animation: 'fadeInUp 0.6s ease-out 0.4s both'
-        }}
+        className="mt-20 pt-8 border-t border-slate-100 text-center"
+        style={{ animation: 'fadeIn 0.6s ease-out 0.9s both' }}
       >
-        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-          {review.content}
-        </p>
-      </div>
-
-      {/* Favorite Dishes */}
-      {review.favoriteDishes.length > 0 && (
-        <div
-          className="mb-12 p-6 bg-accent rounded-xl border border-gray-200"
-          style={{
-            animation: 'fadeInUp 0.6s ease-out 0.5s both'
-          }}
-        >
-          <h3 className="font-display font-semibold text-lg mb-3 text-gray-900 tracking-wide uppercase">
-            Favorite Dishes
-          </h3>
-          <ul className="space-y-2">
-            {review.favoriteDishes.map((dish, index) => (
-              <li
-                key={index}
-                className="flex items-center gap-3"
-                style={{
-                  animation: `fadeIn 0.4s ease-out ${0.55 + index * 0.1}s both`
-                }}
-              >
-                <span className="flex h-2 w-2 rounded-full bg-green-500" />
-                <span className="text-gray-800 text-base">{dish}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Least Favorite Dishes */}
-      {review.leastFavoriteDishes && review.leastFavoriteDishes.length > 0 && (
-        <div
-          className="mb-12 p-6 bg-accent rounded-xl border border-gray-200"
-          style={{
-            animation: 'fadeInUp 0.6s ease-out 0.55s both'
-          }}
-        >
-          <h3 className="font-display font-semibold text-lg mb-3 text-gray-900 tracking-wide uppercase">
-            Least Favorite Dishes
-          </h3>
-          <ul className="space-y-2">
-            {review.leastFavoriteDishes.map((dish, index) => (
-              <li
-                key={index}
-                className="flex items-center gap-3"
-                style={{
-                  animation: `fadeIn 0.4s ease-out ${0.6 + index * 0.1}s both`
-                }}
-              >
-                <span className="flex h-2 w-2 rounded-full bg-red-500" />
-                <span className="text-gray-800 text-base">{dish}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Social Links */}
-      {(review.website || review.instagram || review.yelp) && (
-        <div
-          className="mb-12 flex items-center gap-3"
-          style={{
-            animation: 'fadeInUp 0.6s ease-out 0.55s both'
-          }}
-        >
-          {review.website && (
-            <a
-              href={review.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-300 hover:scale-105 text-sm"
-            >
-              <Globe size={16} className="text-gray-900" />
-              <span className="text-gray-900 font-medium">Website</span>
-            </a>
-          )}
-          {review.instagram && (
-            <a
-              href={review.instagram.startsWith('http') ? review.instagram : `https://instagram.com/${review.instagram.replace('@', '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-300 hover:scale-105 text-sm"
-            >
-              <Instagram size={16} className="text-gray-900" />
-              <span className="text-gray-900 font-medium">Instagram</span>
-            </a>
-          )}
-          {review.yelp && (
-            <a
-              href={review.yelp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-300 hover:scale-105 text-sm"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-gray-900">
-                <path d="M20.16 12.594l-4.995 1.433c-.96.276-1.74-.8-1.176-1.63l2.905-4.308a1.072 1.072 0 0 1 1.596-.206 9.194 9.194 0 0 1 2.364 3.252 1.073 1.073 0 0 1-.686 1.459zm-5.025 3.152l4.942 1.606a1.072 1.072 0 0 1 .636 1.48 9.316 9.316 0 0 1-2.47 3.169 1.073 1.073 0 0 1-1.592-.26l-2.76-4.409c-.528-.847.288-1.894 1.236-1.584zm-4.796-4.368L5.454 2.916a1.072 1.072 0 0 1 .466-1.5A14.973 14.973 0 0 1 11.184.003a1.07 1.07 0 0 1 1.153 1.068v9.768c0 1.096-1.45 1.483-1.998.535zm-.857 4.17L4.44 16.806a1.073 1.073 0 0 1-1.324-.92 9.218 9.218 0 0 1 .43-3.997 1.07 1.07 0 0 1 1.485-.62l4.668 2.279c.9.438.763 1.76-.207 2.000zm.886 1.477c.669-.744 1.901-.246 1.866.752l-.19 5.188a1.073 1.073 0 0 1-1.247 1.02 9.314 9.314 0 0 1-3.722-1.502 1.072 1.072 0 0 1-.187-1.6l3.477-3.864z"/>
-              </svg>
-              <span className="text-gray-900 font-medium">Yelp</span>
-            </a>
-          )}
-        </div>
-      )}
-
-      {/* Map */}
-      <div
-        className="mb-12"
-        style={{
-          animation: 'fadeInUp 0.6s ease-out 0.6s both'
-        }}
-      >
-        <h3 className="font-display font-semibold text-2xl mb-6 text-gray-900">Location</h3>
-        <RestaurantMap
-          lat={review.location.lat}
-          lng={review.location.lng}
-          name={review.restaurantName}
-          address={review.location.address}
-        />
-      </div>
-
-      {/* Author */}
-      <div
-        className="border-t border-gray-200 pt-8"
-        style={{
-          animation: 'fadeIn 0.6s ease-out 0.7s both'
-        }}
-      >
-        <p className="text-gray-600">
-          Review by <span className="font-semibold text-gray-900">{review.author}</span>
+        <p className="text-slate-400 text-sm font-medium uppercase tracking-widest">
+          Review by {review.author}
         </p>
       </div>
     </article>

@@ -30,9 +30,9 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
         animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`
       }}
     >
-      <article className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-gray-300">
+      <article className="bg-white rounded-xl overflow-hidden transition-all duration-300 group-hover:-translate-y-1">
         {/* Image */}
-        <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative">
+        <div className="aspect-[4/3] bg-slate-100 overflow-hidden relative">
           {review.coverImageCrop ? (
             <div className="w-full h-full relative overflow-hidden">
               <img
@@ -47,7 +47,7 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
                   transform: `translate(-${review.coverImageCrop.x}%, -${review.coverImageCrop.y}%)`,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.width = `${review.coverImageCrop!.zoom * 110}%`;
+                  e.currentTarget.style.width = `${review.coverImageCrop!.zoom * 105}%`;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.width = `${review.coverImageCrop!.zoom * 100}%`;
@@ -58,79 +58,53 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             <img
               src={review.coverImage}
               alt={review.title}
-              className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-60" />
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+          
           {/* Content Type Badge */}
           {review.contentType === 'list' && (
-            <div className="absolute top-4 left-4 flex items-center gap-1 bg-secondary text-gray-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-              <ListOrdered size={14} />
+            <div className="absolute top-4 left-4 flex items-center gap-1 bg-white/90 backdrop-blur-sm text-slate-900 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider shadow-sm uppercase">
+              <ListOrdered size={12} />
               <span>LIST</span>
             </div>
           )}
+
+          {/* Rating Badge (Overlay) */}
+          <div className="absolute top-4 right-4 flex items-center gap-1 bg-white/90 backdrop-blur-sm text-slate-900 px-2.5 py-1 rounded-lg text-xs font-bold shadow-sm">
+            <Star size={12} fill="currentColor" className="text-slate-900" />
+            {review.rating}
+          </div>
         </div>
 
         {/* Content */}
-        <div className="p-5">
-          {/* Title & Restaurant */}
-          <h2 className="text-2xl font-display font-semibold mb-3 text-gray-900 group-hover:text-gray-950 transition-colors line-clamp-2">
+        <div className="pt-5 pb-2">
+          {/* Meta */}
+          <div className="flex items-center gap-3 mb-2 text-xs font-medium text-slate-500 uppercase tracking-wide">
+            <span>{review.locationTag || 'Seattle, WA'}</span>
+            <span className="w-1 h-1 rounded-full bg-slate-300" />
+            <span>{'$'.repeat(review.priceRange)}</span>
+          </div>
+
+          {/* Title */}
+          <h2 className="text-xl font-display font-bold mb-2 text-slate-900 group-hover:text-slate-700 transition-colors line-clamp-1">
             {review.restaurantName}
           </h2>
 
-          {/* Rating, Price, Date */}
-          <div className="flex items-center gap-3 mb-3 text-sm text-gray-700">
-            <div className="flex items-center gap-1.5">
-              <Star size={13} className="text-gray-400" />
-              <span className="font-medium">{review.rating}/10</span>
-            </div>
-            <span className="font-medium">{'$'.repeat(review.priceRange)}</span>
-            <span className="text-xs text-gray-400">
-              {formatDate(review.publishedAt)}
-            </span>
-          </div>
-
-          {/* Location */}
-          {review.locationTag && (
-            <div className="flex items-center gap-1 text-gray-600 text-sm mb-3">
-              <MapPin size={14} />
-              <span className="line-clamp-1">{review.locationTag}</span>
-            </div>
-          )}
-
           {/* Excerpt */}
-          <p className="text-gray-700 mb-4 line-clamp-3">
+          <p className="text-slate-600 text-sm leading-relaxed line-clamp-2 mb-4">
             {review.excerpt}
           </p>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
-            {/* Show cuisines first */}
-            {review.tags.cuisines.slice(0, 2).map((cuisine, idx) => (
+            {review.tags.cuisines.slice(0, 3).map((cuisine) => (
               <span
                 key={cuisine}
-                className="text-[11px] px-3 py-1 rounded-full font-medium bg-accent text-gray-800 border border-gray-200"
-                style={{
-                  transform: isHovered ? 'translateY(0)' : 'translateY(3px)',
-                  opacity: isHovered ? 1 : 0.9,
-                  transition: `all 0.25s ease ${idx * 0.04}s`
-                }}
+                className="text-[10px] px-2.5 py-1 rounded-md font-medium bg-slate-50 text-slate-600 border border-slate-100"
               >
                 {cuisine}
-              </span>
-            ))}
-            {/* Show all vibes */}
-            {review.tags.vibes.map((vibe, idx) => (
-              <span
-                key={vibe}
-                className="text-[11px] px-3 py-1 rounded-full font-medium bg-white text-gray-700 border border-gray-200"
-                style={{
-                  transform: isHovered ? 'translateY(0)' : 'translateY(3px)',
-                  opacity: isHovered ? 1 : 0.9,
-                  transition: `all 0.25s ease ${(review.tags.cuisines.slice(0, 2).length + idx) * 0.04}s`
-                }}
-              >
-                {vibe}
               </span>
             ))}
           </div>
