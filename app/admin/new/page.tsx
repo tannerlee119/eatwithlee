@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
-import { X, ArrowLeft, Loader2, GripVertical, Crop } from 'lucide-react';
+import { X, ArrowLeft, Loader2, GripVertical, Crop, Save, Eye, MapPin, Globe, Instagram, DollarSign, Tag, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
 import Toast, { ToastType } from '@/components/Toast';
 import ImageCropper from '@/components/ImageCropper';
+import { UploadDropzone } from '@/lib/uploadthing';
 import {
   DndContext,
   closestCenter,
@@ -59,80 +60,75 @@ function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCa
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative rounded-lg border-2 transition-all ${
-        isCover ? 'border-primary shadow-lg' : 'border-gray-200'
+      className={`relative group rounded-xl border-2 transition-all overflow-hidden bg-white ${
+        isCover ? 'border-primary shadow-md ring-2 ring-primary/20' : 'border-border hover:border-primary/50'
       }`}
     >
-      <div className="p-3 space-y-3">
-        {/* Drag Handle & Image Preview */}
-        <div className="relative group rounded-lg overflow-hidden">
-          {/* Drag Handle */}
-          <div
-            {...attributes}
-            {...listeners}
-            className="absolute top-2 left-2 z-20 bg-white/90 p-1.5 rounded cursor-move hover:bg-white transition-colors"
-          >
-            <GripVertical size={20} className="text-gray-600" />
+      <div className="aspect-[4/3] relative bg-accent">
+        <img
+          src={image.url}
+          alt={image.caption || `Upload ${index + 1}`}
+          className="w-full h-full object-cover"
+        />
+        
+        {/* Drag Handle */}
+        <div
+          {...attributes}
+          {...listeners}
+          className="absolute top-2 left-2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg cursor-move hover:bg-white text-secondary shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          <GripVertical size={16} />
+        </div>
+
+        {/* Cover Badge */}
+        {isCover && (
+          <div className="absolute top-2 right-2 bg-primary text-primary-foreground text-[10px] font-bold py-1 px-2 rounded-full shadow-sm flex items-center gap-1">
+            <CheckCircle2 size={12} />
+            COVER
           </div>
+        )}
 
-          <img
-            src={image.url}
-            alt={image.caption || `Upload ${index + 1}`}
-            className="w-full h-48 object-cover"
-          />
-
-          {/* Cover Badge */}
-          {isCover && (
-            <div className="absolute top-2 right-2 bg-primary text-white text-xs font-bold py-1 px-2 rounded">
-              ⭐ COVER
-            </div>
-          )}
-
-          {/* Hover Controls */}
-          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-            {!isCover && (
-              <button
-                type="button"
-                onClick={onSetCover}
-                className="bg-primary text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-primary/90 transition-colors"
-              >
-                Set as Cover
-              </button>
-            )}
-            {isCover && (
-              <button
-                type="button"
-                onClick={onCrop}
-                className="bg-blue-600 text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-blue-700 transition-colors flex items-center gap-1"
-              >
-                <Crop size={14} />
-                Crop
-              </button>
-            )}
+        {/* Overlay Controls */}
+        <div className="absolute inset-0 bg-secondary/80 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-2 p-4">
+          {!isCover && (
             <button
               type="button"
-              onClick={onRemove}
-              className="bg-red-500 text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-red-600 transition-colors flex items-center gap-1"
+              onClick={onSetCover}
+              className="w-full py-1.5 bg-white text-secondary text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors"
             >
-              <X size={14} />
-              Remove
+              Set as Cover
             </button>
-          </div>
+          )}
+          {isCover && (
+            <button
+              type="button"
+              onClick={onCrop}
+              className="w-full py-1.5 bg-blue-500 text-white text-xs font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-1"
+            >
+              <Crop size={12} />
+              Crop Image
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onRemove}
+            className="w-full py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-1"
+          >
+            <X size={12} />
+            Remove
+          </button>
         </div>
+      </div>
 
-        {/* Caption Input */}
-        <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">
-            Caption (optional)
-          </label>
-          <input
-            type="text"
-            value={image.caption}
-            onChange={(e) => onUpdateCaption(e.target.value)}
-            placeholder="Add a caption for this image..."
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-          />
-        </div>
+      {/* Caption Input */}
+      <div className="p-3 border-t border-border">
+        <input
+          type="text"
+          value={image.caption}
+          onChange={(e) => onUpdateCaption(e.target.value)}
+          placeholder="Add a caption..."
+          className="w-full text-xs border-none p-0 focus:ring-0 placeholder:text-muted text-secondary bg-transparent"
+        />
       </div>
     </div>
   );
@@ -182,10 +178,11 @@ function AdminForm() {
   });
 
   const [isGeocoding, setIsGeocoding] = useState(false);
-  const [imageUrlInput, setImageUrlInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [cropperState, setCropperState] = useState<{ imageUrl: string; imageIndex: number } | null>(null);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
 
   // Drag and drop sensors
   const sensors = useSensors(
@@ -208,8 +205,6 @@ function AdminForm() {
         .then(reviews => {
           const review = reviews.find((r: Review) => r.id === editId);
           if (review) {
-            console.log('Loading review - coverImageCrop from API:', review.coverImageCrop);
-            // Ensure tags object exists with all required arrays
             const loadedData = {
               ...review,
               tags: {
@@ -218,7 +213,6 @@ function AdminForm() {
                 foodTypes: review.tags?.foodTypes || [],
               }
             };
-            console.log('Loading review - loadedData.coverImageCrop:', loadedData.coverImageCrop);
             setFormData(loadedData);
           }
         })
@@ -227,64 +221,87 @@ function AdminForm() {
           showToast('Failed to load review for editing', 'error');
         })
         .finally(() => setIsLoading(false));
+    } else {
+      // Try to load draft from localStorage for new reviews
+      const savedDraft = localStorage.getItem('review_draft');
+      if (savedDraft) {
+        try {
+          const parsedDraft = JSON.parse(savedDraft);
+          // Only restore if it's recent (e.g., last 24 hours)
+          const draftTime = new Date(parsedDraft._savedAt).getTime();
+          if (Date.now() - draftTime < 24 * 60 * 60 * 1000) {
+            delete parsedDraft._savedAt;
+            setFormData(prev => ({ ...prev, ...parsedDraft }));
+            showToast('Restored unsaved draft', 'success');
+          }
+        } catch (e) {
+          console.error('Failed to parse draft', e);
+        }
+      }
     }
   }, [editId]);
+
+  // Auto-save functionality
+  useEffect(() => {
+    if (editId || isLoading) return; // Don't auto-save if editing existing review (for now) or loading
+
+    const timeoutId = setTimeout(() => {
+      if (formData.restaurantName || formData.title) {
+        setIsAutoSaving(true);
+        localStorage.setItem('review_draft', JSON.stringify({ ...formData, _savedAt: new Date().toISOString() }));
+        setLastSaved(new Date());
+        setTimeout(() => setIsAutoSaving(false), 500);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timeoutId);
+  }, [formData, editId, isLoading]);
 
   const handleSubmit = async (e: React.FormEvent, isDraft: boolean = false) => {
     e.preventDefault();
 
-    // Validate that coordinates have been set (only for published reviews)
-    if (!isDraft && (!formData.location?.lat || !formData.location?.lng ||
-        formData.location.lat === 0 || formData.location.lng === 0)) {
+    if (!isDraft && (!formData.location?.lat || !formData.location?.lng)) {
       showToast('Please find coordinates for the restaurant address first', 'error');
       return;
     }
 
-    // Validate that at least one image is uploaded (only for published reviews)
     if (!isDraft && (!formData.images || formData.images.length === 0)) {
       showToast('Please add at least one image for the review', 'error');
       return;
     }
 
-    console.log('handleSubmit - formData.coverImageCrop:', formData.coverImageCrop);
-
     try {
       const url = editId ? `/api/reviews/${editId}` : '/api/reviews';
       const method = editId ? 'PATCH' : 'POST';
-
       const payload = { ...formData, isDraft };
-      console.log('handleSubmit - Sending payload with coverImageCrop:', payload.coverImageCrop);
 
       const response = await fetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error response:', errorData);
         throw new Error(errorData.details || 'Failed to save review');
       }
 
       const savedReview = await response.json();
+      
+      // Clear local draft on successful save
+      if (!editId) {
+        localStorage.removeItem('review_draft');
+      }
 
       const successMessage = editId
         ? (isDraft ? 'Draft saved successfully!' : 'Review updated successfully!')
         : (isDraft ? 'Draft saved successfully!' : 'Review published successfully!');
 
       if (editId || isDraft) {
-        // Redirect to admin dashboard with success message
         router.push(`/admin?message=${encodeURIComponent(successMessage)}`);
       } else {
-        // For new published reviews, show toast and reset form
         showToast(`Review published successfully! Slug: ${savedReview.slug}`, 'success');
-
+        // Reset form...
         setFormData({
           contentType: 'review',
           title: '',
@@ -292,33 +309,19 @@ function AdminForm() {
           excerpt: '',
           content: '',
           rating: 0,
-          location: {
-            address: '',
-            lat: 0,
-            lng: 0,
-          },
+          location: { address: '', lat: 0, lng: 0 },
           locationTag: '',
           website: '',
           instagram: '',
           yelp: '',
-          tags: {
-            cuisines: [],
-            vibes: [],
-            foodTypes: [],
-          },
+          priceRange: 2,
+          tags: { cuisines: [], vibes: [], foodTypes: [] },
           favoriteDishes: [],
           leastFavoriteDishes: [],
           coverImage: '',
           images: [],
           author: 'Tanner Lee',
           publishedAt: new Date().toISOString().slice(0, 16),
-        });
-        setTagInput({
-          cuisine: '',
-          vibe: '',
-          foodType: '',
-          dish: '',
-          leastFavoriteDish: '',
         });
       }
     } catch (error) {
@@ -327,142 +330,76 @@ function AdminForm() {
     }
   };
 
+  // ... Tag/Dish helpers (same as before but cleaner) ...
   const addTag = (category: 'cuisines' | 'vibes' | 'foodTypes', value: string) => {
     if (value.trim()) {
-      setFormData({
-        ...formData,
-        tags: {
-          ...formData.tags!,
-          [category]: [...(formData.tags![category] || []), value.trim()],
-        },
-      });
+      setFormData(prev => ({
+        ...prev,
+        tags: { ...prev.tags!, [category]: [...(prev.tags![category] || []), value.trim()] }
+      }));
     }
   };
 
   const removeTag = (category: 'cuisines' | 'vibes' | 'foodTypes', index: number) => {
-    setFormData({
-      ...formData,
-      tags: {
-        ...formData.tags!,
-        [category]: formData.tags![category].filter((_, i) => i !== index),
-      },
-    });
+    setFormData(prev => ({
+      ...prev,
+      tags: { ...prev.tags!, [category]: prev.tags![category].filter((_, i) => i !== index) }
+    }));
   };
 
-  const addDish = (dish: string) => {
-    if (dish.trim()) {
-      setFormData({
-        ...formData,
-        favoriteDishes: [...(formData.favoriteDishes || []), dish.trim()],
-      });
+  const addDish = (field: 'favoriteDishes' | 'leastFavoriteDishes', value: string) => {
+    if (value.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        [field]: [...(prev[field] || []), value.trim()]
+      }));
     }
   };
 
-  const removeDish = (index: number) => {
-    setFormData({
-      ...formData,
-      favoriteDishes: formData.favoriteDishes?.filter((_, i) => i !== index),
-    });
-  };
-
-  const addLeastFavoriteDish = (dish: string) => {
-    if (dish.trim()) {
-      setFormData({
-        ...formData,
-        leastFavoriteDishes: [...(formData.leastFavoriteDishes || []), dish.trim()],
-      });
-    }
-  };
-
-  const removeLeastFavoriteDish = (index: number) => {
-    setFormData({
-      ...formData,
-      leastFavoriteDishes: formData.leastFavoriteDishes?.filter((_, i) => i !== index),
-    });
+  const removeDish = (field: 'favoriteDishes' | 'leastFavoriteDishes', index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: prev[field]?.filter((_, i) => i !== index)
+    }));
   };
 
   const removeImage = (index: number) => {
     const newImages = formData.images?.filter((_, i) => i !== index) || [];
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       images: newImages,
-      // If we removed the cover image, set a new one
-      coverImage: formData.coverImage === formData.images?.[index]?.url
-        ? (newImages[0]?.url || '')
-        : formData.coverImage,
-    });
+      coverImage: prev.coverImage === prev.images?.[index]?.url ? (newImages[0]?.url || '') : prev.coverImage,
+    }));
   };
 
   const setCoverImage = (url: string) => {
-    setFormData({
-      ...formData,
-      coverImage: url,
-    });
+    setFormData(prev => ({ ...prev, coverImage: url }));
   };
 
   const updateImageCaption = (index: number, caption: string) => {
     const newImages = [...(formData.images || [])];
     newImages[index] = { ...newImages[index], caption };
-    setFormData({
-      ...formData,
-      images: newImages,
-    });
-  };
-
-  const handleAddImageUrl = () => {
-    if (!imageUrlInput.trim()) return;
-
-    // Basic URL validation
-    try {
-      new URL(imageUrlInput);
-      const newImage = { url: imageUrlInput.trim(), caption: '' };
-      const newImages = [...(formData.images || []), newImage];
-      const newCoverImage = formData.coverImage || imageUrlInput.trim();
-
-      setFormData({
-        ...formData,
-        images: newImages,
-        coverImage: newCoverImage,
-      });
-
-      setImageUrlInput('');
-      showToast('Image URL added!', 'success');
-    } catch (error) {
-      showToast('Please enter a valid image URL', 'error');
-    }
+    setFormData(prev => ({ ...prev, images: newImages }));
   };
 
   const handleAddressLookup = async () => {
-    const address = formData.location?.address;
-    if (!address) {
+    if (!formData.location?.address) {
       showToast('Please enter an address first', 'error');
       return;
     }
-
     setIsGeocoding(true);
     try {
-      const response = await fetch(`/api/geocode?address=${encodeURIComponent(address)}`);
+      const response = await fetch(`/api/geocode?address=${encodeURIComponent(formData.location.address)}`);
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Address not found');
-      }
-
-      console.log('Geocode result:', data);
-
-      setFormData({
-        ...formData,
-        location: {
-          address: data.displayName || address,
-          lat: data.lat,
-          lng: data.lng,
-        },
-      });
-      showToast(`Coordinates found! Lat: ${data.lat}, Lng: ${data.lng}`, 'success');
+      if (!response.ok) throw new Error(data.error || 'Address not found');
+      
+      setFormData(prev => ({
+        ...prev,
+        location: { address: data.displayName || prev.location!.address, lat: data.lat, lng: data.lng }
+      }));
+      showToast(`Coordinates found!`, 'success');
     } catch (error) {
-      console.error('Geocoding error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      showToast(`Could not find coordinates: ${errorMessage}`, 'error');
+      showToast(`Could not find coordinates: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
     } finally {
       setIsGeocoding(false);
     }
@@ -470,676 +407,375 @@ function AdminForm() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
     if (over && active.id !== over.id) {
       const oldIndex = formData.images?.findIndex((img) => img.url === active.id) ?? -1;
       const newIndex = formData.images?.findIndex((img) => img.url === over.id) ?? -1;
-
       if (oldIndex !== -1 && newIndex !== -1) {
-        const newImages = arrayMove(formData.images || [], oldIndex, newIndex);
-        setFormData({
-          ...formData,
-          images: newImages,
-        });
+        setFormData(prev => ({ ...prev, images: arrayMove(prev.images || [], oldIndex, newIndex) }));
       }
     }
   };
 
   const handleCropImage = (imageIndex: number) => {
     const image = formData.images?.[imageIndex];
-    if (image) {
-      console.log('Opening cropper with formData.coverImageCrop:', formData.coverImageCrop);
-      setCropperState({ imageUrl: image.url, imageIndex });
-    }
+    if (image) setCropperState({ imageUrl: image.url, imageIndex });
   };
 
   const handleCropComplete = (cropData: { x: number; y: number; zoom: number }) => {
-    console.log('handleCropComplete - Saving crop data:', cropData);
-    const updatedFormData = {
-      ...formData,
-      coverImageCrop: cropData,
-    };
-    console.log('handleCropComplete - Updated formData.coverImageCrop:', updatedFormData.coverImageCrop);
-    setFormData(updatedFormData);
-
+    setFormData(prev => ({ ...prev, coverImageCrop: cropData }));
     setCropperState(null);
     showToast('Crop settings saved!', 'success');
   };
 
-  const handleCropCancel = () => {
-    setCropperState(null);
-  };
-
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
-        <p className="text-gray-600">Loading review...</p>
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-muted font-medium">Loading editor...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-8">
-        <button
-          onClick={() => router.push('/admin')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
-        >
-          <ArrowLeft size={20} />
-          Back to Dashboard
-        </button>
-        <h1 className="text-4xl font-display font-bold text-gray-900 mb-2">
-          {editId ? 'Edit Review' : 'Add New Review'}
-        </h1>
-        <p className="text-gray-600">{editId ? 'Update restaurant review' : 'Create a new restaurant review'}</p>
+    <div className="min-h-screen bg-surface pb-20">
+      {/* Top Bar */}
+      <div className="bg-white border-b border-border sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => router.push('/admin')}
+              className="p-2 text-muted hover:text-secondary hover:bg-accent rounded-full transition-colors"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div>
+              <h1 className="text-lg font-display font-bold text-secondary">
+                {editId ? 'Edit Review' : 'New Review'}
+              </h1>
+              <div className="flex items-center gap-2 text-xs text-muted">
+                {isAutoSaving ? (
+                  <span className="flex items-center gap-1 text-primary">
+                    <Loader2 size={10} className="animate-spin" /> Saving...
+                  </span>
+                ) : lastSaved ? (
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 size={10} /> Saved {lastSaved.toLocaleTimeString()}
+                  </span>
+                ) : (
+                  <span>Unsaved changes</span>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={(e) => handleSubmit(e, true)}
+              className="px-4 py-2 text-sm font-medium text-secondary bg-accent hover:bg-accent/80 rounded-lg transition-colors"
+            >
+              Save Draft
+            </button>
+            <button
+              onClick={(e) => handleSubmit(e, false)}
+              className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors flex items-center gap-2"
+            >
+              <Globe size={16} />
+              Publish
+            </button>
+          </div>
+        </div>
       </div>
 
-      <form onSubmit={(e) => e.preventDefault()} className="space-y-8 bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-        {/* Basic Info */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-display font-semibold text-gray-900">Basic Information</h2>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column: Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Basic Info Card */}
+            <section className="bg-white rounded-xl border border-border shadow-soft p-6 space-y-6">
+              <h2 className="text-lg font-semibold text-secondary flex items-center gap-2">
+                <Tag size={20} className="text-primary" />
+                Basic Information
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Restaurant Name</label>
+                  <input
+                    type="text"
+                    value={formData.restaurantName}
+                    onChange={(e) => setFormData({ ...formData, restaurantName: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    placeholder="e.g. The Pink Door"
+                  />
+                </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Content Type *
-            </label>
-            <select
-              required
-              value={formData.contentType}
-              onChange={(e) => setFormData({ ...formData, contentType: e.target.value as 'review' | 'list' })}
-              className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            >
-              <option value="review">Restaurant Review</option>
-              <option value="list">List / Round-Up</option>
-            </select>
-            <p className="text-sm text-gray-500 mt-1">
-              Choose &quot;Restaurant Review&quot; for a single restaurant, or &quot;List / Round-Up&quot; for compilations like &quot;Top 5 Sandwiches in Seattle&quot;
-            </p>
-          </div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Review Title</label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    placeholder="Catchy title for the review"
+                  />
+                </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Restaurant Name *
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.restaurantName}
-              onChange={(e) => setFormData({ ...formData, restaurantName: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Rating (0-10)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    value={formData.rating}
+                    onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                  />
+                </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Review Title *
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Author *
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.author}
-              onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="e.g., Tanner Lee"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Publish Date & Time *
-            </label>
-            <input
-              type="datetime-local"
-              required
-              value={formData.publishedAt?.slice(0, 16)}
-              onChange={(e) => setFormData({ ...formData, publishedAt: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-            <p className="text-sm text-gray-500 mt-1">
-              Set the publication date and time for this review
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Rating (0-10) *
-              </label>
-              <input
-                type="number"
-                required
-                min="0"
-                max="10"
-                step="0.1"
-                value={formData.rating}
-                onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Price Range *
-              </label>
-              <select
-                value={formData.priceRange}
-                onChange={(e) => setFormData({ ...formData, priceRange: parseInt(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              >
-                <option value={1}>$ - Budget-friendly</option>
-                <option value={2}>$$ - Moderate</option>
-                <option value={3}>$$$ - Upscale</option>
-                <option value={4}>$$$$ - Fine Dining</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Excerpt *
-            </label>
-            <textarea
-              required
-              rows={3}
-              value={formData.excerpt}
-              onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Full Review Content *
-            </label>
-            <textarea
-              required
-              rows={10}
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
-
-        </div>
-
-        {/* Images */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-display font-semibold text-gray-900">Images</h2>
-
-          {/* Add Image URL */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Add Image URLs *
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="url"
-                value={imageUrlInput}
-                onChange={(e) => setImageUrlInput(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAddImageUrl();
-                  }
-                }}
-                placeholder="https://i.imgur.com/example.jpg"
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-              <button
-                type="button"
-                onClick={handleAddImageUrl}
-                className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                Add URL
-              </button>
-            </div>
-            <p className="text-sm text-gray-500 mt-1">
-              ⚠️ Must be a direct image URL ending in .jpg, .png, .webp, etc. (Google Photos links won&apos;t work - upload to Imgur instead)
-            </p>
-            <p className="text-sm text-blue-600 mt-1">
-              💡 Tip: Upload your images to <a href="https://imgur.com/upload" target="_blank" rel="noopener noreferrer" className="underline">Imgur</a>, then right-click the image and select &quot;Copy image address&quot;
-            </p>
-          </div>
-
-          {/* Image Preview Grid */}
-          {formData.images && formData.images.length > 0 && (
-            <div>
-              <p className="text-sm text-gray-600 mb-3">
-                {formData.images.length} image(s) uploaded. Drag to reorder. Click &quot;Set Cover&quot; to choose your cover image.
-              </p>
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-              >
-                <SortableContext
-                  items={formData.images.map(img => img.url)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {formData.images.map((image, index) => (
-                      <SortableImage
-                        key={image.url}
-                        image={image}
-                        index={index}
-                        isCover={formData.coverImage === image.url}
-                        onSetCover={() => setCoverImage(image.url)}
-                        onRemove={() => removeImage(index)}
-                        onUpdateCaption={(caption) => updateImageCaption(index, caption)}
-                        onCrop={() => handleCropImage(index)}
-                      />
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Price Range</label>
+                  <div className="flex bg-surface border border-border rounded-lg p-1">
+                    {[1, 2, 3, 4].map((price) => (
+                      <button
+                        key={price}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, priceRange: price })}
+                        className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all ${
+                          formData.priceRange === price
+                            ? 'bg-white text-primary shadow-sm'
+                            : 'text-muted hover:text-secondary'
+                        }`}
+                      >
+                        {Array(price).fill('$').join('')}
+                      </button>
                     ))}
                   </div>
-                </SortableContext>
-              </DndContext>
-            </div>
-          )}
-        </div>
+                </div>
 
-        {/* Location */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-display font-semibold text-gray-900">Location</h2>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Excerpt</label>
+                  <textarea
+                    rows={2}
+                    value={formData.excerpt}
+                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                    placeholder="Brief summary for the card preview..."
+                  />
+                </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Location Tag
-            </label>
-            <input
-              type="text"
-              value={formData.locationTag}
-              onChange={(e) => setFormData({ ...formData, locationTag: e.target.value })}
-              className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="e.g., Seattle, Capitol Hill, Fremont"
-            />
-            <p className="text-sm text-gray-500 mt-1">
-              Add a location tag to help categorize by city or neighborhood
-            </p>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Full Review Content</label>
+                  <textarea
+                    rows={12}
+                    value={formData.content}
+                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-serif text-lg leading-relaxed"
+                    placeholder="Write your delicious review here..."
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Location Card */}
+            <section className="bg-white rounded-xl border border-border shadow-soft p-6 space-y-6">
+              <h2 className="text-lg font-semibold text-secondary flex items-center gap-2">
+                <MapPin size={20} className="text-primary" />
+                Location & Details
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Address</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={formData.location?.address}
+                      onChange={(e) => setFormData({ ...formData, location: { ...formData.location!, address: e.target.value } })}
+                      className="flex-1 px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      placeholder="Full address"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddressLookup}
+                      disabled={isGeocoding}
+                      className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 disabled:opacity-50 transition-colors flex items-center gap-2 whitespace-nowrap"
+                    >
+                      {isGeocoding ? <Loader2 size={18} className="animate-spin" /> : <MapPin size={18} />}
+                      Find Coords
+                    </button>
+                  </div>
+                  {formData.location?.lat !== 0 && (
+                    <p className="mt-2 text-xs text-green-600 flex items-center gap-1">
+                      <CheckCircle2 size={12} />
+                      Coordinates set: {formData.location?.lat.toFixed(4)}, {formData.location?.lng.toFixed(4)}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Neighborhood Tag</label>
+                  <input
+                    type="text"
+                    value={formData.locationTag}
+                    onChange={(e) => setFormData({ ...formData, locationTag: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    placeholder="e.g. Capitol Hill"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Website</label>
+                  <div className="relative">
+                    <Globe size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                    <input
+                      type="url"
+                      value={formData.website}
+                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                      className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      placeholder="https://..."
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Website (optional)
-            </label>
-            <input
-              type="url"
-              value={formData.website}
-              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="https://restaurant-website.com"
-            />
-            <p className="text-sm text-gray-500 mt-1">
-              Restaurant&apos;s official website
-            </p>
-          </div>
+          {/* Right Column: Images & Meta */}
+          <div className="space-y-8">
+            {/* Images Card */}
+            <section className="bg-white rounded-xl border border-border shadow-soft p-6 space-y-6">
+              <h2 className="text-lg font-semibold text-secondary flex items-center gap-2">
+                <ImageIcon size={20} className="text-primary" />
+                Gallery
+              </h2>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Instagram (optional)
-            </label>
-            <input
-              type="text"
-              value={formData.instagram}
-              onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="@restaurantname or full URL"
-            />
-            <p className="text-sm text-gray-500 mt-1">
-              Instagram handle (@username) or full profile URL
-            </p>
-          </div>
+              <div className="space-y-4">
+                <UploadDropzone
+                  endpoint="imageUploader"
+                  onClientUploadComplete={(res) => {
+                    if (res) {
+                      const newImages = res.map(file => ({ url: file.url, caption: '' }));
+                      setFormData(prev => ({
+                        ...prev,
+                        images: [...(prev.images || []), ...newImages],
+                        coverImage: prev.coverImage || newImages[0].url
+                      }));
+                      showToast(`${newImages.length} images uploaded!`, 'success');
+                    }
+                  }}
+                  onUploadError={(error: Error) => {
+                    showToast(`Upload failed: ${error.message}`, 'error');
+                  }}
+                  appearance={{
+                    button: "bg-primary text-primary-foreground hover:bg-primary/90",
+                    container: "border-2 border-dashed border-border bg-surface hover:bg-accent transition-colors rounded-xl",
+                    label: "text-primary hover:text-primary/80",
+                  }}
+                />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Yelp (optional)
-            </label>
-            <input
-              type="url"
-              value={formData.yelp}
-              onChange={(e) => setFormData({ ...formData, yelp: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="https://www.yelp.com/biz/restaurant-name"
-            />
-            <p className="text-sm text-gray-500 mt-1">
-              Restaurant&apos;s Yelp page URL
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Address *
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                required
-                value={formData.location?.address}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  location: { ...formData.location!, address: e.target.value }
-                })}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Enter restaurant address"
-              />
-              <button
-                type="button"
-                onClick={handleAddressLookup}
-                disabled={isGeocoding}
-                className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:bg-gray-400 flex items-center gap-2"
-              >
-                {isGeocoding ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" />
-                    Finding...
-                  </>
-                ) : (
-                  'Find Coordinates'
+                {formData.images && formData.images.length > 0 && (
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={formData.images.map(img => img.url)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="grid grid-cols-2 gap-3">
+                        {formData.images.map((image, index) => (
+                          <SortableImage
+                            key={image.url}
+                            image={image}
+                            index={index}
+                            isCover={formData.coverImage === image.url}
+                            onSetCover={() => setCoverImage(image.url)}
+                            onRemove={() => removeImage(index)}
+                            onUpdateCaption={(caption) => updateImageCaption(index, caption)}
+                            onCrop={() => handleCropImage(index)}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 )}
-              </button>
-            </div>
-            <p className="text-sm text-gray-500 mt-1">
-              Click &quot;Find Coordinates&quot; to automatically get the latitude and longitude
-            </p>
-          </div>
+              </div>
+            </section>
 
-          {/* Coordinates Status */}
-          {formData.location?.lat && formData.location?.lng &&
-           formData.location.lat !== 0 && formData.location.lng !== 0 ? (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm font-semibold text-green-800">
-                ✓ Coordinates found: {formData.location.lat}, {formData.location.lng}
-              </p>
-            </div>
-          ) : (
-            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-sm font-semibold text-yellow-800">
-                ⚠️ Coordinates not set yet. Please click &quot;Find Coordinates&quot; button above.
-              </p>
-            </div>
-          )}
-        </div>
+            {/* Tags Card */}
+            <section className="bg-white rounded-xl border border-border shadow-soft p-6 space-y-6">
+              <h2 className="text-lg font-semibold text-secondary flex items-center gap-2">
+                <Tag size={20} className="text-primary" />
+                Tags & Categories
+              </h2>
 
-        {/* Tags */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-display font-semibold text-gray-900">Tags</h2>
-
-          {/* Cuisines */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Cuisines</label>
-            <div className="flex gap-2 mb-2">
-              <input
-                type="text"
-                value={tagInput.cuisine}
-                onChange={(e) => setTagInput({ ...tagInput, cuisine: e.target.value })}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    addTag('cuisines', tagInput.cuisine);
-                    setTagInput({ ...tagInput, cuisine: '' });
-                  }
-                }}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Add cuisine (press Enter)"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  addTag('cuisines', tagInput.cuisine);
-                  setTagInput({ ...tagInput, cuisine: '' });
-                }}
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-              >
-                Add
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {formData.tags?.cuisines?.map((cuisine, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm flex items-center gap-2"
-                >
-                  {cuisine}
+              {/* Cuisines */}
+              <div>
+                <label className="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Cuisines</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={tagInput.cuisine}
+                    onChange={(e) => setTagInput({ ...tagInput, cuisine: e.target.value })}
+                    onKeyPress={(e) => e.key === 'Enter' && (addTag('cuisines', tagInput.cuisine), setTagInput({ ...tagInput, cuisine: '' }))}
+                    className="flex-1 px-3 py-1.5 text-sm bg-surface border border-border rounded-md"
+                    placeholder="Add cuisine..."
+                  />
                   <button
                     type="button"
-                    onClick={() => removeTag('cuisines', index)}
-                    className="text-primary hover:text-primary/70"
+                    onClick={() => (addTag('cuisines', tagInput.cuisine), setTagInput({ ...tagInput, cuisine: '' }))}
+                    className="px-3 py-1.5 bg-secondary text-white rounded-md text-sm"
                   >
-                    ×
+                    Add
                   </button>
-                </span>
-              ))}
-            </div>
-          </div>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {formData.tags?.cuisines?.map((tag, i) => (
+                    <span key={i} className="px-2 py-1 bg-orange-50 text-orange-700 rounded text-xs font-medium flex items-center gap-1">
+                      {tag}
+                      <button onClick={() => removeTag('cuisines', i)} className="hover:text-orange-900">×</button>
+                    </span>
+                  ))}
+                </div>
+              </div>
 
-          {/* Vibes */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Vibes</label>
-            <div className="flex gap-2 mb-2">
-              <input
-                type="text"
-                value={tagInput.vibe}
-                onChange={(e) => setTagInput({ ...tagInput, vibe: e.target.value })}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    addTag('vibes', tagInput.vibe);
-                    setTagInput({ ...tagInput, vibe: '' });
-                  }
-                }}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Add vibe (press Enter)"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  addTag('vibes', tagInput.vibe);
-                  setTagInput({ ...tagInput, vibe: '' });
-                }}
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-              >
-                Add
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {formData.tags?.vibes?.map((vibe, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-secondary/30 text-gray-800 rounded-full text-sm flex items-center gap-2"
-                >
-                  {vibe}
+              {/* Vibes */}
+              <div>
+                <label className="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Vibes</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={tagInput.vibe}
+                    onChange={(e) => setTagInput({ ...tagInput, vibe: e.target.value })}
+                    onKeyPress={(e) => e.key === 'Enter' && (addTag('vibes', tagInput.vibe), setTagInput({ ...tagInput, vibe: '' }))}
+                    className="flex-1 px-3 py-1.5 text-sm bg-surface border border-border rounded-md"
+                    placeholder="Add vibe..."
+                  />
                   <button
                     type="button"
-                    onClick={() => removeTag('vibes', index)}
-                    className="text-gray-800 hover:text-gray-600"
+                    onClick={() => (addTag('vibes', tagInput.vibe), setTagInput({ ...tagInput, vibe: '' }))}
+                    className="px-3 py-1.5 bg-secondary text-white rounded-md text-sm"
                   >
-                    ×
+                    Add
                   </button>
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Food Types */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Food Types</label>
-            <div className="flex gap-2 mb-2">
-              <input
-                type="text"
-                value={tagInput.foodType}
-                onChange={(e) => setTagInput({ ...tagInput, foodType: e.target.value })}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    addTag('foodTypes', tagInput.foodType);
-                    setTagInput({ ...tagInput, foodType: '' });
-                  }
-                }}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Add food type (press Enter)"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  addTag('foodTypes', tagInput.foodType);
-                  setTagInput({ ...tagInput, foodType: '' });
-                }}
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-              >
-                Add
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {formData.tags?.foodTypes?.map((type, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-accent text-gray-800 rounded-full text-sm flex items-center gap-2"
-                >
-                  {type}
-                  <button
-                    type="button"
-                    onClick={() => removeTag('foodTypes', index)}
-                    className="text-gray-800 hover:text-gray-600"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-            </div>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {formData.tags?.vibes?.map((tag, i) => (
+                    <span key={i} className="px-2 py-1 bg-purple-50 text-purple-700 rounded text-xs font-medium flex items-center gap-1">
+                      {tag}
+                      <button onClick={() => removeTag('vibes', i)} className="hover:text-purple-900">×</button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </section>
           </div>
         </div>
+      </div>
 
-        {/* Favorite Dishes */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-display font-semibold text-gray-900">Favorite Dishes</h2>
-
-          <div className="flex gap-2 mb-2">
-            <input
-              type="text"
-              value={tagInput.dish}
-              onChange={(e) => setTagInput({ ...tagInput, dish: e.target.value })}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  addDish(tagInput.dish);
-                  setTagInput({ ...tagInput, dish: '' });
-                }
-              }}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="Add favorite dish (press Enter)"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                addDish(tagInput.dish);
-                setTagInput({ ...tagInput, dish: '' });
-              }}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-            >
-              Add
-            </button>
-          </div>
-          <ul className="space-y-2">
-            {formData.favoriteDishes?.map((dish, index) => (
-              <li key={index} className="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-lg">
-                <span>{dish}</span>
-                <button
-                  type="button"
-                  onClick={() => removeDish(index)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Least Favorite Dishes */}
-        <div className="space-y-3">
-          <label className="block text-sm font-semibold text-gray-700">
-            Least Favorite Dishes
-          </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={tagInput.leastFavoriteDish}
-              onChange={(e) => setTagInput({ ...tagInput, leastFavoriteDish: e.target.value })}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  addLeastFavoriteDish(tagInput.leastFavoriteDish);
-                  setTagInput({ ...tagInput, leastFavoriteDish: '' });
-                }
-              }}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="Add least favorite dish (press Enter)"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                addLeastFavoriteDish(tagInput.leastFavoriteDish);
-                setTagInput({ ...tagInput, leastFavoriteDish: '' });
-              }}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-            >
-              Add
-            </button>
-          </div>
-          <ul className="space-y-2">
-            {formData.leastFavoriteDishes?.map((dish, index) => (
-              <li key={index} className="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-lg">
-                <span>{dish}</span>
-                <button
-                  type="button"
-                  onClick={() => removeLeastFavoriteDish(index)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Submit */}
-        <div className="pt-6 border-t border-gray-200">
-          {formData.isDraft && editId && (
-            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-sm font-semibold text-yellow-800">
-                📝 This is a draft. It will not appear on the public site until published.
-              </p>
-            </div>
-          )}
-          <div className="flex gap-4">
-            <button
-              type="button"
-              onClick={(e) => handleSubmit(e, true)}
-              className="flex-1 px-6 py-3 bg-gray-500 text-white rounded-lg font-semibold hover:bg-gray-600 transition-colors"
-            >
-              {editId ? 'Save as Draft' : 'Save as Draft'}
-            </button>
-            <button
-              type="button"
-              onClick={(e) => handleSubmit(e, false)}
-              className="flex-1 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors"
-            >
-              {editId ? 'Publish Review' : 'Publish Review'}
-            </button>
-          </div>
-        </div>
-      </form>
       {toast && (
         <Toast
           message={toast.message}
@@ -1152,7 +788,7 @@ function AdminForm() {
           imageUrl={cropperState.imageUrl}
           initialCrop={formData.coverImageCrop}
           onCropComplete={handleCropComplete}
-          onCancel={handleCropCancel}
+          onCancel={() => setCropperState(null)}
         />
       )}
     </div>
@@ -1161,7 +797,7 @@ function AdminForm() {
 
 export default function AdminPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-cream flex items-center justify-center">
+    <Suspense fallback={<div className="min-h-screen bg-surface flex items-center justify-center">
       <Loader2 className="w-8 h-8 animate-spin text-primary" />
     </div>}>
       <AdminForm />
