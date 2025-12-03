@@ -638,6 +638,34 @@ function AdminForm() {
                     />
                   </div>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Instagram</label>
+                  <div className="relative">
+                    <Instagram size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                    <input
+                      type="text"
+                      value={formData.instagram}
+                      onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+                      className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      placeholder="@eatwithlee"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Yelp</label>
+                  <div className="relative">
+                    <Globe size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                    <input
+                      type="url"
+                      value={formData.yelp}
+                      onChange={(e) => setFormData({ ...formData, yelp: e.target.value })}
+                      className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      placeholder="https://www.yelp.com/biz/..."
+                    />
+                  </div>
+                </div>
               </div>
             </section>
           </div>
