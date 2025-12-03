@@ -681,6 +681,7 @@ function AdminForm() {
 
               <div className="space-y-4">
                 <UploadDropzone
+                  acceptedFileTypes={["image/png", "image/jpeg"]}
                   endpoint="imageUploader"
                   onClientUploadComplete={(res) => {
                     if (res) {
