@@ -259,7 +259,7 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
                     event.stopPropagation();
                     goToPrevious();
                   }}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full transition-colors"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full transition-colors"
                   aria-label="Previous image"
                 >
                   <ChevronLeft size={22} />
@@ -270,7 +270,7 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
                     event.stopPropagation();
                     goToNext();
                   }}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full transition-colors"
                   aria-label="Next image"
                 >
                   <ChevronRight size={22} />
