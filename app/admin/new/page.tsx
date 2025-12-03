@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect, Suspense, useCallback, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, Suspense, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
 import { X, ArrowLeft, Loader2, GripVertical, Crop, Save, Eye, MapPin, Globe, Instagram, DollarSign, Tag, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
 import Toast, { ToastType } from '@/components/Toast';
 import ImageCropper from '@/components/ImageCropper';
 import { UploadDropzone } from '@/lib/uploadthing';
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png'];
 import {
   DndContext,
   closestCenter,
@@ -184,6 +186,8 @@ function AdminForm() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const contentTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [activeUploads, setActiveUploads] = useState(0);
+  const isUploadingImages = activeUploads > 0;
 
   // Drag and drop sensors
   const sensors = useSensors(
@@ -195,6 +199,13 @@ function AdminForm() {
 
   const showToast = (message: string, type: ToastType) => {
     setToast({ message, type });
+  };
+  const handleBeforeUpload = (files: File[]) => {
+    const accepted = files.filter((file) => ALLOWED_IMAGE_TYPES.includes(file.type));
+    if (accepted.length !== files.length) {
+      showToast('Only JPEG or PNG files are supported.', 'error');
+    }
+    return accepted;
   };
 
   // Load review data if in edit mode
@@ -243,28 +254,28 @@ function AdminForm() {
   }, [editId]);
 
   // Auto-save functionality
-  useEffect(() => {
-    if (editId || isLoading) return; // Don't auto-save if editing existing review (for now) or loading
+useEffect(() => {
+  if (editId || isLoading) return; // Don't auto-save if editing existing review (for now) or loading
 
-    const timeoutId = setTimeout(() => {
-      if (formData.restaurantName || formData.title) {
-        setIsAutoSaving(true);
-        localStorage.setItem('review_draft', JSON.stringify({ ...formData, _savedAt: new Date().toISOString() }));
-        setLastSaved(new Date());
-        setTimeout(() => setIsAutoSaving(false), 500);
-      }
-    }, 2000);
+  const timeoutId = setTimeout(() => {
+    if (formData.restaurantName || formData.title) {
+      setIsAutoSaving(true);
+      localStorage.setItem('review_draft', JSON.stringify({ ...formData, _savedAt: new Date().toISOString() }));
+      setLastSaved(new Date());
+      setTimeout(() => setIsAutoSaving(false), 500);
+    }
+  }, 2000);
 
-    return () => clearTimeout(timeoutId);
-  }, [formData, editId, isLoading]);
+  return () => clearTimeout(timeoutId);
+}, [formData, editId, isLoading]);
 
-  useEffect(() => {
-    if (isLoading) return;
-    if (!contentTextareaRef.current) return;
-    const textarea = contentTextareaRef.current;
-    textarea.style.height = 'auto';
-    textarea.style.height = `${textarea.scrollHeight}px`;
-  }, [formData.content, isLoading]);
+useLayoutEffect(() => {
+  if (!contentTextareaRef.current) return;
+  const textarea = contentTextareaRef.current;
+  textarea.style.height = 'auto';
+  textarea.style.height = `${textarea.scrollHeight}px`;
+  textarea.style.overflowY = 'hidden';
+}, [formData.content]);
 
   const handleSubmit = async (e: React.FormEvent, isDraft: boolean = false) => {
     e.preventDefault();
@@ -693,7 +704,10 @@ function AdminForm() {
                 <UploadDropzone
                   config={{ mode: 'auto' }}
                   endpoint="imageUploader"
+                  onBeforeUploadBegin={handleBeforeUpload}
+                  onUploadBegin={() => setActiveUploads(prev => prev + 1)}
                   onClientUploadComplete={(res) => {
+                    setActiveUploads(prev => Math.max(prev - 1, 0));
                     if (res) {
                       const newImages = res.map(file => ({ url: file.url, caption: '' }));
                       setFormData(prev => ({
@@ -705,21 +719,28 @@ function AdminForm() {
                     }
                   }}
                   onUploadError={(error: Error) => {
+                    setActiveUploads(prev => Math.max(prev - 1, 0));
                     showToast(`Upload failed: ${error.message}`, 'error');
                   }}
                   appearance={{
-                    container: "border-2 border-dashed border-border bg-surface hover:bg-accent/60 transition-colors rounded-xl p-6 text-center",
+                    container: "border-2 border-dashed border-border bg-surface hover:bg-accent/60 transition-colors rounded-xl p-6 text-center flex flex-col items-center gap-3",
                     uploadIcon: "text-primary mx-auto h-10 w-10",
-                    label: "mt-4 inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-medium cursor-pointer",
-                    allowedContent: "text-muted text-xs mt-2",
+                    label: "inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-medium cursor-pointer",
+                    allowedContent: "text-muted text-xs",
                     button: "hidden"
                   }}
                   content={{
                     label: "Click to choose files or drag & drop",
-                    allowedContent: "JPEG or PNG (max 4MB)",
+                    allowedContent: "JPEG or PNG only (max 4MB)",
                     button: () => null
                   }}
                 />
+                {isUploadingImages && (
+                  <div className="flex items-center justify-center gap-2 text-sm text-primary">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Uploading images...</span>
+                  </div>
+                )}
 
                 {formData.images && formData.images.length > 0 && (
                   <DndContext
