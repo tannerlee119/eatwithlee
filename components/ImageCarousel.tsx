@@ -237,7 +237,6 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
           aria-modal="true"
           aria-label={`${restaurantName} image viewer`}
           onClick={closeModal}
-          style={{ cursor: 'zoom-out' }}
         >
           <div
             className="relative w-full max-w-5xl max-h-full"
@@ -247,10 +246,10 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
               ref={closeButtonRef}
               type="button"
               onClick={closeModal}
-              className="absolute -top-12 right-0 flex items-center gap-2 rounded-full border border-white/40 bg-black/50 px-3 py-1.5 text-sm font-semibold uppercase tracking-wide text-white hover:bg-black/70 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="absolute -top-12 right-0 flex items-center justify-center rounded-full bg-black/70 text-white w-9 h-9 text-xl hover:bg-black/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               aria-label="Close full screen image viewer"
             >
-              <span>Close</span>
+              ×
             </button>
             {images.length > 1 && (
               <>
