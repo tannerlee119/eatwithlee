@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { ImageWithCaption } from '@/lib/types';
 
@@ -13,28 +14,61 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalIndex, setModalIndex] = useState(0);
+  const [wasPausedBeforeModal, setWasPausedBeforeModal] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const currentImage = images?.[currentIndex];
+  const modalImage = images?.[modalIndex];
 
-  const goToPrevious = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-  const goToNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+  const goToPrevious = useCallback(() => {
+    setCurrentIndex((prevIndex) => {
+      const nextIndex = prevIndex === 0 ? images.length - 1 : prevIndex - 1;
+      if (isModalOpen) {
+        setModalIndex(nextIndex);
+      }
+      return nextIndex;
+    });
+  }, [images.length, isModalOpen]);
 
-  const goToImage = (index: number) => {
+  const goToNext = useCallback(() => {
+    setCurrentIndex((prevIndex) => {
+      const nextIndex = prevIndex === images.length - 1 ? 0 : prevIndex + 1;
+      if (isModalOpen) {
+        setModalIndex(nextIndex);
+      }
+      return nextIndex;
+    });
+  }, [images.length, isModalOpen]);
+
+  const goToImage = useCallback((index: number) => {
     setCurrentIndex(index);
-  };
+    if (isModalOpen) {
+      setModalIndex(index);
+    }
+  }, [isModalOpen]);
 
   const togglePause = () => {
     setIsPaused(!isPaused);
   };
+
+  const openModal = (index: number) => {
+    setModalIndex(index);
+    setWasPausedBeforeModal(isPaused);
+    setIsPaused(true);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+    setIsPaused(wasPausedBeforeModal);
+  }, [wasPausedBeforeModal]);
 
   // Auto-rotation effect
   useEffect(() => {
@@ -56,7 +90,45 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
         clearInterval(intervalRef.current);
       }
     };
-  }, [currentIndex, isPaused, images.length]);
+  }, [currentIndex, isPaused, images.length, goToNext]);
+
+  // Close modal on ESC / navigate with arrows
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeModal();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        goToNext();
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        goToPrevious();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen, closeModal, goToNext, goToPrevious]);
+
+  // Lock body scroll while modal is open
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isModalOpen]);
+
+  // Focus close button when modal opens
+  useEffect(() => {
+    if (isModalOpen && closeButtonRef.current) {
+      closeButtonRef.current.focus();
+    }
+  }, [isModalOpen]);
 
   if (!images || images.length === 0) return null;
 
@@ -67,14 +139,21 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
         <div className="relative w-full flex items-center justify-center overflow-hidden aspect-[4/3] sm:aspect-[16/9]">
           {/* Image Container with Fade Animation */}
           {images.map((image, index) => (
-            <img
+            <button
               key={image.url}
-              src={image.url}
-              alt={image.caption || `${restaurantName} - Image ${index + 1}`}
-              className={`absolute max-h-full max-w-full object-contain transition-opacity duration-700 ${
-                index === currentIndex ? 'opacity-100' : 'opacity-0'
+              type="button"
+              onClick={() => openModal(index)}
+              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ${
+                index === currentIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'
               }`}
-            />
+              aria-label={`Open image ${index + 1} of ${images.length} in fullscreen`}
+            >
+              <img
+                src={image.url}
+                alt={image.caption || `${restaurantName} - Image ${index + 1}`}
+                className="max-h-full max-w-full object-contain"
+              />
+            </button>
           ))}
 
           {/* Navigation Arrows */}
@@ -149,6 +228,73 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
             </button>
           ))}
         </div>
+      )}
+
+      {isMounted && isModalOpen && modalImage && createPortal(
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${restaurantName} image viewer`}
+          onClick={closeModal}
+        >
+          <div
+            className="relative w-full max-w-5xl max-h-full"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              ref={closeButtonRef}
+              type="button"
+              onClick={closeModal}
+              className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
+              aria-label="Close full screen image viewer"
+            >
+              ×
+            </button>
+            {images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    goToPrevious();
+                  }}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full transition-colors"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft size={22} />
+                </button>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    goToNext();
+                  }}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full transition-colors"
+                  aria-label="Next image"
+                >
+                  <ChevronRight size={22} />
+                </button>
+              </>
+            )}
+
+            <div className="flex items-center justify-center">
+              <img
+                src={modalImage.url}
+                alt={modalImage.caption || `${restaurantName} enlarged image`}
+                className="max-h-[85vh] w-auto object-contain rounded-xl shadow-2xl"
+                draggable={false}
+              />
+            </div>
+
+            {modalImage.caption && (
+              <div className="mt-4 text-center text-sm text-gray-200">
+                {modalImage.caption}
+              </div>
+            )}
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   );
