@@ -97,11 +97,6 @@ export default function RestaurantMap({ lat, lng, name, address }: RestaurantMap
         </a>
       </div>
 
-      {/* Address */}
-      <div className="flex items-start gap-2 text-gray-600">
-        <MapPin size={18} className="mt-1 flex-shrink-0" />
-        <p className="text-sm">{address}</p>
-      </div>
     </div>
   );
 }
