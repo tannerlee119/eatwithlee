@@ -43,15 +43,15 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
         className="mb-12 text-center max-w-2xl mx-auto"
         style={{ animation: 'fadeInUp 0.6s ease-out 0.1s both' }}
       >
+        <h1 className="text-5xl md:text-7xl font-display font-bold mb-8 text-slate-900 tracking-tight leading-none">
+          {review.restaurantName}
+        </h1>
+
         <div className="flex items-center justify-center gap-3 mb-6 text-sm font-medium tracking-widest text-slate-500 uppercase">
           <span>{review.locationTag || 'Seattle, WA'}</span>
           <span className="w-1 h-1 rounded-full bg-slate-300" />
           <span>{formatDate(review.publishedAt)}</span>
         </div>
-
-        <h1 className="text-5xl md:text-7xl font-display font-bold mb-8 text-slate-900 tracking-tight leading-none">
-          {review.restaurantName}
-        </h1>
 
         <div className="flex items-center justify-center gap-4 mb-8">
           <div className="flex items-center gap-1.5 bg-slate-900 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-md">
