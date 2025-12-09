@@ -76,7 +76,7 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
 
       {/* Image Carousel */}
       <div
-        className="mb-16 rounded-2xl overflow-hidden shadow-2xl"
+        className="mb-16 rounded-2xl overflow-hidden shadow-2xl max-w-lg mx-auto"
         style={{ animation: 'fadeInUp 0.6s ease-out 0.2s both' }}
       >
         <ImageCarousel images={review.images} restaurantName={review.restaurantName} />
