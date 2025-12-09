@@ -139,19 +139,43 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
         {/* Sidebar */}
         <div className="lg:col-span-4 space-y-10">
           {/* Location */}
+          {/* Location Card */}
           <div style={{ animation: 'fadeInUp 0.6s ease-out 0.6s both' }}>
-            <h3 className="font-display font-bold text-lg mb-4 text-slate-900 uppercase tracking-wider">Location</h3>
-            <div className="bg-white p-1 rounded-xl border border-slate-200 shadow-sm mb-4">
-              <RestaurantMap
-                lat={review.location.lat}
-                lng={review.location.lng}
-                name={review.restaurantName}
-                address={review.location.address}
-              />
-            </div>
-            <div className="flex items-start gap-3 text-slate-600">
-              <MapPin size={18} className="mt-1 flex-shrink-0" />
-              <span className="text-sm font-medium">{review.location.address}</span>
+            <h3 className="font-display font-bold text-lg mb-4 text-slate-900 uppercase tracking-wider">Destination</h3>
+            <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-slate-100 group hover:shadow-xl transition-shadow duration-300">
+              {/* Map Container */}
+              <div className="h-48 w-full relative z-0">
+                <RestaurantMap
+                  lat={review.location.lat}
+                  lng={review.location.lng}
+                  name={review.restaurantName}
+                  address={review.location.address}
+                />
+                {/* Overlay Gradient */}
+                <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
+              </div>
+              
+              {/* Address & Action */}
+              <div className="p-6 relative z-20 bg-white">
+                <div className="flex items-start gap-3 mb-6">
+                  <div className="bg-slate-50 p-2.5 rounded-full text-slate-900">
+                    <MapPin size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-1">{review.restaurantName}</h4>
+                    <p className="text-slate-600 text-sm leading-relaxed">{review.location.address}</p>
+                  </div>
+                </div>
+
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${review.restaurantName} ${review.location.address}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full bg-slate-900 hover:bg-slate-800 text-white text-center py-3 rounded-xl font-bold text-sm transition-colors shadow-md hover:shadow-lg"
+                >
+                  Get Directions
+                </a>
+              </div>
             </div>
           </div>
 

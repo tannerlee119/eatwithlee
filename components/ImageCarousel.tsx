@@ -133,9 +133,9 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
   if (!images || images.length === 0) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Main Image Display */}
-      <div className="relative w-full rounded-2xl overflow-hidden border border-gray-200 bg-gray-50">
+      <div className="relative w-full rounded-xl overflow-hidden bg-slate-100 shadow-sm group">
         <div className="relative w-full flex items-center justify-center overflow-hidden aspect-[4/3] sm:aspect-[16/9]">
           {/* Image Container with Fade Animation */}
           {images.map((image, index) => (
@@ -143,114 +143,115 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
               key={image.url}
               type="button"
               onClick={() => openModal(index)}
-              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ${
-                index === currentIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'
+              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-700 focus-visible:outline-none ${
+                index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
               }`}
               aria-label={`Open image ${index + 1} of ${images.length} in fullscreen`}
             >
               <img
                 src={image.url}
                 alt={image.caption || `${restaurantName} - Image ${index + 1}`}
-                className="max-h-full max-w-full object-contain"
+                className="w-full h-full object-cover"
               />
+              {/* Gradient Overlay for Text Readability */}
+              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
             </button>
           ))}
 
-          {/* Navigation Arrows */}
+          {/* Navigation Arrows (Glassmorphism) */}
           {images.length > 1 && (
             <>
               <button
                 onClick={goToPrevious}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2.5 rounded-full shadow-sm border border-gray-200 transition-all z-10"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white p-3 rounded-full border border-white/20 transition-all opacity-0 group-hover:opacity-100 z-20"
                 aria-label="Previous image"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={24} />
               </button>
               <button
                 onClick={goToNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2.5 rounded-full shadow-sm border border-gray-200 transition-all z-10"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white p-3 rounded-full border border-white/20 transition-all opacity-0 group-hover:opacity-100 z-20"
                 aria-label="Next image"
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={24} />
               </button>
             </>
           )}
 
           {/* Image Counter & Pause Button */}
           {images.length > 1 && (
-            <div className="absolute bottom-4 left-4 flex items-center gap-2 z-10">
+            <div className="absolute bottom-4 right-4 flex items-center gap-2 z-20">
               <button
                 onClick={togglePause}
-                className="bg-black/60 hover:bg-black/80 text-white p-2 rounded-full transition-all"
+                className="bg-black/40 hover:bg-black/60 backdrop-blur-md text-white p-2 rounded-full transition-all border border-white/10"
                 aria-label={isPaused ? 'Play slideshow' : 'Pause slideshow'}
               >
-                {isPaused ? <Play size={16} /> : <Pause size={16} />}
+                {isPaused ? <Play size={14} fill="currentColor" /> : <Pause size={14} fill="currentColor" />}
               </button>
-              <div className="bg-black/60 text-white px-3 py-1 rounded-full text-xs font-medium">
+              <div className="bg-black/40 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-bold tracking-wider border border-white/10">
                 {currentIndex + 1} / {images.length}
               </div>
             </div>
           )}
         </div>
 
-        {/* Caption */}
+        {/* Caption Overlay */}
         {currentImage.caption && (
-          <div
-            key={currentIndex}
-            className="px-5 py-4 bg-white animate-fadeIn border-t border-gray-100"
-          >
-            <p className="text-[11px] font-medium uppercase tracking-wide text-gray-500 mb-1">
-              Photo {currentIndex + 1} of {images.length}
+          <div className="absolute bottom-4 left-4 right-20 z-20 pointer-events-none">
+            <p className="text-white text-sm font-medium drop-shadow-md line-clamp-2">
+              {currentImage.caption}
             </p>
-            <p className="text-sm text-gray-800">{currentImage.caption}</p>
           </div>
         )}
       </div>
 
       {/* Thumbnail Navigation */}
       {images.length > 1 && (
-        <div className="flex gap-3 overflow-x-auto pb-1 pt-1 px-1">
-          {images.map((image, index) => (
-            <button
-              key={index}
-              onClick={() => goToImage(index)}
-              className={`flex-shrink-0 rounded-lg overflow-hidden border transition-all ${
-                currentIndex === index
-                  ? 'border-secondary shadow-sm opacity-100'
-                  : 'border-transparent opacity-60 hover:opacity-90'
-              }`}
-            >
-              <img
-                src={image.url}
-                alt={image.caption || `Thumbnail ${index + 1}`}
-                className="w-20 h-20 object-cover"
-              />
-            </button>
-          ))}
+        <div className="flex justify-center">
+          <div className="flex gap-2 overflow-x-auto pb-2 pt-1 px-1 max-w-full no-scrollbar">
+            {images.map((image, index) => (
+              <button
+                key={index}
+                onClick={() => goToImage(index)}
+                className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden transition-all duration-300 ${
+                  currentIndex === index
+                    ? 'ring-2 ring-slate-900 ring-offset-2 opacity-100 scale-105'
+                    : 'opacity-50 hover:opacity-100 grayscale hover:grayscale-0'
+                }`}
+              >
+                <img
+                  src={image.url}
+                  alt={image.caption || `Thumbnail ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
       {isMounted && isModalOpen && modalImage && createPortal(
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4"
           role="dialog"
           aria-modal="true"
           aria-label={`${restaurantName} image viewer`}
           onClick={closeModal}
         >
           <div
-            className="relative w-full max-w-5xl max-h-full"
+            className="relative w-full max-w-6xl max-h-full flex flex-col items-center"
             onClick={(event) => event.stopPropagation()}
           >
             <button
               ref={closeButtonRef}
               type="button"
               onClick={closeModal}
-              className="absolute top-4 right-4 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors p-2"
               aria-label="Close full screen image viewer"
             >
-              <X size={18} />
+              <X size={32} />
             </button>
+
             {images.length > 1 && (
               <>
                 <button
@@ -259,10 +260,10 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
                     event.stopPropagation();
                     goToPrevious();
                   }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full transition-colors"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 transition-colors"
                   aria-label="Previous image"
                 >
-                  <ChevronLeft size={22} />
+                  <ChevronLeft size={48} />
                 </button>
                 <button
                   type="button"
@@ -270,26 +271,27 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
                     event.stopPropagation();
                     goToNext();
                   }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full transition-colors"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 transition-colors"
                   aria-label="Next image"
                 >
-                  <ChevronRight size={22} />
+                  <ChevronRight size={48} />
                 </button>
               </>
             )}
 
-            <div className="flex items-center justify-center">
-              <img
-                src={modalImage.url}
-                alt={modalImage.caption || `${restaurantName} enlarged image`}
-                className="max-h-[85vh] w-auto object-contain rounded-xl shadow-2xl"
-                draggable={false}
-              />
-            </div>
+            <img
+              src={modalImage.url}
+              alt={modalImage.caption || `${restaurantName} enlarged image`}
+              className="max-h-[80vh] w-auto object-contain shadow-2xl rounded-sm"
+              draggable={false}
+            />
 
             {modalImage.caption && (
-              <div className="mt-4 text-center text-sm text-gray-200">
-                {modalImage.caption}
+              <div className="mt-6 text-center">
+                <p className="text-white/90 text-lg font-medium">{modalImage.caption}</p>
+                <p className="text-white/50 text-sm mt-1 uppercase tracking-widest">
+                  {modalIndex + 1} of {images.length}
+                </p>
               </div>
             )}
           </div>
