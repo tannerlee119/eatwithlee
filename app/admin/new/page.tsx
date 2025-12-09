@@ -838,6 +838,36 @@ useLayoutEffect(() => {
                   ))}
                 </div>
               </div>
+
+          {/* Food Types */}
+          <div>
+            <label className="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Food Types</label>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={tagInput.foodType}
+                onChange={(e) => setTagInput({ ...tagInput, foodType: e.target.value })}
+                onKeyPress={(e) => e.key === 'Enter' && (addTag('foodTypes', tagInput.foodType), setTagInput({ ...tagInput, foodType: '' }))}
+                className="flex-1 px-3 py-1.5 text-sm bg-surface border border-border rounded-md"
+                placeholder="Add food type..."
+              />
+              <button
+                type="button"
+                onClick={() => (addTag('foodTypes', tagInput.foodType), setTagInput({ ...tagInput, foodType: '' }))}
+                className="px-3 py-1.5 bg-primary text-white rounded-md text-sm"
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {formData.tags?.foodTypes?.map((tag, i) => (
+                <span key={i} className="px-2 py-1 bg-slate-200 text-slate-800 rounded text-xs font-medium flex items-center gap-1">
+                  {tag}
+                  <button onClick={() => removeTag('foodTypes', i)} className="hover:text-slate-900">×</button>
+                </span>
+              ))}
+            </div>
+          </div>
             </section>
           </div>
         </div>
