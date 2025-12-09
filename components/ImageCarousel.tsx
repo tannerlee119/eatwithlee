@@ -136,7 +136,7 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
     <div className="space-y-6">
       {/* Main Image Display */}
       <div className="relative w-full rounded-xl overflow-hidden bg-slate-100 shadow-sm group">
-        <div className="relative w-full flex items-center justify-center overflow-hidden aspect-[4/3] sm:aspect-[16/9]">
+        <div className="relative w-full flex items-center justify-center overflow-hidden aspect-[3/4]">
           {/* Image Container with Fade Animation */}
           {images.map((image, index) => (
             <button

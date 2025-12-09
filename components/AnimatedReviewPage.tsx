@@ -144,15 +144,13 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
             <h3 className="font-display font-bold text-lg mb-4 text-slate-900 uppercase tracking-wider">Destination</h3>
             <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-slate-100 group hover:shadow-xl transition-shadow duration-300">
               {/* Map Container */}
-              <div className="h-48 w-full relative z-0">
+              <div className="h-64 w-full relative z-0">
                 <RestaurantMap
                   lat={review.location.lat}
                   lng={review.location.lng}
                   name={review.restaurantName}
                   address={review.location.address}
                 />
-                {/* Overlay Gradient */}
-                <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
               </div>
               
               {/* Address & Action */}
