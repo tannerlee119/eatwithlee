@@ -863,11 +863,71 @@ useLayoutEffect(() => {
               {formData.tags?.foodTypes?.map((tag, i) => (
                 <span key={i} className="px-2 py-1 bg-slate-200 text-slate-800 rounded text-xs font-medium flex items-center gap-1">
                   {tag}
-                  <button onClick={() => removeTag('foodTypes', i)} className="hover:text-slate-900">×</button>
+                  <button type="button" onClick={() => removeTag('foodTypes', i)} className="hover:text-slate-900">×</button>
                 </span>
               ))}
             </div>
           </div>
+
+              {/* Favorite Dishes */}
+              <div>
+                <label className="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Favorite Dishes</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={tagInput.dish}
+                    onChange={(e) => setTagInput({ ...tagInput, dish: e.target.value })}
+                    onKeyPress={(e) => e.key === 'Enter' && (addDish('favoriteDishes', tagInput.dish), setTagInput({ ...tagInput, dish: '' }))}
+                    className="flex-1 px-3 py-1.5 text-sm bg-surface border border-border rounded-md"
+                    placeholder="Add favorite dish..."
+                  />
+                  <button
+                    type="button"
+                    onClick={() => (addDish('favoriteDishes', tagInput.dish), setTagInput({ ...tagInput, dish: '' }))}
+                    className="px-3 py-1.5 bg-secondary text-white rounded-md text-sm"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {formData.favoriteDishes?.map((dish, i) => (
+                    <span key={i} className="px-2 py-1 bg-green-50 text-green-700 rounded text-xs font-medium flex items-center gap-1">
+                      {dish}
+                      <button type="button" onClick={() => removeDish('favoriteDishes', i)} className="hover:text-green-900">×</button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Least Favorite Dishes */}
+              <div>
+                <label className="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Least Favorite Dishes</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={tagInput.leastFavoriteDish}
+                    onChange={(e) => setTagInput({ ...tagInput, leastFavoriteDish: e.target.value })}
+                    onKeyPress={(e) => e.key === 'Enter' && (addDish('leastFavoriteDishes', tagInput.leastFavoriteDish), setTagInput({ ...tagInput, leastFavoriteDish: '' }))}
+                    className="flex-1 px-3 py-1.5 text-sm bg-surface border border-border rounded-md"
+                    placeholder="Add least favorite dish..."
+                  />
+                  <button
+                    type="button"
+                    onClick={() => (addDish('leastFavoriteDishes', tagInput.leastFavoriteDish), setTagInput({ ...tagInput, leastFavoriteDish: '' }))}
+                    className="px-3 py-1.5 bg-primary text-white rounded-md text-sm"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {formData.leastFavoriteDishes?.map((dish, i) => (
+                    <span key={i} className="px-2 py-1 bg-red-50 text-red-700 rounded text-xs font-medium flex items-center gap-1">
+                      {dish}
+                      <button type="button" onClick={() => removeDish('leastFavoriteDishes', i)} className="hover:text-red-900">×</button>
+                    </span>
+                  ))}
+                </div>
+              </div>
             </section>
           </div>
         </div>
