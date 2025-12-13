@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useLayoutEffect, Suspense, useRef } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
 import { X, ArrowLeft, Loader2, GripVertical, Crop, Save, Eye, MapPin, Globe, Instagram, DollarSign, Tag, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -185,7 +185,6 @@ function AdminForm() {
   const [cropperState, setCropperState] = useState<{ imageUrl: string; imageIndex: number } | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
-  const contentTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [activeUploads, setActiveUploads] = useState(0);
   const isUploadingImages = activeUploads > 0;
 
@@ -269,13 +268,8 @@ useEffect(() => {
   return () => clearTimeout(timeoutId);
 }, [formData, editId, isLoading]);
 
-useLayoutEffect(() => {
-  if (!contentTextareaRef.current) return;
-  const textarea = contentTextareaRef.current;
-  textarea.style.height = 'auto';
-  textarea.style.height = `${textarea.scrollHeight}px`;
-  textarea.style.overflowY = 'hidden';
-}, [formData.content]);
+  // NOTE: Avoid auto-resizing the content textarea while typing.
+  // Resizing on every keystroke can cause page scroll "jumping" as layout changes.
 
   const handleSubmit = async (e: React.FormEvent, isDraft: boolean = false) => {
     e.preventDefault();
@@ -588,11 +582,10 @@ useLayoutEffect(() => {
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-secondary mb-1.5">Full Review Content</label>
                   <textarea
-                    ref={contentTextareaRef}
                     rows={12}
                     value={formData.content}
                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-serif text-lg leading-relaxed"
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-serif text-lg leading-relaxed min-h-[320px] max-h-[70vh] overflow-y-auto resize-y"
                     placeholder="Write your delicious review here..."
                   />
                 </div>
