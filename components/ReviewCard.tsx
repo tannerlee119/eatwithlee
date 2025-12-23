@@ -12,6 +12,8 @@ interface ReviewCardProps {
 
 export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const primaryFoodType =
+    review.tags?.foodTypes?.[0] || review.tags?.cuisines?.[0] || '';
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -85,11 +87,20 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             {review.restaurantName}
           </h2>
 
-          {/* Meta */}
-          <div className="flex items-center gap-3 mb-3 text-xs font-medium text-slate-500 uppercase tracking-wide">
+          {/* Location */}
+          <div className="text-sm text-slate-700 mb-1">
+            {review.locationTag || 'Seattle, WA'}
+          </div>
+
+          {/* Price • Food type */}
+          <div className="text-sm text-slate-700 mb-4">
             <span>{'$'.repeat(review.priceRange)}</span>
-            <span className="w-1 h-1 rounded-full bg-slate-300" />
-            <span>{review.locationTag || 'Seattle, WA'}</span>
+            {primaryFoodType ? (
+              <>
+                <span className="mx-2 text-slate-400">•</span>
+                <span>{primaryFoodType}</span>
+              </>
+            ) : null}
           </div>
 
           {/* Excerpt */}
@@ -102,14 +113,6 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             <span className="text-[10px] px-2.5 py-1 rounded-md font-semibold bg-slate-900 text-white border border-slate-900 capitalize">
               {review.venueType}
             </span>
-            {review.tags.cuisines.slice(0, 2).map((cuisine) => (
-              <span
-                key={cuisine}
-                className="text-[10px] px-2.5 py-1 rounded-md font-medium bg-slate-50 text-slate-600 border border-slate-100"
-              >
-                {cuisine}
-              </span>
-            ))}
           </div>
         </div>
       </article>

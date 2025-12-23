@@ -7,8 +7,8 @@ export default function Header() {
     { href: '/restaurants', label: 'Restaurants' },
     { href: '/bars', label: 'Bars' },
     { href: '/cafes', label: 'Cafes' },
-    { href: '/loved-list', label: 'Loved List' },
     { href: '/lists', label: 'Lists' },
+    { href: '/loved-list', label: 'Loved List' },
     { href: '/stats', label: 'Stats' },
   ];
 
