@@ -12,6 +12,7 @@ interface ReviewCardProps {
 
 export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const primaryFoodType =
     review.tags?.foodTypes?.[0] || review.tags?.cuisines?.[0] || '';
   const featuredTag = review.featuredTag || primaryFoodType;
@@ -41,7 +42,14 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
               <img
                 src={review.coverImage}
                 alt={review.title}
-                className="absolute transition-all duration-700 ease-out"
+                loading={index < 3 ? 'eager' : 'lazy'}
+                fetchPriority={index < 1 ? 'high' : 'auto'}
+                decoding="async"
+                onLoad={() => setImageLoaded(true)}
+                className={[
+                  'absolute transition-all duration-700 ease-out',
+                  imageLoaded ? 'opacity-100' : 'opacity-0',
+                ].join(' ')}
                 style={{
                   width: `${review.coverImageCrop.zoom * 100}%`,
                   height: 'auto',
@@ -61,8 +69,18 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             <img
               src={review.coverImage}
               alt={review.title}
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              loading={index < 3 ? 'eager' : 'lazy'}
+              fetchPriority={index < 1 ? 'high' : 'auto'}
+              decoding="async"
+              onLoad={() => setImageLoaded(true)}
+              className={[
+                'w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105',
+                imageLoaded ? 'opacity-100' : 'opacity-0',
+              ].join(' ')}
             />
+          )}
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-slate-100" />
           )}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
           

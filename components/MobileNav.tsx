@@ -46,7 +46,7 @@ export default function MobileNav({ items }: { items: NavItem[] }) {
       <div
         className={[
           // In-flow dropdown so it pushes content down (no absolute positioning).
-          'mt-2 rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden transition-all duration-200 ease-out',
+          'mt-2 rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden transition-all duration-300 ease-out',
           open ? 'max-h-[70vh] opacity-100' : 'max-h-0 opacity-0 pointer-events-none',
         ].join(' ')}
       >
