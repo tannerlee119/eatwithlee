@@ -585,7 +585,7 @@ useEffect(() => {
                     onChange={(e) => setFormData({ ...formData, featuredTag: e.target.value })}
                     className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                   >
-                    <option value="">Auto (first food type)</option>
+                    <option value="">Auto (first cuisine)</option>
                     {featuredTagOptions.map((tag) => (
                       <option key={tag} value={tag}>
                         {tag}

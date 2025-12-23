@@ -13,9 +13,9 @@ interface ReviewCardProps {
 export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const primaryFoodType =
-    review.tags?.foodTypes?.[0] || review.tags?.cuisines?.[0] || '';
-  const featuredTag = review.featuredTag || primaryFoodType;
+  const primaryCuisineOrFoodType =
+    review.tags?.cuisines?.[0] || review.tags?.foodTypes?.[0] || '';
+  const featuredTag = review.featuredTag || primaryCuisineOrFoodType;
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
