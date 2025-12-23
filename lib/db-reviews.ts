@@ -90,12 +90,57 @@ function reviewToDb(review: Partial<Review>) {
 }
 
 export async function getAllReviews(): Promise<Review[]> {
-  const reviews = await prisma.review.findMany({
-    orderBy: {
-      publishedAt: 'desc',
-    },
-  });
-  return reviews.map(dbToReview);
+  try {
+    const reviews = await prisma.review.findMany({
+      orderBy: {
+        publishedAt: 'desc',
+      },
+    });
+    return reviews.map(dbToReview);
+  } catch (err: any) {
+    // If the DB is temporarily behind migrations (e.g., during deploy), avoid hard-failing.
+    // Commonly manifests as P2022 "column does not exist".
+    if (err?.code === 'P2022') {
+      const reviews = await prisma.review.findMany({
+        orderBy: {
+          publishedAt: 'desc',
+        },
+        select: {
+          id: true,
+          contentType: true,
+          isDraft: true,
+          // venueType intentionally omitted for backward-compatible reads
+          title: true,
+          restaurantName: true,
+          slug: true,
+          excerpt: true,
+          content: true,
+          rating: true,
+          coverImage: true,
+          coverImageCrop: true,
+          images: true,
+          address: true,
+          lat: true,
+          lng: true,
+          locationTag: true,
+          website: true,
+          instagram: true,
+          yelp: true,
+          priceRange: true,
+          cuisines: true,
+          vibes: true,
+          foodTypes: true,
+          favoriteDishes: true,
+          leastFavoriteDishes: true,
+          author: true,
+          publishedAt: true,
+        },
+      });
+      // dbToReview will default venueType to 'restaurant'
+      return (reviews as any[]).map(dbToReview);
+    }
+    throw err;
+  }
 }
 
 export async function getReviewBySlug(slug: string): Promise<Review | null> {

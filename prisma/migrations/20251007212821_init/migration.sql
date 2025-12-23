@@ -1,26 +1,5 @@
--- CreateTable
-CREATE TABLE "Review" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "title" TEXT NOT NULL,
-    "restaurantName" TEXT NOT NULL,
-    "slug" TEXT NOT NULL,
-    "excerpt" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "rating" REAL NOT NULL,
-    "coverImage" TEXT NOT NULL,
-    "images" TEXT NOT NULL,
-    "address" TEXT NOT NULL,
-    "lat" REAL NOT NULL,
-    "lng" REAL NOT NULL,
-    "cuisines" TEXT NOT NULL,
-    "vibes" TEXT NOT NULL,
-    "foodTypes" TEXT NOT NULL,
-    "favoriteDishes" TEXT NOT NULL,
-    "author" TEXT NOT NULL DEFAULT 'Lee',
-    "publishedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
-);
-
--- CreateIndex
-CREATE UNIQUE INDEX "Review_slug_key" ON "Review"("slug");
+-- NOTE:
+-- This migration was generated back when the project was using a different SQL dialect.
+-- The canonical initial schema for PostgreSQL lives in `prisma/migrations/0_init`.
+-- Keeping this migration as a no-op prevents deploy failures due to incompatible types
+-- (e.g., DATETIME) while preserving migration history ordering.
