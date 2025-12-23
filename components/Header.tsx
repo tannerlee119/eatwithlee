@@ -11,8 +11,14 @@ export default function Header() {
         </Link>
 
         <nav className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm font-semibold text-gray-600 uppercase tracking-[0.18em]">
-          <Link href="/" className="hover:text-gray-900 transition-colors">
+          <Link href="/reviews" className="hover:text-gray-900 transition-colors">
             Reviews
+          </Link>
+          <Link href="/restaurants" className="hover:text-gray-900 transition-colors">
+            Restaurants
+          </Link>
+          <Link href="/bars" className="hover:text-gray-900 transition-colors">
+            Bars
           </Link>
           <Link href="/loved-list" className="hover:text-gray-900 transition-colors">
             Loved List

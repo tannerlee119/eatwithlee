@@ -87,9 +87,9 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
 
           {/* Meta */}
           <div className="flex items-center gap-3 mb-3 text-xs font-medium text-slate-500 uppercase tracking-wide">
-            <span>{review.locationTag || 'Seattle, WA'}</span>
-            <span className="w-1 h-1 rounded-full bg-slate-300" />
             <span>{'$'.repeat(review.priceRange)}</span>
+            <span className="w-1 h-1 rounded-full bg-slate-300" />
+            <span>{review.locationTag || 'Seattle, WA'}</span>
           </div>
 
           {/* Excerpt */}
