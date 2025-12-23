@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
       contentType: body.contentType,
       isDraft: body.isDraft,
       venueType: body.venueType,
+      featuredTag: body.featuredTag,
       title: body.title,
       restaurantName: body.restaurantName,
       slug,

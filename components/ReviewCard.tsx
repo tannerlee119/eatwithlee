@@ -14,6 +14,7 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const primaryFoodType =
     review.tags?.foodTypes?.[0] || review.tags?.cuisines?.[0] || '';
+  const featuredTag = review.featuredTag || primaryFoodType;
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -95,10 +96,10 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
           {/* Price • Food type */}
           <div className="text-sm text-slate-700 mb-4">
             <span>{'$'.repeat(review.priceRange)}</span>
-            {primaryFoodType ? (
+            {featuredTag ? (
               <>
                 <span className="mx-2 text-slate-400">•</span>
-                <span>{primaryFoodType}</span>
+                <span>{featuredTag}</span>
               </>
             ) : null}
           </div>

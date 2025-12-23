@@ -11,6 +11,7 @@ export interface Review {
   contentType: ContentType;
   isDraft: boolean;
   venueType: VenueType;
+  featuredTag: string;
   title: string;
   restaurantName: string;
   slug: string;

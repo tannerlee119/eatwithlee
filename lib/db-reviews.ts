@@ -19,6 +19,7 @@ function dbToReview(dbReview: any): Review {
     contentType: dbReview.contentType || 'review',
     isDraft: dbReview.isDraft || false,
     venueType: dbReview.venueType || 'restaurant',
+    featuredTag: dbReview.featuredTag || '',
     title: dbReview.title,
     restaurantName: dbReview.restaurantName,
     slug: dbReview.slug,
@@ -56,6 +57,7 @@ function reviewToDb(review: Partial<Review>) {
     contentType: review.contentType || 'review',
     isDraft: review.isDraft !== undefined ? review.isDraft : false,
     venueType: review.venueType || 'restaurant',
+    featuredTag: review.featuredTag || '',
     title: review.title,
     restaurantName: review.restaurantName,
     slug: review.slug,
@@ -110,6 +112,7 @@ export async function getAllReviews(): Promise<Review[]> {
           contentType: true,
           isDraft: true,
           // venueType intentionally omitted for backward-compatible reads
+          // featuredTag intentionally omitted for backward-compatible reads
           title: true,
           restaurantName: true,
           slug: true,

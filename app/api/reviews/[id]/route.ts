@@ -26,6 +26,7 @@ export async function PATCH(
       contentType: body.contentType,
       isDraft: body.isDraft,
       venueType: body.venueType,
+      featuredTag: body.featuredTag,
       title: body.title,
       restaurantName: body.restaurantName,
       slug: slug || body.slug,

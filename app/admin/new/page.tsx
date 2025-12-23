@@ -149,6 +149,7 @@ function AdminForm() {
     content: '',
     rating: 0,
     venueType: 'restaurant',
+    featuredTag: '',
     location: {
       address: '',
       lat: 0,
@@ -220,6 +221,7 @@ function AdminForm() {
             const loadedData = {
               ...review,
               venueType: (review as any).venueType || 'restaurant',
+              featuredTag: (review as any).featuredTag || '',
               tags: {
                 cuisines: review.tags?.cuisines || [],
                 vibes: review.tags?.vibes || [],
@@ -269,6 +271,23 @@ useEffect(() => {
 
   return () => clearTimeout(timeoutId);
 }, [formData, editId, isLoading]);
+
+  // Build dropdown options for featured tag from current tags
+  const featuredTagOptions = Array.from(
+    new Set([
+      ...(formData.tags?.foodTypes || []),
+      ...(formData.tags?.cuisines || []),
+      ...(formData.tags?.vibes || []),
+    ].map((t) => t.trim()).filter(Boolean))
+  );
+
+  // If featuredTag is removed from tags, reset to auto
+  useEffect(() => {
+    if (formData.featuredTag && !featuredTagOptions.includes(formData.featuredTag)) {
+      setFormData((prev) => ({ ...prev, featuredTag: '' }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.tags]);
 
   // NOTE: Avoid auto-resizing the content textarea while typing.
   // Resizing on every keystroke can cause page scroll "jumping" as layout changes.
@@ -326,6 +345,7 @@ useEffect(() => {
           content: '',
           rating: 0,
           venueType: 'restaurant',
+          featuredTag: '',
           location: { address: '', lat: 0, lng: 0 },
           locationTag: '',
           website: '',
@@ -556,6 +576,25 @@ useEffect(() => {
                       </button>
                     ))}
                   </div>
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Featured Tag (shown on card)</label>
+                  <select
+                    value={formData.featuredTag || ''}
+                    onChange={(e) => setFormData({ ...formData, featuredTag: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                  >
+                    <option value="">Auto (first food type)</option>
+                    {featuredTagOptions.map((tag) => (
+                      <option key={tag} value={tag}>
+                        {tag}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="mt-1 text-xs text-muted">
+                    Tip: add tags below first, then pick which one you want featured.
+                  </p>
                 </div>
 
                 <div>
