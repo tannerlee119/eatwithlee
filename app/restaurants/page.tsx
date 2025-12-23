@@ -1,13 +1,12 @@
 import { getAllReviews } from '@/lib/db-reviews';
 import ReviewCard from '@/components/ReviewCard';
-import { isBarReview } from '@/lib/classify';
 
 export const revalidate = 0;
 
 export default async function RestaurantsPage() {
   const allReviews = await getAllReviews();
   const reviews = allReviews.filter(
-    (r) => !r.isDraft && r.contentType === 'review' && !isBarReview(r)
+    (r) => !r.isDraft && r.contentType === 'review' && r.venueType === 'restaurant'
   );
 
   return (

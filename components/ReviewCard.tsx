@@ -99,7 +99,10 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
-            {review.tags.cuisines.slice(0, 3).map((cuisine) => (
+            <span className="text-[10px] px-2.5 py-1 rounded-md font-semibold bg-slate-900 text-white border border-slate-900 capitalize">
+              {review.venueType}
+            </span>
+            {review.tags.cuisines.slice(0, 2).map((cuisine) => (
               <span
                 key={cuisine}
                 className="text-[10px] px-2.5 py-1 rounded-md font-medium bg-slate-50 text-slate-600 border border-slate-100"

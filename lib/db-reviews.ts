@@ -18,6 +18,7 @@ function dbToReview(dbReview: any): Review {
     id: dbReview.id,
     contentType: dbReview.contentType || 'review',
     isDraft: dbReview.isDraft || false,
+    venueType: dbReview.venueType || 'restaurant',
     title: dbReview.title,
     restaurantName: dbReview.restaurantName,
     slug: dbReview.slug,
@@ -54,6 +55,7 @@ function reviewToDb(review: Partial<Review>) {
   const dbData: any = {
     contentType: review.contentType || 'review',
     isDraft: review.isDraft !== undefined ? review.isDraft : false,
+    venueType: review.venueType || 'restaurant',
     title: review.title,
     restaurantName: review.restaurantName,
     slug: review.slug,

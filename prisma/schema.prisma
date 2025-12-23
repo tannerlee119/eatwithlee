@@ -14,6 +14,7 @@ model Review {
   id             String   @id @default(cuid())
   contentType    String   @default("review") // "review" or "list"
   isDraft        Boolean  @default(false) // true for drafts, false for published
+  venueType      String   @default("restaurant") // "restaurant" | "bar" | "cafe"
   title          String
   restaurantName String
   slug           String   @unique

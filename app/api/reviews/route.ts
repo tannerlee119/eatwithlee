@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
     const reviewData: Partial<Review> = {
       contentType: body.contentType,
       isDraft: body.isDraft,
+      venueType: body.venueType,
       title: body.title,
       restaurantName: body.restaurantName,
       slug,

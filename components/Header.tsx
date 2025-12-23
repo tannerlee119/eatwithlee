@@ -1,34 +1,39 @@
 import Link from 'next/link';
+import StickyNav from '@/components/StickyNav';
 
 export default function Header() {
+  const navItems = [
+    { href: '/reviews', label: 'Reviews' },
+    { href: '/restaurants', label: 'Restaurants' },
+    { href: '/bars', label: 'Bars' },
+    { href: '/cafes', label: 'Cafes' },
+    { href: '/loved-list', label: 'Loved List' },
+    { href: '/lists', label: 'Lists' },
+    { href: '/stats', label: 'Stats' },
+  ];
+
   return (
     <header className="border-b border-gray-100 bg-white">
+      <StickyNav items={navItems} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
-        <Link href="/" className="inline-block">
+        <Link href="/reviews" className="inline-block">
           <span className="block text-5xl md:text-7xl font-display font-bold tracking-tight text-gray-900">
             EAT WITH LEE
           </span>
         </Link>
 
-        <nav className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm font-semibold text-gray-600 uppercase tracking-[0.18em]">
-          <Link href="/reviews" className="hover:text-gray-900 transition-colors">
-            Reviews
-          </Link>
-          <Link href="/restaurants" className="hover:text-gray-900 transition-colors">
-            Restaurants
-          </Link>
-          <Link href="/bars" className="hover:text-gray-900 transition-colors">
-            Bars
-          </Link>
-          <Link href="/loved-list" className="hover:text-gray-900 transition-colors">
-            Loved List
-          </Link>
-          <Link href="/lists" className="hover:text-gray-900 transition-colors">
-            Lists
-          </Link>
-          <Link href="/stats" className="hover:text-gray-900 transition-colors">
-            Stats
-          </Link>
+        <nav className="mt-6">
+          <div className="inline-flex flex-wrap justify-center gap-x-8 gap-y-2 rounded-xl border border-slate-200 bg-white px-6 py-3 shadow-sm text-sm font-semibold text-gray-600 uppercase tracking-[0.18em]">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="hover:text-gray-900 transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
         </nav>
       </div>
     </header>

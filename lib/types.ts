@@ -1,4 +1,5 @@
 export type ContentType = 'review' | 'list';
+export type VenueType = 'restaurant' | 'bar' | 'cafe';
 
 export interface ImageWithCaption {
   url: string;
@@ -9,6 +10,7 @@ export interface Review {
   id: string;
   contentType: ContentType;
   isDraft: boolean;
+  venueType: VenueType;
   title: string;
   restaurantName: string;
   slug: string;

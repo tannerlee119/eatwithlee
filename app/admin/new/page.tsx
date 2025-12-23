@@ -148,6 +148,7 @@ function AdminForm() {
     excerpt: '',
     content: '',
     rating: 0,
+    venueType: 'restaurant',
     location: {
       address: '',
       lat: 0,
@@ -218,6 +219,7 @@ function AdminForm() {
           if (review) {
             const loadedData = {
               ...review,
+              venueType: (review as any).venueType || 'restaurant',
               tags: {
                 cuisines: review.tags?.cuisines || [],
                 vibes: review.tags?.vibes || [],
@@ -323,6 +325,7 @@ useEffect(() => {
           excerpt: '',
           content: '',
           rating: 0,
+          venueType: 'restaurant',
           location: { address: '', lat: 0, lng: 0 },
           locationTag: '',
           website: '',
@@ -533,6 +536,26 @@ useEffect(() => {
                     className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                     placeholder="Catchy title for the review"
                   />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Venue Type</label>
+                  <div className="flex bg-surface border border-border rounded-lg p-1">
+                    {(['restaurant', 'bar', 'cafe'] as const).map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, venueType: type })}
+                        className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all capitalize ${
+                          formData.venueType === type
+                            ? 'bg-white text-primary shadow-sm'
+                            : 'text-muted hover:text-secondary'
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <div>
