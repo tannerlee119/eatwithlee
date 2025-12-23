@@ -31,7 +31,7 @@ export default function MobileNav({ items }: { items: NavItem[] }) {
   }, [open]);
 
   return (
-    <div ref={panelRef} className="relative w-full max-w-sm">
+    <div ref={panelRef} className="w-full max-w-sm">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -45,8 +45,9 @@ export default function MobileNav({ items }: { items: NavItem[] }) {
 
       <div
         className={[
-          'absolute left-0 right-0 mt-2 origin-top rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden transition-all duration-200 ease-out',
-          open ? 'scale-y-100 opacity-100' : 'scale-y-95 opacity-0 pointer-events-none',
+          // In-flow dropdown so it pushes content down (no absolute positioning).
+          'mt-2 rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden transition-all duration-200 ease-out',
+          open ? 'max-h-[70vh] opacity-100' : 'max-h-0 opacity-0 pointer-events-none',
         ].join(' ')}
       >
         <div className="py-2">
