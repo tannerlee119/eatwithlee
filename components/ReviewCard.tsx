@@ -74,7 +74,7 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
           {/* Rating Badge (Overlay) */}
           <div className="absolute top-4 right-4 flex items-center gap-1 bg-white/90 backdrop-blur-sm text-slate-900 px-2.5 py-1 rounded-lg text-xs font-bold shadow-sm">
             <Star size={12} fill="currentColor" className="text-slate-900" />
-            {review.rating}
+            {review.rating}/10
           </div>
         </div>
 
