@@ -80,17 +80,17 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
 
         {/* Content */}
         <div className="pt-5 pb-2">
-          {/* Meta */}
-          <div className="flex items-center gap-3 mb-2 text-xs font-medium text-slate-500 uppercase tracking-wide">
-            <span>{review.locationTag || 'Seattle, WA'}</span>
-            <span className="w-1 h-1 rounded-full bg-slate-300" />
-            <span>{'$'.repeat(review.priceRange)}</span>
-          </div>
-
           {/* Title */}
           <h2 className="text-xl font-display font-bold mb-2 text-slate-900 group-hover:text-slate-700 transition-colors line-clamp-1">
             {review.restaurantName}
           </h2>
+
+          {/* Meta */}
+          <div className="flex items-center gap-3 mb-3 text-xs font-medium text-slate-500 uppercase tracking-wide">
+            <span>{review.locationTag || 'Seattle, WA'}</span>
+            <span className="w-1 h-1 rounded-full bg-slate-300" />
+            <span>{'$'.repeat(review.priceRange)}</span>
+          </div>
 
           {/* Excerpt */}
           <p className="text-slate-600 text-sm leading-relaxed line-clamp-2 mb-4">
