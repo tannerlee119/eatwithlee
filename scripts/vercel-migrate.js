@@ -24,7 +24,10 @@ function runPrismaCapture(args) {
 
 // 1) Try normal deploy
 let res = runPrismaCapture(['migrate', 'deploy']);
-if (res.status === 0) process.exit(0);
+if (res.status === 0) {
+  // Ensure Prisma Client is regenerated against the current schema.
+  process.exit(runPrisma(['generate']));
+}
 
 // 2) Known case: a failed legacy migration record can block deploys on Postgres (P3009).
 // We safely mark the legacy "20251007212821_init" as applied because:
@@ -38,7 +41,8 @@ if (isP3009 && mentionsLegacy) {
   // Mark as applied (idempotent-ish; if it errors because already applied, that's okay)
   runPrisma(['migrate', 'resolve', '--applied', '20251007212821_init']);
   const retryStatus = runPrisma(['migrate', 'deploy']);
-  process.exit(retryStatus);
+  if (retryStatus !== 0) process.exit(retryStatus);
+  process.exit(runPrisma(['generate']));
 }
 
 // 3) Unknown failure: surface logs and fail build.

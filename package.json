@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "vercel-build": "node scripts/vercel-migrate.js && next build",
+    "postinstall": "prisma generate",
     "start": "next start",
     "lint": "next lint"
   },
