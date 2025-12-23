@@ -20,9 +20,6 @@ export default function Footer() {
 
           {/* Navigation Links */}
           <nav className="flex justify-center items-center gap-6 text-sm text-gray-500">
-            <Link href="/" className="hover:text-gray-900 transition-colors">
-              Reviews
-            </Link>
             <Link href="/about" className="hover:text-gray-900 transition-colors">
               About
             </Link>
