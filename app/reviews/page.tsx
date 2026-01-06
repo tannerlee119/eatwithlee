@@ -258,7 +258,13 @@ export default async function ReviewsPage({
               <div className="aspect-[4/3] bg-slate-100 relative">
                 {featuredReview?.coverImage ? (() => {
                   const src = normalizeImageSrc(featuredReview.coverImage || '');
-                  if (!src) return null;
+                  if (!src) {
+                    return (
+                      <div className="w-full h-full flex items-center justify-center text-slate-400">
+                        <Star size={36} />
+                      </div>
+                    );
+                  }
                   return shouldUseNextImage(src) ? (
                     <Image
                       src={src}
@@ -279,10 +285,6 @@ export default async function ReviewsPage({
                     />
                   );
                 })() : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-400">
-                    <Star size={36} />
-                  </div>
-                ) : (
                   <div className="w-full h-full flex items-center justify-center text-slate-400">
                     <Star size={36} />
                   </div>
