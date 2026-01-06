@@ -71,11 +71,25 @@ export default async function ReviewsPage({
     return sorted[0];
   })();
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  // Exclude featured from the main feed to avoid duplicates.
+  const feedBase = featuredReview ? all.filter((r) => r.id !== featuredReview.id) : all;
+  const feedFiltered = feedBase.filter((r) => {
+    if (selectedCuisine) {
+      const cuisines = r.tags?.cuisines || [];
+      if (!cuisines.includes(selectedCuisine)) return false;
+    }
+    if (selectedLocation) {
+      const loc = (r.locationTag || '').trim();
+      if (loc !== selectedLocation) return false;
+    }
+    return true;
+  });
+
+  const totalPages = Math.max(1, Math.ceil(feedFiltered.length / pageSize));
   const safePage = Math.min(page, totalPages);
   const startIndex = (safePage - 1) * pageSize;
-  const endIndex = Math.min(startIndex + pageSize, filtered.length);
-  const pageReviews = filtered.slice(startIndex, endIndex);
+  const endIndex = Math.min(startIndex + pageSize, feedFiltered.length);
+  const pageReviews = feedFiltered.slice(startIndex, endIndex);
 
   const baseHref = (params: { page?: number; cuisine?: string; location?: string }) => {
     const qs = new URLSearchParams();
@@ -143,7 +157,7 @@ export default async function ReviewsPage({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Left: Feed */}
           <div className="lg:col-span-8 xl:col-span-9">
-            {filtered.length === 0 ? (
+            {feedFiltered.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-xl border border-slate-200 border-dashed">
                 <h3 className="text-lg font-medium text-slate-900 mb-1">No reviews found</h3>
                 <p className="text-slate-600 mb-6">Try clearing your filters.</p>
@@ -240,7 +254,7 @@ export default async function ReviewsPage({
                 </div>
 
                 {/* Pagination */}
-                {filtered.length > pageSize && (
+                {feedFiltered.length > pageSize && (
                   <div className="mt-12 flex justify-center">
                     <div className="flex items-center gap-2">
                       <Link
