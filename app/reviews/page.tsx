@@ -57,10 +57,10 @@ export default async function ReviewsPage({
     return true;
   });
 
+  // Featured should be stable and NOT change based on active filters/pagination.
   const featuredReview = (() => {
-    const base = filtered.length ? filtered : all;
-    if (!base.length) return null;
-    const sorted = base.slice().sort((a, b) => {
+    if (!all.length) return null;
+    const sorted = all.slice().sort((a, b) => {
       const scoreA = (a.rating || 0) * 10 + new Date(a.publishedAt).getTime() / 1e12;
       const scoreB = (b.rating || 0) * 10 + new Date(b.publishedAt).getTime() / 1e12;
       return scoreB - scoreA;
@@ -122,7 +122,11 @@ export default async function ReviewsPage({
         </div>
 
         {/* Two-column layout w/ independent scroll */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div
+          className="grid grid-cols-1 lg:grid-cols-12 gap-10"
+          // Ensure animations replay when filters/pagination change (soft navigation may reuse DOM nodes)
+          key={`${selectedCuisine}::${selectedLocation}::${safePage}`}
+        >
           {/* Left: Feed */}
           <div className="lg:col-span-8 xl:col-span-9">
             {filtered.length === 0 ? (
@@ -323,7 +327,6 @@ export default async function ReviewsPage({
             >
               <div className="p-5 border-b border-slate-200">
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Cuisines</p>
-                <p className="mt-2 text-sm text-slate-600">Filter the feed by cuisine.</p>
               </div>
               <div className="p-4">
                 {cuisinesWithCounts.length === 0 ? (
@@ -360,7 +363,6 @@ export default async function ReviewsPage({
             >
               <div className="p-5 border-b border-slate-200">
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Locations</p>
-                <p className="mt-2 text-sm text-slate-600">Filter the feed by city/neighborhood.</p>
               </div>
               <div className="p-4">
                 {locationsWithCounts.length === 0 ? (
