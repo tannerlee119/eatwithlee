@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Review } from '@/lib/types';
 import { Edit, Trash2, Plus, Star, Search, Filter, MoreHorizontal, LayoutGrid, List as ListIcon } from 'lucide-react';
 import Toast, { ToastType } from '@/components/Toast';
@@ -240,13 +241,21 @@ function AdminReviewsContent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filteredReviews.map((review) => (
+                {filteredReviews.map((review, idx) => (
                   <tr key={review.id} className="group hover:bg-surface/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-accent overflow-hidden flex-shrink-0 border border-border">
+                        <div className="w-12 h-12 rounded-lg bg-accent overflow-hidden flex-shrink-0 border border-border relative">
                           {review.coverImage ? (
-                            <img src={review.coverImage} alt="" className="w-full h-full object-cover" />
+                            <Image
+                              src={review.coverImage}
+                              alt={review.restaurantName}
+                              fill
+                              sizes="48px"
+                              className="object-cover"
+                              quality={60}
+                              priority={idx < 4}
+                            />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-muted">
                               <Star size={16} />
@@ -300,11 +309,19 @@ function AdminReviewsContent() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredReviews.map((review) => (
+            {filteredReviews.map((review, idx) => (
               <div key={review.id} className="bg-white rounded-xl border border-border shadow-card hover:shadow-soft transition-all group overflow-hidden">
                 <div className="aspect-video bg-accent relative overflow-hidden">
                   {review.coverImage ? (
-                    <img src={review.coverImage} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <Image
+                      src={review.coverImage}
+                      alt={review.restaurantName}
+                      fill
+                      sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      quality={65}
+                      priority={idx < 2}
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-muted">
                       <Star size={32} />
