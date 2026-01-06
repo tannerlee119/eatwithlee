@@ -190,7 +190,7 @@ export default async function ReviewsPage({
                           </div>
 
                           <div className="p-6">
-                            <h3 className="font-display font-bold text-xl text-slate-900 leading-tight">
+                            <h3 className="font-display font-bold text-2xl sm:text-3xl text-slate-900 leading-[1.05] tracking-tight">
                               {review.restaurantName}
                             </h3>
                             {locationLabel && (
