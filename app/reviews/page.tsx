@@ -83,6 +83,34 @@ export default async function ReviewsPage({
     return s ? `/reviews?${s}` : '/reviews';
   };
 
+  const normalizeImageSrc = (src: string): string | null => {
+    const trimmed = (src || '').trim();
+    if (!trimmed) return null;
+    if (trimmed.startsWith('/')) return trimmed;
+    if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+      // Handle stored paths like "uploads/xxx.jpg"
+      return `/${trimmed}`;
+    }
+    try {
+      // Validate URL
+      // eslint-disable-next-line no-new
+      new URL(trimmed);
+      return trimmed;
+    } catch {
+      return null;
+    }
+  };
+
+  const shouldUseNextImage = (src: string): boolean => {
+    if (src.startsWith('/')) return true;
+    try {
+      const u = new URL(src);
+      return ['utfs.io', 'uploadthing.com', 'files.uploadthing.com'].includes(u.hostname);
+    } catch {
+      return false;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -110,27 +138,38 @@ export default async function ReviewsPage({
               </div>
             ) : (
               <>
-                <div className="columns-1 sm:columns-2 xl:columns-3 gap-6 [column-fill:_balance]">
+                <div className="columns-1 md:columns-2 gap-8 [column-fill:_balance]">
                   {pageReviews.map((review) => {
                     const locationLabel = (review.locationTag || '').trim() || (review.location?.address || '').trim();
                     const excerpt = (review.excerpt || '').trim();
                     const shouldClamp = excerpt.length > 150;
+                    const imgSrc = normalizeImageSrc(review.coverImage || '');
                     return (
-                      <div key={review.id} className="mb-6 break-inside-avoid">
+                      <div key={review.id} className="mb-8 break-inside-avoid">
                         <Link
                           href={`/reviews/${review.slug}`}
-                          className="block bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all overflow-hidden group"
+                          className="block bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all overflow-hidden group"
                         >
-                          <div className="aspect-[16/10] bg-slate-100 relative overflow-hidden">
-                            {review.coverImage ? (
-                              <Image
-                                src={review.coverImage}
-                                alt={review.restaurantName}
-                                fill
-                                sizes="(min-width: 1280px) 28vw, (min-width: 1024px) 60vw, 100vw"
-                                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                quality={70}
-                              />
+                          <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
+                            {imgSrc ? (
+                              shouldUseNextImage(imgSrc) ? (
+                                <Image
+                                  src={imgSrc}
+                                  alt={review.restaurantName}
+                                  fill
+                                  sizes="(min-width: 1024px) 42vw, 100vw"
+                                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                  quality={75}
+                                />
+                              ) : (
+                                <img
+                                  src={imgSrc}
+                                  alt={review.restaurantName}
+                                  loading="lazy"
+                                  decoding="async"
+                                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                              )
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-slate-400">
                                 <Star size={28} />
@@ -142,18 +181,18 @@ export default async function ReviewsPage({
                             </div>
                           </div>
 
-                          <div className="p-5">
-                            <h3 className="font-display font-bold text-lg text-slate-900 leading-tight">
+                          <div className="p-6">
+                            <h3 className="font-display font-bold text-xl text-slate-900 leading-tight">
                               {review.restaurantName}
                             </h3>
                             {locationLabel && (
-                              <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
-                                <MapPin size={14} />
+                              <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
+                                <MapPin size={16} />
                                 <span className="truncate">{locationLabel}</span>
                               </div>
                             )}
                             {excerpt && (
-                              <p className={`mt-4 text-sm text-slate-700 leading-relaxed ${shouldClamp ? 'line-clamp-3' : ''}`}>
+                              <p className={`mt-4 text-base text-slate-700 leading-relaxed ${shouldClamp ? 'line-clamp-3' : ''}`}>
                                 {excerpt}
                               </p>
                             )}
@@ -217,16 +256,32 @@ export default async function ReviewsPage({
                 </h2>
               </div>
               <div className="aspect-[4/3] bg-slate-100 relative">
-                {featuredReview?.coverImage ? (
-                  <Image
-                    src={featuredReview.coverImage}
-                    alt={featuredReview.restaurantName}
-                    fill
-                    sizes="(min-width: 1024px) 320px, 100vw"
-                    className="object-cover"
-                    quality={75}
-                    priority
-                  />
+                {featuredReview?.coverImage ? (() => {
+                  const src = normalizeImageSrc(featuredReview.coverImage || '');
+                  if (!src) return null;
+                  return shouldUseNextImage(src) ? (
+                    <Image
+                      src={src}
+                      alt={featuredReview.restaurantName}
+                      fill
+                      sizes="(min-width: 1024px) 320px, 100vw"
+                      className="object-cover"
+                      quality={80}
+                      priority
+                    />
+                  ) : (
+                    <img
+                      src={src}
+                      alt={featuredReview.restaurantName}
+                      loading="eager"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  );
+                })() : (
+                  <div className="w-full h-full flex items-center justify-center text-slate-400">
+                    <Star size={36} />
+                  </div>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-slate-400">
                     <Star size={36} />
