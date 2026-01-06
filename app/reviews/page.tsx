@@ -122,11 +122,7 @@ export default async function ReviewsPage({
         </div>
 
         {/* Two-column layout w/ independent scroll */}
-        <div
-          className="grid grid-cols-1 lg:grid-cols-12 gap-10"
-          // Ensure animations replay when filters/pagination change (soft navigation may reuse DOM nodes)
-          key={`${selectedCuisine}::${selectedLocation}::${safePage}`}
-        >
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Left: Feed */}
           <div className="lg:col-span-8 xl:col-span-9">
             {filtered.length === 0 ? (
@@ -142,7 +138,11 @@ export default async function ReviewsPage({
               </div>
             ) : (
               <>
-                <div className="columns-1 md:columns-2 gap-8 [column-fill:_balance]">
+                <div
+                  className="columns-1 md:columns-2 gap-8 [column-fill:_balance]"
+                  // Re-run card animations on filter changes without re-animating the sidebar/featured blocks
+                  key={`${selectedCuisine}::${selectedLocation}::${safePage}`}
+                >
                   {pageReviews.map((review, index) => {
                     const locationLabel = (review.locationTag || '').trim() || (review.location?.address || '').trim();
                     const excerpt = (review.excerpt || '').trim();
@@ -213,10 +213,7 @@ export default async function ReviewsPage({
 
                 {/* Pagination */}
                 {filtered.length > pageSize && (
-                  <div
-                    className="mt-12 flex justify-center"
-                    style={{ animation: 'fadeInUp 0.6s ease-out 0.15s both' }}
-                  >
+                  <div className="mt-12 flex justify-center">
                     <div className="flex items-center gap-2">
                       <Link
                         href={baseHref({ page: Math.max(1, safePage - 1), cuisine: selectedCuisine || undefined, location: selectedLocation || undefined })}
