@@ -32,7 +32,7 @@ export default async function ReviewsPage({
         counts.set(key, (counts.get(key) || 0) + 1);
       }
     }
-    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 20);
+    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 8);
   })();
 
   const locationsWithCounts = (() => {
@@ -42,7 +42,7 @@ export default async function ReviewsPage({
       if (!key) continue;
       counts.set(key, (counts.get(key) || 0) + 1);
     }
-    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 20);
+    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 8);
   })();
 
   const filtered = all.filter((r) => {
@@ -114,7 +114,7 @@ export default async function ReviewsPage({
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
+        <div className="mb-8" style={{ animation: 'fadeInUp 0.6s ease-out 0.02s both' }}>
           <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-900">
             Reviews
           </h1>
@@ -139,13 +139,17 @@ export default async function ReviewsPage({
             ) : (
               <>
                 <div className="columns-1 md:columns-2 gap-8 [column-fill:_balance]">
-                  {pageReviews.map((review) => {
+                  {pageReviews.map((review, index) => {
                     const locationLabel = (review.locationTag || '').trim() || (review.location?.address || '').trim();
                     const excerpt = (review.excerpt || '').trim();
                     const shouldClamp = excerpt.length > 150;
                     const imgSrc = normalizeImageSrc(review.coverImage || '');
                     return (
-                      <div key={review.id} className="mb-8 break-inside-avoid">
+                      <div
+                        key={review.id}
+                        className="mb-8 break-inside-avoid"
+                        style={{ animation: `fadeInUp 0.6s ease-out ${0.06 + index * 0.05}s both` }}
+                      >
                         <Link
                           href={`/reviews/${review.slug}`}
                           className="block bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all overflow-hidden group"
@@ -205,13 +209,10 @@ export default async function ReviewsPage({
 
                 {/* Pagination */}
                 {filtered.length > pageSize && (
-                  <div className="mt-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div className="text-sm text-slate-600">
-                      Showing <span className="font-semibold text-slate-900">{filtered.length ? startIndex + 1 : 0}</span>–
-                      <span className="font-semibold text-slate-900">{endIndex}</span> of{' '}
-                      <span className="font-semibold text-slate-900">{filtered.length}</span>
-                    </div>
-
+                  <div
+                    className="mt-12 flex justify-center"
+                    style={{ animation: 'fadeInUp 0.6s ease-out 0.15s both' }}
+                  >
                     <div className="flex items-center gap-2">
                       <Link
                         href={baseHref({ page: Math.max(1, safePage - 1), cuisine: selectedCuisine || undefined, location: selectedLocation || undefined })}
@@ -248,7 +249,10 @@ export default async function ReviewsPage({
           {/* Right: Sidebar */}
           <aside className="lg:col-span-4 xl:col-span-3 space-y-6 lg:sticky lg:top-24 h-fit">
             {/* Featured */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div
+              className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+              style={{ animation: 'fadeInUp 0.6s ease-out 0.08s both' }}
+            >
               <div className="p-5 border-b border-slate-200">
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Featured</p>
                 <h2 className="mt-2 font-display font-bold text-xl text-slate-900 leading-tight">
@@ -313,7 +317,10 @@ export default async function ReviewsPage({
             </div>
 
             {/* Cuisines */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div
+              className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+              style={{ animation: 'fadeInUp 0.6s ease-out 0.14s both' }}
+            >
               <div className="p-5 border-b border-slate-200">
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Cuisines</p>
                 <p className="mt-2 text-sm text-slate-600">Filter the feed by cuisine.</p>
@@ -323,7 +330,7 @@ export default async function ReviewsPage({
                   <p className="text-sm text-slate-600">No cuisine tags yet.</p>
                 ) : (
                   <div className="flex flex-col gap-1">
-                    {cuisinesWithCounts.map(([cuisine, count]) => {
+                    {cuisinesWithCounts.map(([cuisine]) => {
                       const active = selectedCuisine === cuisine;
                       return (
                         <Link
@@ -338,7 +345,6 @@ export default async function ReviewsPage({
                           }`}
                         >
                           <span className="font-semibold">{cuisine}</span>
-                          <span className={`text-xs font-bold ${active ? 'text-white/80' : 'text-slate-500'}`}>{count}</span>
                         </Link>
                       );
                     })}
@@ -348,7 +354,10 @@ export default async function ReviewsPage({
             </div>
 
             {/* Locations */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div
+              className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+              style={{ animation: 'fadeInUp 0.6s ease-out 0.2s both' }}
+            >
               <div className="p-5 border-b border-slate-200">
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Locations</p>
                 <p className="mt-2 text-sm text-slate-600">Filter the feed by city/neighborhood.</p>
@@ -358,7 +367,7 @@ export default async function ReviewsPage({
                   <p className="text-sm text-slate-600">No location tags yet.</p>
                 ) : (
                   <div className="flex flex-col gap-1">
-                    {locationsWithCounts.map(([loc, count]) => {
+                    {locationsWithCounts.map(([loc]) => {
                       const active = selectedLocation === loc;
                       return (
                         <Link
@@ -373,7 +382,6 @@ export default async function ReviewsPage({
                           }`}
                         >
                           <span className="font-semibold truncate">{loc}</span>
-                          <span className={`text-xs font-bold flex-shrink-0 ${active ? 'text-white/80' : 'text-slate-500'}`}>{count}</span>
                         </Link>
                       );
                     })}
