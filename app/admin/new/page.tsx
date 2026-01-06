@@ -183,6 +183,7 @@ function AdminForm() {
 
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [cropperState, setCropperState] = useState<{ imageUrl: string; imageIndex: number } | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
@@ -292,8 +293,28 @@ useEffect(() => {
   // NOTE: Avoid auto-resizing the content textarea while typing.
   // Resizing on every keystroke can cause page scroll "jumping" as layout changes.
 
-  const handleSubmit = async (e: React.FormEvent, isDraft: boolean = false) => {
+  type SubmitAction = 'draft' | 'save' | 'publish';
+
+  const normalizeReviewForForm = (review: Review): Partial<Review> => {
+    return {
+      ...review,
+      venueType: (review as any).venueType || 'restaurant',
+      featuredTag: (review as any).featuredTag || '',
+      tags: {
+        cuisines: review.tags?.cuisines || [],
+        vibes: review.tags?.vibes || [],
+        foodTypes: review.tags?.foodTypes || [],
+      },
+    };
+  };
+
+  const handleSubmit = async (e: React.FormEvent, action: SubmitAction = 'publish') => {
     e.preventDefault();
+
+    const isDraft =
+      action === 'draft' ? true : action === 'publish' ? false : Boolean(formData.isDraft);
+
+    if (isSaving) return;
 
     if (!isDraft && (!formData.location?.lat || !formData.location?.lng)) {
       showToast('Please find coordinates for the restaurant address first', 'error');
@@ -306,6 +327,7 @@ useEffect(() => {
     }
 
     try {
+      setIsSaving(true);
       const url = editId ? `/api/reviews/${editId}` : '/api/reviews';
       const method = editId ? 'PATCH' : 'POST';
       const payload = { ...formData, isDraft };
@@ -332,38 +354,62 @@ useEffect(() => {
         ? (isDraft ? 'Draft saved successfully!' : 'Review updated successfully!')
         : (isDraft ? 'Draft saved successfully!' : 'Review published successfully!');
 
-      if (editId || isDraft) {
+      // Draft: save + exit back to dashboard (existing behavior)
+      if (action === 'draft') {
         router.push(`/admin?message=${encodeURIComponent(successMessage)}`);
-      } else {
-        showToast(`Review published successfully! Slug: ${savedReview.slug}`, 'success');
-        // Reset form...
-        setFormData({
-          contentType: 'review',
-          title: '',
-          restaurantName: '',
-          excerpt: '',
-          content: '',
-          rating: 0,
-          venueType: 'restaurant',
-          featuredTag: '',
-          location: { address: '', lat: 0, lng: 0 },
-          locationTag: '',
-          website: '',
-          instagram: '',
-          yelp: '',
-          priceRange: 2,
-          tags: { cuisines: [], vibes: [], foodTypes: [] },
-          favoriteDishes: [],
-          leastFavoriteDishes: [],
-          coverImage: '',
-          images: [],
-          author: 'Tanner Lee',
-          publishedAt: new Date().toISOString().slice(0, 16),
-        });
+        return;
       }
+
+      // Save: persist and stay on editor
+      if (action === 'save') {
+        setLastSaved(new Date());
+
+        // If this was a brand new review, switch into edit mode without leaving the page
+        if (!editId && savedReview?.id) {
+          router.replace(`/admin/new?edit=${encodeURIComponent(savedReview.id)}`);
+          setFormData(normalizeReviewForForm(savedReview));
+        }
+
+        showToast('Saved', 'success');
+        return;
+      }
+
+      // Publish: for edits, exit to dashboard; for new, keep existing "publish + reset" flow
+      if (editId) {
+        router.push(`/admin?message=${encodeURIComponent(successMessage)}`);
+        return;
+      }
+
+      showToast(`Review published successfully! Slug: ${savedReview.slug}`, 'success');
+      // Reset form...
+      setFormData({
+        contentType: 'review',
+        title: '',
+        restaurantName: '',
+        excerpt: '',
+        content: '',
+        rating: 0,
+        venueType: 'restaurant',
+        featuredTag: '',
+        location: { address: '', lat: 0, lng: 0 },
+        locationTag: '',
+        website: '',
+        instagram: '',
+        yelp: '',
+        priceRange: 2,
+        tags: { cuisines: [], vibes: [], foodTypes: [] },
+        favoriteDishes: [],
+        leastFavoriteDishes: [],
+        coverImage: '',
+        images: [],
+        author: 'Tanner Lee',
+        publishedAt: new Date().toISOString().slice(0, 16),
+      });
     } catch (error) {
       console.error('Error saving review:', error);
       showToast('Failed to save review. Please try again.', 'error');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -508,17 +554,27 @@ useEffect(() => {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={(e) => handleSubmit(e, true)}
-              className="px-4 py-2 text-sm font-medium text-secondary bg-accent hover:bg-accent/80 rounded-lg transition-colors"
+              onClick={(e) => handleSubmit(e, 'draft')}
+              disabled={isSaving || isUploadingImages}
+              className="px-4 py-2 text-sm font-medium text-secondary bg-accent hover:bg-accent/80 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Save Draft
             </button>
             <button
-              onClick={(e) => handleSubmit(e, false)}
-              className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors flex items-center gap-2"
+              onClick={(e) => handleSubmit(e, 'save')}
+              disabled={isSaving || isUploadingImages}
+              className="px-4 py-2 text-sm font-medium text-secondary bg-white border border-border hover:bg-accent/40 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Save size={16} />
+              Save
+            </button>
+            <button
+              onClick={(e) => handleSubmit(e, 'publish')}
+              disabled={isSaving || isUploadingImages}
+              className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Globe size={16} />
-              Publish
+              {editId ? 'Update' : 'Publish'}
             </button>
           </div>
         </div>

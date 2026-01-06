@@ -47,9 +47,9 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
           {review.restaurantName}
         </h1>
 
-        <div className="flex items-center justify-center gap-3 mb-6 text-sm font-medium tracking-widest text-slate-500 uppercase">
+        <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3 mb-6 text-sm font-medium tracking-wider sm:tracking-widest text-slate-500 uppercase">
           <span>{review.locationTag || 'Seattle, WA'}</span>
-          <span className="w-1 h-1 rounded-full bg-slate-300" />
+          <span className="hidden sm:block w-1 h-1 rounded-full bg-slate-300" />
           <span>{formatDate(review.publishedAt)}</span>
         </div>
 
