@@ -58,8 +58,11 @@ export default async function ReviewsPage({
   });
 
   // Featured should be stable and NOT change based on active filters/pagination.
+  // If admin selected one, use it. Otherwise fall back to "high-rated recent".
   const featuredReview = (() => {
     if (!all.length) return null;
+    const picked = all.find((r) => r.isFeatured);
+    if (picked) return picked;
     const sorted = all.slice().sort((a, b) => {
       const scoreA = (a.rating || 0) * 10 + new Date(a.publishedAt).getTime() / 1e12;
       const scoreB = (b.rating || 0) * 10 + new Date(b.publishedAt).getTime() / 1e12;
@@ -113,16 +116,17 @@ export default async function ReviewsPage({
 
   const getCropStyle = (crop?: { x: number; y: number; zoom: number }) => {
     if (!crop) return null;
-    const zoom = Number.isFinite(crop.zoom) ? crop.zoom : 1;
+    const zoom = Math.max(1, Number.isFinite(crop.zoom) ? crop.zoom : 1);
     const x = Number.isFinite(crop.x) ? crop.x : 50;
     const y = Number.isFinite(crop.y) ? crop.y : 50;
+    // Use object-fit cover + object-position and scale. This reliably fills the container.
     return {
-      width: `${Math.max(1, zoom) * 100}%`,
-      height: 'auto',
-      left: '50%',
-      top: '50%',
-      transform: `translate(-${x}%, -${y}%)`,
-    } as const;
+      // CSS variables let us keep hover scaling while respecting the crop zoom.
+      ['--zoom' as any]: zoom,
+      ['--zoomHover' as any]: zoom * 1.03,
+      objectPosition: `${x}% ${y}%`,
+      transformOrigin: `${x}% ${y}%`,
+    } as React.CSSProperties;
   };
 
   return (
@@ -181,7 +185,7 @@ export default async function ReviewsPage({
                                   alt={review.restaurantName}
                                   loading="lazy"
                                   decoding="async"
-                                  className="absolute transition-transform duration-500"
+                                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 [transform:scale(var(--zoom))] group-hover:[transform:scale(var(--zoomHover))]"
                                   style={cropStyle}
                                 />
                               ) : shouldUseNextImage(imgSrc) ? (
@@ -302,7 +306,7 @@ export default async function ReviewsPage({
                         alt={featuredReview.restaurantName}
                         loading="eager"
                         decoding="async"
-                        className="absolute transition-transform duration-500"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 [transform:scale(var(--zoom))]"
                         style={cropStyle}
                       />
                     );

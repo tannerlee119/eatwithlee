@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Review } from '@/lib/types';
-import { Edit, Trash2, Plus, Star, Search, Filter, MoreHorizontal, LayoutGrid, List as ListIcon } from 'lucide-react';
+import { Edit, Trash2, Plus, Star, Search, Filter, MoreHorizontal, LayoutGrid, List as ListIcon, Sparkles } from 'lucide-react';
 import Toast, { ToastType } from '@/components/Toast';
 
 interface ToastMessage {
@@ -71,6 +71,22 @@ function AdminReviewsContent() {
     } catch (error) {
       console.error('Error deleting review:', error);
       showToast('Failed to delete review. Please try again.', 'error');
+    }
+  };
+
+  const setFeatured = async (id: string) => {
+    try {
+      const response = await fetch('/api/reviews/featured', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      if (!response.ok) throw new Error('Failed to set featured');
+      showToast('Featured review updated!', 'success');
+      loadReviews();
+    } catch (error) {
+      console.error('Error setting featured review:', error);
+      showToast('Failed to set featured review', 'error');
     }
   };
 
@@ -257,6 +273,12 @@ function AdminReviewsContent() {
                           <div className="font-medium text-secondary">{review.restaurantName}</div>
                           <div className="text-xs text-muted">{review.location.address}</div>
                         </div>
+                        {review.isFeatured && (
+                          <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 text-[10px] font-bold uppercase tracking-wider border border-purple-200">
+                            <Sparkles size={12} />
+                            Featured
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -270,6 +292,14 @@ function AdminReviewsContent() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          type="button"
+                          onClick={() => setFeatured(review.id)}
+                          className="p-2 text-muted hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors"
+                          title="Set Featured"
+                        >
+                          <Sparkles size={16} />
+                        </button>
                         <Link
                           href={`/reviews/${review.slug}`}
                           className="p-2 text-muted hover:text-primary hover:bg-orange-50 rounded-lg transition-colors"
@@ -314,6 +344,12 @@ function AdminReviewsContent() {
                     <Star size={12} fill="currentColor" />
                     {review.rating}
                   </div>
+                  {review.isFeatured && (
+                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-purple-700 shadow-sm flex items-center gap-1">
+                      <Sparkles size={12} />
+                      Featured
+                    </div>
+                  )}
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-secondary mb-1 truncate">{review.restaurantName}</h3>
@@ -322,6 +358,14 @@ function AdminReviewsContent() {
                   <div className="flex items-center justify-between pt-4 border-t border-border">
                     <span className="text-xs text-muted">{formatDate(review.publishedAt)}</span>
                     <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setFeatured(review.id)}
+                        className="p-1.5 text-muted hover:text-purple-700 hover:bg-purple-50 rounded-md transition-colors"
+                        title="Set Featured"
+                      >
+                        <Sparkles size={14} />
+                      </button>
                       <Link
                         href={`/admin/new?edit=${review.id}`}
                         className="p-1.5 text-muted hover:text-secondary hover:bg-accent rounded-md transition-colors"

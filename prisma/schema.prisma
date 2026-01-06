@@ -14,6 +14,7 @@ model Review {
   id             String   @id @default(cuid())
   contentType    String   @default("review") // "review" or "list"
   isDraft        Boolean  @default(false) // true for drafts, false for published
+  isFeatured     Boolean  @default(false) // Admin-selected featured review for /reviews
   venueType      String   @default("restaurant") // "restaurant" | "bar" | "cafe"
   featuredTag    String   @default("") // Optional: the tag to feature on the card (e.g. "Steakhouse")
   title          String

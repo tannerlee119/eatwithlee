@@ -10,6 +10,7 @@ export interface Review {
   id: string;
   contentType: ContentType;
   isDraft: boolean;
+  isFeatured?: boolean;
   venueType: VenueType;
   featuredTag: string;
   title: string;

@@ -18,6 +18,7 @@ function dbToReview(dbReview: any): Review {
     id: dbReview.id,
     contentType: dbReview.contentType || 'review',
     isDraft: dbReview.isDraft || false,
+    isFeatured: dbReview.isFeatured ?? false,
     venueType: dbReview.venueType || 'restaurant',
     featuredTag: dbReview.featuredTag || '',
     title: dbReview.title,
@@ -56,6 +57,7 @@ function reviewToDb(review: Partial<Review>) {
   const dbData: any = {
     contentType: review.contentType || 'review',
     isDraft: review.isDraft !== undefined ? review.isDraft : false,
+    isFeatured: review.isFeatured !== undefined ? review.isFeatured : false,
     venueType: review.venueType || 'restaurant',
     featuredTag: review.featuredTag || '',
     title: review.title,
@@ -172,4 +174,11 @@ export async function deleteReview(id: string): Promise<void> {
   await prisma.review.delete({
     where: { id },
   });
+}
+
+export async function setFeaturedReview(id: string): Promise<void> {
+  await prisma.$transaction([
+    prisma.review.updateMany({ data: { isFeatured: false } }),
+    prisma.review.update({ where: { id }, data: { isFeatured: true } }),
+  ]);
 }
