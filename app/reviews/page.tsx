@@ -111,6 +111,20 @@ export default async function ReviewsPage({
     }
   };
 
+  const getCropStyle = (crop?: { x: number; y: number; zoom: number }) => {
+    if (!crop) return null;
+    const zoom = Number.isFinite(crop.zoom) ? crop.zoom : 1;
+    const x = Number.isFinite(crop.x) ? crop.x : 50;
+    const y = Number.isFinite(crop.y) ? crop.y : 50;
+    return {
+      width: `${Math.max(1, zoom) * 100}%`,
+      height: 'auto',
+      left: '50%',
+      top: '50%',
+      transform: `translate(-${x}%, -${y}%)`,
+    } as const;
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -148,6 +162,7 @@ export default async function ReviewsPage({
                     const excerpt = (review.excerpt || '').trim();
                     const shouldClamp = excerpt.length > 150;
                     const imgSrc = normalizeImageSrc(review.coverImage || '');
+                    const cropStyle = getCropStyle(review.coverImageCrop);
                     return (
                       <div
                         key={review.id}
@@ -160,7 +175,16 @@ export default async function ReviewsPage({
                         >
                           <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
                             {imgSrc ? (
-                              shouldUseNextImage(imgSrc) ? (
+                              cropStyle ? (
+                                <img
+                                  src={imgSrc}
+                                  alt={review.restaurantName}
+                                  loading="lazy"
+                                  decoding="async"
+                                  className="absolute transition-transform duration-500"
+                                  style={cropStyle}
+                                />
+                              ) : shouldUseNextImage(imgSrc) ? (
                                 <Image
                                   src={imgSrc}
                                   alt={review.restaurantName}
@@ -268,6 +292,19 @@ export default async function ReviewsPage({
                       <div className="w-full h-full flex items-center justify-center text-slate-400">
                         <Star size={36} />
                       </div>
+                    );
+                  }
+                  const cropStyle = getCropStyle(featuredReview.coverImageCrop);
+                  if (cropStyle) {
+                    return (
+                      <img
+                        src={src}
+                        alt={featuredReview.restaurantName}
+                        loading="eager"
+                        decoding="async"
+                        className="absolute transition-transform duration-500"
+                        style={cropStyle}
+                      />
                     );
                   }
                   return shouldUseNextImage(src) ? (
