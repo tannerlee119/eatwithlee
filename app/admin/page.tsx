@@ -25,7 +25,7 @@ function AdminReviewsContent() {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [page, setPage] = useState(1);
 
-  const PAGE_SIZE = 25;
+  const PAGE_SIZE = 10;
 
   const showToast = (message: string, type: ToastType) => {
     setToast({ message, type });
