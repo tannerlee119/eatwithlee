@@ -348,24 +348,29 @@ export default async function ReviewsPage({
                   </div>
                 )}
               </div>
-              {featuredReview && (
-                <div className="p-5">
-                  <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Featured</p>
-                  <h2 className="mt-2 font-display font-bold text-xl text-slate-900 leading-tight">
-                    {featuredReview.restaurantName}
-                  </h2>
-                  <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
-                    <MapPin size={14} />
-                    <span className="truncate">{(featuredReview.locationTag || '').trim() || (featuredReview.location?.address || '').trim()}</span>
-                  </div>
-                  <Link
-                    href={`/reviews/${featuredReview.slug}`}
-                    className="mt-4 block w-full text-center px-3 py-2 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors"
-                  >
-                    Read
-                  </Link>
-                </div>
-              )}
+              <div className="p-5">
+                {featuredReview ? (
+                  <>
+                    <h2 className="font-display font-bold text-2xl text-slate-900 leading-[1.1] tracking-tight">
+                      {featuredReview.restaurantName || featuredReview.title}
+                    </h2>
+                    <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
+                      <MapPin size={16} />
+                      <span className="truncate">
+                        {(featuredReview.locationTag || '').trim() || (featuredReview.location?.address || '').trim()}
+                      </span>
+                    </div>
+                    <Link
+                      href={`/reviews/${featuredReview.slug}`}
+                      className="mt-4 block w-full text-center px-3 py-2 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors"
+                    >
+                      Read
+                    </Link>
+                  </>
+                ) : (
+                  <p className="text-sm text-slate-600">No featured review yet.</p>
+                )}
+              </div>
             </div>
 
             {/* Cuisines */}
