@@ -128,19 +128,20 @@ export default async function ReviewsPage({
     }
   };
 
+  // Crop semantics match `components/ReviewCard.tsx`:
+  // x/y represent the focal point (%) that should be centered in the container.
   const getCropStyle = (crop?: { x: number; y: number; zoom: number }) => {
     if (!crop) return null;
-    const zoom = Math.max(1, Number.isFinite(crop.zoom) ? crop.zoom : 1);
+    const zoom = Number.isFinite(crop.zoom) ? crop.zoom : 1;
     const x = Number.isFinite(crop.x) ? crop.x : 50;
     const y = Number.isFinite(crop.y) ? crop.y : 50;
-    // Use object-fit cover + object-position and scale. This reliably fills the container.
     return {
-      // CSS variables let us keep hover scaling while respecting the crop zoom.
-      ['--zoom' as any]: zoom,
-      ['--zoomHover' as any]: zoom * 1.03,
-      objectPosition: `${x}% ${y}%`,
-      transformOrigin: `${x}% ${y}%`,
-    } as React.CSSProperties;
+      width: `${Math.max(1, zoom) * 100}%`,
+      height: 'auto',
+      left: '50%',
+      top: '50%',
+      transform: `translate(-${x}%, -${y}%)`,
+    } as const;
   };
 
   return (
@@ -199,7 +200,7 @@ export default async function ReviewsPage({
                                   alt={review.restaurantName}
                                   loading="lazy"
                                   decoding="async"
-                                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 [transform:scale(var(--zoom))] group-hover:[transform:scale(var(--zoomHover))]"
+                                  className="absolute transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                                   style={cropStyle}
                                 />
                               ) : shouldUseNextImage(imgSrc) ? (
@@ -292,16 +293,7 @@ export default async function ReviewsPage({
           {/* Right: Sidebar */}
           <aside className="lg:col-span-4 xl:col-span-3 space-y-6 lg:sticky lg:top-24 h-fit">
             {/* Featured */}
-            <div
-              className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
-              style={{ animation: 'fadeInUp 0.6s ease-out 0.08s both' }}
-            >
-              <div className="p-5 border-b border-slate-200">
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Featured</p>
-                <h2 className="mt-2 font-display font-bold text-xl text-slate-900 leading-tight">
-                  {featuredReview ? featuredReview.restaurantName : 'No reviews yet'}
-                </h2>
-              </div>
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="aspect-[4/3] bg-slate-100 relative">
                 {featuredReview?.coverImage ? (() => {
                   const src = normalizeImageSrc(featuredReview.coverImage || '');
@@ -320,7 +312,7 @@ export default async function ReviewsPage({
                         alt={featuredReview.restaurantName}
                         loading="eager"
                         decoding="async"
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 [transform:scale(var(--zoom))]"
+                        className="absolute transition-transform duration-500 ease-out"
                         style={cropStyle}
                       />
                     );
@@ -358,13 +350,17 @@ export default async function ReviewsPage({
               </div>
               {featuredReview && (
                 <div className="p-5">
-                  <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Featured</p>
+                  <h2 className="mt-2 font-display font-bold text-xl text-slate-900 leading-tight">
+                    {featuredReview.restaurantName}
+                  </h2>
+                  <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
                     <MapPin size={14} />
                     <span className="truncate">{(featuredReview.locationTag || '').trim() || (featuredReview.location?.address || '').trim()}</span>
                   </div>
                   <Link
                     href={`/reviews/${featuredReview.slug}`}
-                    className="block w-full text-center px-3 py-2 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors"
+                    className="mt-4 block w-full text-center px-3 py-2 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors"
                   >
                     Read
                   </Link>
