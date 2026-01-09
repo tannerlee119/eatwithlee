@@ -261,11 +261,10 @@ export default async function ReviewsPage({
                       <Link
                         href={baseHref({ page: Math.max(1, safePage - 1), cuisine: selectedCuisine || undefined, location: selectedLocation || undefined })}
                         aria-disabled={safePage <= 1}
-                        className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
-                          safePage <= 1
-                            ? 'pointer-events-none opacity-50 bg-white border-slate-200 text-slate-500'
-                            : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                        }`}
+                        className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${safePage <= 1
+                          ? 'pointer-events-none opacity-50 bg-white border-slate-200 text-slate-500'
+                          : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                          }`}
                       >
                         Prev
                       </Link>
@@ -275,11 +274,10 @@ export default async function ReviewsPage({
                       <Link
                         href={baseHref({ page: Math.min(totalPages, safePage + 1), cuisine: selectedCuisine || undefined, location: selectedLocation || undefined })}
                         aria-disabled={safePage >= totalPages}
-                        className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
-                          safePage >= totalPages
-                            ? 'pointer-events-none opacity-50 bg-white border-slate-200 text-slate-500'
-                            : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                        }`}
+                        className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${safePage >= totalPages
+                          ? 'pointer-events-none opacity-50 bg-white border-slate-200 text-slate-500'
+                          : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                          }`}
                       >
                         Next
                       </Link>
@@ -293,8 +291,8 @@ export default async function ReviewsPage({
           {/* Right: Sidebar */}
           <aside className="lg:col-span-4 xl:col-span-3 space-y-6 lg:sticky lg:top-24 h-fit">
             {/* Featured */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="aspect-[4/3] bg-slate-100 relative">
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm">
+              <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden rounded-t-2xl">
                 {featuredReview?.coverImage ? (() => {
                   const src = normalizeImageSrc(featuredReview.coverImage || '');
                   if (!src) {
@@ -396,9 +394,8 @@ export default async function ReviewsPage({
                             cuisine: active ? undefined : cuisine,
                             location: selectedLocation || undefined,
                           })}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                            active ? 'bg-slate-900 text-white' : 'hover:bg-slate-50 text-slate-900'
-                          }`}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${active ? 'bg-slate-900 text-white' : 'hover:bg-slate-50 text-slate-900'
+                            }`}
                         >
                           <span className="font-semibold">{cuisine}</span>
                         </Link>
@@ -432,9 +429,8 @@ export default async function ReviewsPage({
                             cuisine: selectedCuisine || undefined,
                             location: active ? undefined : loc,
                           })}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                            active ? 'bg-slate-900 text-white' : 'hover:bg-slate-50 text-slate-900'
-                          }`}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${active ? 'bg-slate-900 text-white' : 'hover:bg-slate-50 text-slate-900'
+                            }`}
                         >
                           <span className="font-semibold truncate">{loc}</span>
                         </Link>
