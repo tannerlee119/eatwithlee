@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Review } from '@/lib/types';
-import { MapPin, Star, ListOrdered } from 'lucide-react';
+import { MapPin, ListOrdered } from 'lucide-react';
 import { useState } from 'react';
 
 interface ReviewCardProps {
@@ -92,11 +92,7 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             </div>
           )}
 
-          {/* Rating Badge (Overlay) */}
-          <div className="absolute top-4 right-4 flex items-center gap-1 bg-white/90 backdrop-blur-sm text-slate-900 px-2.5 py-1 rounded-lg text-xs font-bold shadow-sm">
-            <Star size={12} fill="currentColor" className="text-slate-900" />
-            {review.rating}/10
-          </div>
+
         </div>
 
         {/* Content */}

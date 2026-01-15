@@ -54,10 +54,6 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
         </div>
 
         <div className="flex items-center justify-center gap-4 mb-8">
-          <div className="flex items-center gap-1.5 bg-slate-900 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-md">
-            <Star size={14} fill="currentColor" />
-            <span>{review.rating}/10</span>
-          </div>
           <div className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
             <span>{'$'.repeat(review.priceRange)}</span>
           </div>
@@ -245,9 +241,21 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
         </div>
       </div>
 
+      {/* Score Reveal */}
+      <div
+        className="mt-16 pt-12 border-t border-slate-200 text-center"
+        style={{ animation: 'fadeIn 0.6s ease-out 0.85s both' }}
+      >
+        <p className="text-slate-500 text-sm font-medium uppercase tracking-widest mb-4">The Verdict</p>
+        <div className="inline-flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-xl">
+          <Star size={28} fill="currentColor" />
+          <span className="text-4xl font-display font-bold">{review.rating}/10</span>
+        </div>
+      </div>
+
       {/* Author Footer */}
       <div
-        className="mt-20 pt-8 border-t border-slate-100 text-center"
+        className="mt-12 pt-8 border-t border-slate-100 text-center"
         style={{ animation: 'fadeIn 0.6s ease-out 0.9s both' }}
       >
         <p className="text-slate-400 text-sm font-medium uppercase tracking-widest">
