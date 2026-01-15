@@ -29,8 +29,8 @@ export default function RestaurantMap({ lat, lng, name, address }: RestaurantMap
           const width = 800;
           const height = 512;
 
-          // Offset the center slightly north so marker appears centered in visible area
-          const offsetLat = lat + 0.002;
+          // Offset the center slightly south so marker appears centered in visible area
+          const offsetLat = lat - 0.003;
 
           // Google Maps Static API URL with small marker
           const url = `https://maps.googleapis.com/maps/api/staticmap?center=${offsetLat},${lng}&zoom=${zoom}&size=${width}x${height}&scale=2&markers=size:mid%7C${lat},${lng}&key=${data.apiKey}`;
