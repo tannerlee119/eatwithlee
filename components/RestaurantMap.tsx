@@ -25,12 +25,15 @@ export default function RestaurantMap({ lat, lng, name, address }: RestaurantMap
       .then(res => res.json())
       .then(data => {
         if (data.apiKey) {
-          const zoom = 14;
+          const zoom = 15;
           const width = 800;
-          const height = 384;
+          const height = 512;
+
+          // Offset the center slightly north so marker appears centered in visible area
+          const offsetLat = lat + 0.002;
 
           // Google Maps Static API URL with small marker
-          const url = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${width}x${height}&scale=2&markers=size:mid%7C${lat},${lng}&key=${data.apiKey}`;
+          const url = `https://maps.googleapis.com/maps/api/staticmap?center=${offsetLat},${lng}&zoom=${zoom}&size=${width}x${height}&scale=2&markers=size:mid%7C${lat},${lng}&key=${data.apiKey}`;
           console.log('Map URL generated:', url.replace(data.apiKey, 'API_KEY_HIDDEN'));
           setMapUrl(url);
         } else {

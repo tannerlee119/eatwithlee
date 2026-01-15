@@ -243,13 +243,16 @@ export default function AnimatedReviewPage({ review }: AnimatedReviewPageProps) 
 
       {/* Score Reveal */}
       <div
-        className="mt-16 pt-12 border-t border-slate-200 text-center"
+        className="mt-12 pt-8 border-t border-slate-100 text-center"
         style={{ animation: 'fadeIn 0.6s ease-out 0.85s both' }}
       >
-        <p className="text-slate-500 text-sm font-medium uppercase tracking-widest mb-4">The Verdict</p>
-        <div className="inline-flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-xl">
-          <Star size={28} fill="currentColor" />
-          <span className="text-4xl font-display font-bold">{review.rating}/10</span>
+        <div className="inline-flex items-center gap-2 text-slate-600">
+          <span className="text-sm font-medium uppercase tracking-widest">The Verdict</span>
+          <span className="text-slate-300">—</span>
+          <span className="flex items-center gap-1.5 text-slate-900 font-bold">
+            <Star size={14} fill="currentColor" />
+            {review.rating}/10
+          </span>
         </div>
       </div>
 

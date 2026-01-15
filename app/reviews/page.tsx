@@ -226,10 +226,7 @@ export default async function ReviewsPage({
                                 <Star size={28} />
                               </div>
                             )}
-                            <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-slate-900 shadow-sm flex items-center gap-1">
-                              <Star size={12} fill="currentColor" />
-                              {review.rating}/10
-                            </div>
+
                           </div>
 
                           <div className="p-6">
@@ -339,12 +336,7 @@ export default async function ReviewsPage({
                     <Star size={36} />
                   </div>
                 )}
-                {featuredReview && (
-                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-slate-900 shadow-sm flex items-center gap-1">
-                    <Star size={12} fill="currentColor" />
-                    {featuredReview.rating}/10
-                  </div>
-                )}
+
               </div>
               <div className="p-5">
                 {featuredReview ? (
