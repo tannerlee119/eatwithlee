@@ -172,7 +172,7 @@ export default async function ReviewsPage({
             ) : (
               <>
                 <div
-                  className="columns-1 md:columns-2 gap-8 [column-fill:_balance]"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-8"
                   // Re-run card animations on filter changes without re-animating the sidebar/featured blocks
                   key={`${selectedCuisine}::${selectedLocation}::${safePage}`}
                 >
@@ -185,7 +185,7 @@ export default async function ReviewsPage({
                     return (
                       <div
                         key={review.id}
-                        className="mb-8 break-inside-avoid"
+                        className=""
                         style={{ animation: `fadeInUp 0.6s ease-out ${0.06 + index * 0.05}s both` }}
                       >
                         <Link
