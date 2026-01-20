@@ -686,6 +686,16 @@ useEffect(() => {
                   </div>
                 </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-secondary mb-1.5">Publishing Date</label>
+                  <input
+                    type="datetime-local"
+                    value={formData.publishedAt?.slice(0, 16) || ''}
+                    onChange={(e) => setFormData({ ...formData, publishedAt: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                  />
+                </div>
+
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-secondary mb-1.5">Excerpt</label>
                   <textarea
