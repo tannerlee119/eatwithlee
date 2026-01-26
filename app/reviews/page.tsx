@@ -157,7 +157,10 @@ export default async function ReviewsPage({
         {/* Mobile Featured Post - shown only on small screens */}
         {featuredReview && (
           <div className="mb-8 lg:hidden">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <Link
+              href={`/reviews/${featuredReview.slug}`}
+              className="block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+            >
               <div className="aspect-[16/9] bg-slate-100 relative overflow-hidden rounded-t-2xl">
                 {/* Featured Badge */}
                 <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-slate-900/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider shadow-sm uppercase">
@@ -220,14 +223,8 @@ export default async function ReviewsPage({
                     {(featuredReview.locationTag || '').trim() || (featuredReview.location?.address || '').trim()}
                   </span>
                 </div>
-                <Link
-                  href={`/reviews/${featuredReview.slug}`}
-                  className="mt-4 block w-full text-center px-3 py-2 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors"
-                >
-                  Read
-                </Link>
               </div>
-            </div>
+            </Link>
           </div>
         )}
 
@@ -365,7 +362,10 @@ export default async function ReviewsPage({
           {/* Right: Sidebar */}
           <aside className="lg:col-span-4 xl:col-span-3 space-y-6 lg:sticky lg:top-24 h-fit">
             {/* Featured - hidden on mobile, shown in sidebar on desktop */}
-            <div className="hidden lg:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <Link
+              href={featuredReview ? `/reviews/${featuredReview.slug}` : '#'}
+              className="hidden lg:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+            >
               <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden rounded-t-2xl">
                 {/* Featured Badge */}
                 <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-slate-900/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider shadow-sm uppercase">
@@ -432,18 +432,12 @@ export default async function ReviewsPage({
                         {(featuredReview.locationTag || '').trim() || (featuredReview.location?.address || '').trim()}
                       </span>
                     </div>
-                    <Link
-                      href={`/reviews/${featuredReview.slug}`}
-                      className="mt-4 block w-full text-center px-3 py-2 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors"
-                    >
-                      Read
-                    </Link>
                   </>
                 ) : (
                   <p className="text-sm text-slate-600">No featured review yet.</p>
                 )}
               </div>
-            </div>
+            </Link>
 
             {/* Cuisines */}
             <div
