@@ -95,7 +95,7 @@ export default function ContactPage() {
               See my reviews and contributions on Yelp
             </p>
             <a
-              href="https://www.yelp.com/user_details?userid=YOUR_YELP_ID"
+              href="https://www.yelp.com/user_details?userid=PLSjHiJgk6VDYQO8RigTuw"
               target="_blank"
               rel="noopener noreferrer"
               className="text-secondary hover:text-gray-900 transition-colors font-medium"
