@@ -3,25 +3,31 @@ import { Instagram } from 'lucide-react';
 export default function AboutPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-5xl font-display font-bold mb-8 text-gray-900">
+      <h1
+        className="text-5xl font-display font-bold mb-8 text-gray-900"
+        style={{ animation: 'fadeInUp 0.6s ease-out 0.02s both' }}
+      >
         About Eat with Lee
       </h1>
 
       <div className="prose prose-lg max-w-none space-y-6 text-gray-700">
-        <p>
+        <p style={{ animation: 'fadeInUp 0.6s ease-out 0.08s both' }}>
           Welcome to Eat with Lee, where I share my culinary adventures and restaurant
           discoveries. From hidden gems to renowned establishments, I explore the diverse
           food scene and bring you honest and detailed reviews of my dining experiences.
         </p>
 
-        <p>
+        <p style={{ animation: 'fadeInUp 0.6s ease-out 0.14s both' }}>
           Each review goes beyond just the food—I dive into the atmosphere, service,
           location, and overall experience to give you a complete picture of what to expect.
           Whether you&apos;re looking for the perfect date night spot, a casual lunch destination,
           or just craving something specific, I hope my reviews help guide your next meal.
         </p>
 
-        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-8">
+        <div
+          className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-8"
+          style={{ animation: 'fadeInUp 0.6s ease-out 0.2s both' }}
+        >
           <h2 className="text-2xl font-display font-semibold mb-4 text-gray-900">
             Connect with Me
           </h2>
@@ -47,7 +53,10 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <p className="text-sm text-gray-600 mt-8">
+        <p
+          className="text-sm text-gray-600 mt-8"
+          style={{ animation: 'fadeInUp 0.6s ease-out 0.26s both' }}
+        >
           All reviews are based on my personal experiences and opinions. Ratings reflect
           my overall impression including food quality, service, atmosphere, and value.
         </p>

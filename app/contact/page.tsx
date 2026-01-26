@@ -3,16 +3,25 @@ import { Mail, Instagram } from 'lucide-react';
 export default function ContactPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-5xl font-display font-bold mb-8 text-gray-900">
+      <h1
+        className="text-5xl font-display font-bold mb-8 text-gray-900"
+        style={{ animation: 'fadeInUp 0.6s ease-out 0.02s both' }}
+      >
         Contact
       </h1>
 
       <div className="prose prose-lg max-w-none space-y-8">
-        <p className="text-xl text-gray-700">
+        <p
+          className="text-xl text-gray-700"
+          style={{ animation: 'fadeInUp 0.6s ease-out 0.08s both' }}
+        >
           Have a restaurant suggestion or want to collaborate? I&apos;d love to hear from you!
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose"
+          style={{ animation: 'fadeInUp 0.6s ease-out 0.14s both' }}
+        >
           {/* Email */}
           <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
             <div className="flex items-center gap-3 mb-3">
@@ -85,7 +94,10 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="bg-accent border border-gray-200 rounded-xl p-6 mt-8">
+        <div
+          className="bg-accent border border-gray-200 rounded-xl p-6 mt-8"
+          style={{ animation: 'fadeInUp 0.6s ease-out 0.2s both' }}
+        >
           <h3 className="text-lg font-display font-semibold text-gray-900 mb-2">
             Restaurant Recommendations
           </h3>
