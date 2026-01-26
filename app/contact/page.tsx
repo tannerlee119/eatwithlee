@@ -83,25 +83,14 @@ export default function ContactPage() {
             </a>
           </div>
 
-          {/* Yelp */}
+          {/* Placeholder for future contact form */}
           <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-2xl font-bold text-secondary">Y</span>
-              <h2 className="text-xl font-display font-semibold text-gray-900">
-                Yelp
-              </h2>
-            </div>
-            <p className="text-gray-600 mb-4">
-              See my reviews and contributions on Yelp
+            <h2 className="text-xl font-display font-semibold text-gray-900 mb-3">
+              Contact Form
+            </h2>
+            <p className="text-gray-600">
+              Coming soon! A direct contact form will be available here.
             </p>
-            <a
-              href="https://www.yelp.com/user_details?userid=PLSjHiJgk6VDYQO8RigTuw"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-secondary hover:text-gray-900 transition-colors font-medium"
-            >
-              View My Yelp Profile
-            </a>
           </div>
         </div>
 

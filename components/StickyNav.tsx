@@ -37,7 +37,7 @@ export default function StickyNav({ items }: { items: NavItem[] }) {
                   key={item.href}
                   href={item.href}
                   className={[
-                    'transition-all hover:text-gray-900 hover:scale-110',
+                    'transition-colors hover:text-gray-900',
                     active ? 'text-gray-900' : 'text-gray-600',
                   ].join(' ')}
                 >

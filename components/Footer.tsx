@@ -48,14 +48,6 @@ export default function Footer() {
             >
               Beli
             </a>
-            <a
-              href="https://www.yelp.com/user_details?userid=PLSjHiJgk6VDYQO8RigTuw"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-gray-900 transition-colors text-sm font-medium text-gray-500"
-            >
-              Yelp
-            </a>
           </div>
 
           {/* Copyright */}
