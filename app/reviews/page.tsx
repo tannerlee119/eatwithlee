@@ -154,6 +154,83 @@ export default async function ReviewsPage({
           <p className="mt-2 text-slate-600">All restaurant & bar reviews.</p>
         </div>
 
+        {/* Mobile Featured Post - shown only on small screens */}
+        {featuredReview && (
+          <div className="mb-8 lg:hidden">
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="aspect-[16/9] bg-slate-100 relative overflow-hidden rounded-t-2xl">
+                {/* Featured Badge */}
+                <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-slate-900/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider shadow-sm uppercase">
+                  <span>FEATURED</span>
+                </div>
+                {featuredReview.coverImage ? (() => {
+                  const src = normalizeImageSrc(featuredReview.coverImage || '');
+                  if (!src) {
+                    return (
+                      <div className="w-full h-full flex items-center justify-center text-slate-400">
+                        <Star size={36} />
+                      </div>
+                    );
+                  }
+                  const cropStyle = getCropStyle(featuredReview.coverImageCrop);
+                  if (cropStyle) {
+                    return (
+                      <img
+                        src={src}
+                        alt={featuredReview.restaurantName}
+                        loading="eager"
+                        decoding="async"
+                        className="absolute transition-transform duration-500 ease-out"
+                        style={cropStyle}
+                      />
+                    );
+                  }
+                  return shouldUseNextImage(src) ? (
+                    <Image
+                      src={src}
+                      alt={featuredReview.restaurantName}
+                      fill
+                      sizes="100vw"
+                      className="object-cover"
+                      quality={80}
+                      priority
+                    />
+                  ) : (
+                    <img
+                      src={src}
+                      alt={featuredReview.restaurantName}
+                      loading="eager"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  );
+                })() : (
+                  <div className="w-full h-full flex items-center justify-center text-slate-400">
+                    <Star size={36} />
+                  </div>
+                )}
+              </div>
+              <div className="p-5">
+                <h2 className="font-display font-bold text-2xl text-slate-900 leading-[1.1] tracking-tight">
+                  {featuredReview.restaurantName || featuredReview.title}
+                </h2>
+                <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
+                  <MapPin size={16} />
+                  <span className="truncate">
+                    {(featuredReview.locationTag || '').trim() || (featuredReview.location?.address || '').trim()}
+                  </span>
+                </div>
+                <Link
+                  href={`/reviews/${featuredReview.slug}`}
+                  className="mt-4 block w-full text-center px-3 py-2 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors"
+                >
+                  Read
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Two-column layout w/ independent scroll */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Left: Feed */}
@@ -287,8 +364,8 @@ export default async function ReviewsPage({
 
           {/* Right: Sidebar */}
           <aside className="lg:col-span-4 xl:col-span-3 space-y-6 lg:sticky lg:top-24 h-fit">
-            {/* Featured */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            {/* Featured - hidden on mobile, shown in sidebar on desktop */}
+            <div className="hidden lg:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden rounded-t-2xl">
                 {/* Featured Badge */}
                 <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-slate-900/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider shadow-sm uppercase">
