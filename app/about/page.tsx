@@ -50,6 +50,15 @@ export default function AboutPage() {
               <span className="font-bold text-xl">B</span>
               <span className="font-medium">Check out my Beli profile</span>
             </a>
+            <a
+              href="https://www.yelp.com/user_details?userid=YOUR_YELP_ID"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 text-gray-700 hover:text-primary transition-colors"
+            >
+              <span className="font-bold text-xl">Y</span>
+              <span className="font-medium">Find me on Yelp</span>
+            </a>
           </div>
         </div>
 

@@ -35,7 +35,7 @@ export default function Header() {
         <nav className="mt-6 hidden md:block">
           <div className="inline-flex flex-wrap justify-center gap-x-8 gap-y-2 rounded-xl border border-slate-200 bg-white px-6 py-3 shadow-sm text-sm font-semibold text-gray-600 uppercase tracking-[0.18em]">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href} className="hover:text-gray-900 transition-colors">
+              <Link key={item.href} href={item.href} className="hover:text-gray-900 hover:scale-110 transition-all">
                 {item.label}
               </Link>
             ))}
