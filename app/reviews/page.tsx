@@ -289,12 +289,12 @@ export default async function ReviewsPage({
           <aside className="lg:col-span-4 xl:col-span-3 space-y-6 lg:sticky lg:top-24 h-fit">
             {/* Featured */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="flex justify-center py-4">
-                <span className="px-6 py-2 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest rounded-full">
-                  Featured Post
-                </span>
-              </div>
-              <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
+              <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden rounded-t-2xl">
+                {/* Featured Badge */}
+                <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-slate-900/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider shadow-sm uppercase">
+                  <span>FEATURED</span>
+                </div>
+
                 {featuredReview?.coverImage ? (() => {
                   const src = normalizeImageSrc(featuredReview.coverImage || '');
                   if (!src) {
