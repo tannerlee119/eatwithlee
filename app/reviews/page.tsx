@@ -269,14 +269,16 @@ export default async function ReviewsPage({
                           <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
                             {imgSrc ? (
                               cropStyle ? (
-                                <img
-                                  src={imgSrc}
-                                  alt={review.restaurantName}
-                                  loading="lazy"
-                                  decoding="async"
-                                  className="absolute transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                                  style={cropStyle}
-                                />
+                                <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105">
+                                  <img
+                                    src={imgSrc}
+                                    alt={review.restaurantName}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="absolute"
+                                    style={cropStyle}
+                                  />
+                                </div>
                               ) : shouldUseNextImage(imgSrc) ? (
                                 <Image
                                   src={imgSrc}
