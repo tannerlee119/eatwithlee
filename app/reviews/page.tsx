@@ -289,8 +289,10 @@ export default async function ReviewsPage({
           <aside className="lg:col-span-4 xl:col-span-3 space-y-6 lg:sticky lg:top-24 h-fit">
             {/* Featured */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="p-4 border-b border-slate-200">
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Featured Post</p>
+              <div className="flex justify-center py-4">
+                <span className="px-6 py-2 bg-slate-900 text-white text-xs font-bold uppercase tracking-widest rounded-full">
+                  Featured Post
+                </span>
               </div>
               <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
                 {featuredReview?.coverImage ? (() => {
