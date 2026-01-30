@@ -62,9 +62,8 @@ function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCa
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative group rounded-xl border-2 transition-all overflow-hidden bg-white ${
-        isCover ? 'border-primary shadow-md ring-2 ring-primary/20' : 'border-border hover:border-primary/50'
-      }`}
+      className={`relative group rounded-xl border-2 transition-all overflow-hidden bg-white ${isCover ? 'border-primary shadow-md ring-2 ring-primary/20' : 'border-border hover:border-primary/50'
+        }`}
     >
       <div className="aspect-[4/3] relative bg-accent">
         <img
@@ -72,7 +71,7 @@ function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCa
           alt={image.caption || `Upload ${index + 1}`}
           className="w-full h-full object-cover"
         />
-        
+
         {/* Drag Handle */}
         <div
           {...attributes}
@@ -258,20 +257,20 @@ function AdminForm() {
   }, [editId]);
 
   // Auto-save functionality
-useEffect(() => {
-  if (editId || isLoading) return; // Don't auto-save if editing existing review (for now) or loading
+  useEffect(() => {
+    if (editId || isLoading) return; // Don't auto-save if editing existing review (for now) or loading
 
-  const timeoutId = setTimeout(() => {
-    if (formData.restaurantName || formData.title) {
-      setIsAutoSaving(true);
-      localStorage.setItem('review_draft', JSON.stringify({ ...formData, _savedAt: new Date().toISOString() }));
-      setLastSaved(new Date());
-      setTimeout(() => setIsAutoSaving(false), 500);
-    }
-  }, 2000);
+    const timeoutId = setTimeout(() => {
+      if (formData.restaurantName || formData.title) {
+        setIsAutoSaving(true);
+        localStorage.setItem('review_draft', JSON.stringify({ ...formData, _savedAt: new Date().toISOString() }));
+        setLastSaved(new Date());
+        setTimeout(() => setIsAutoSaving(false), 500);
+      }
+    }, 2000);
 
-  return () => clearTimeout(timeoutId);
-}, [formData, editId, isLoading]);
+    return () => clearTimeout(timeoutId);
+  }, [formData, editId, isLoading]);
 
   // Build dropdown options for featured tag from current tags
   const featuredTagOptions = Array.from(
@@ -344,7 +343,7 @@ useEffect(() => {
       }
 
       const savedReview = await response.json();
-      
+
       // Clear local draft on successful save
       if (!editId) {
         localStorage.removeItem('review_draft');
@@ -475,7 +474,7 @@ useEffect(() => {
       const response = await fetch(`/api/geocode?address=${encodeURIComponent(formData.location.address)}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Address not found');
-      
+
       setFormData(prev => ({
         ...prev,
         location: { address: data.displayName || prev.location!.address, lat: data.lat, lng: data.lng }
@@ -590,7 +589,7 @@ useEffect(() => {
                 <Tag size={20} className="text-primary" />
                 Basic Information
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-secondary mb-1.5">Restaurant Name</label>
@@ -622,11 +621,10 @@ useEffect(() => {
                         key={type}
                         type="button"
                         onClick={() => setFormData({ ...formData, venueType: type })}
-                        className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all capitalize ${
-                          formData.venueType === type
+                        className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all capitalize ${formData.venueType === type
                             ? 'bg-white text-primary shadow-sm'
                             : 'text-muted hover:text-secondary'
-                        }`}
+                          }`}
                       >
                         {type}
                       </button>
@@ -674,11 +672,10 @@ useEffect(() => {
                         key={price}
                         type="button"
                         onClick={() => setFormData({ ...formData, priceRange: price })}
-                        className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all ${
-                          formData.priceRange === price
+                        className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all ${formData.priceRange === price
                             ? 'bg-white text-primary shadow-sm'
                             : 'text-muted hover:text-secondary'
-                        }`}
+                          }`}
                       >
                         {Array(price).fill('$').join('')}
                       </button>
@@ -828,7 +825,8 @@ useEffect(() => {
                   onBeforeUploadBegin={handleBeforeUpload}
                   onUploadBegin={() => setActiveUploads(prev => prev + 1)}
                   onClientUploadComplete={(res) => {
-                    setActiveUploads(prev => Math.max(prev - 1, 0));
+                    // Reset to 0 since onClientUploadComplete fires once for the entire batch
+                    setActiveUploads(0);
                     if (res) {
                       const newImages = res.map(file => ({ url: file.url, caption: '' }));
                       setFormData(prev => ({
@@ -840,7 +838,8 @@ useEffect(() => {
                     }
                   }}
                   onUploadError={(error: Error) => {
-                    setActiveUploads(prev => Math.max(prev - 1, 0));
+                    // Reset to 0 on error to unblock the UI
+                    setActiveUploads(0);
                     showToast(`Upload failed: ${error.message}`, 'error');
                   }}
                   appearance={{
@@ -960,35 +959,35 @@ useEffect(() => {
                 </div>
               </div>
 
-          {/* Food Types */}
-          <div>
-            <label className="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Food Types</label>
-            <div className="flex gap-2 mb-2">
-              <input
-                type="text"
-                value={tagInput.foodType}
-                onChange={(e) => setTagInput({ ...tagInput, foodType: e.target.value })}
-                onKeyPress={(e) => e.key === 'Enter' && (addTag('foodTypes', tagInput.foodType), setTagInput({ ...tagInput, foodType: '' }))}
-                className="flex-1 px-3 py-1.5 text-sm bg-surface border border-border rounded-md"
-                placeholder="Add food type..."
-              />
-              <button
-                type="button"
-                onClick={() => (addTag('foodTypes', tagInput.foodType), setTagInput({ ...tagInput, foodType: '' }))}
-                className="px-3 py-1.5 bg-primary text-white rounded-md text-sm"
-              >
-                Add
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {formData.tags?.foodTypes?.map((tag, i) => (
-                <span key={i} className="px-2 py-1 bg-slate-200 text-slate-800 rounded text-xs font-medium flex items-center gap-1">
-                  {tag}
-                  <button type="button" onClick={() => removeTag('foodTypes', i)} className="hover:text-slate-900">×</button>
-                </span>
-              ))}
-            </div>
-          </div>
+              {/* Food Types */}
+              <div>
+                <label className="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Food Types</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={tagInput.foodType}
+                    onChange={(e) => setTagInput({ ...tagInput, foodType: e.target.value })}
+                    onKeyPress={(e) => e.key === 'Enter' && (addTag('foodTypes', tagInput.foodType), setTagInput({ ...tagInput, foodType: '' }))}
+                    className="flex-1 px-3 py-1.5 text-sm bg-surface border border-border rounded-md"
+                    placeholder="Add food type..."
+                  />
+                  <button
+                    type="button"
+                    onClick={() => (addTag('foodTypes', tagInput.foodType), setTagInput({ ...tagInput, foodType: '' }))}
+                    className="px-3 py-1.5 bg-primary text-white rounded-md text-sm"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {formData.tags?.foodTypes?.map((tag, i) => (
+                    <span key={i} className="px-2 py-1 bg-slate-200 text-slate-800 rounded text-xs font-medium flex items-center gap-1">
+                      {tag}
+                      <button type="button" onClick={() => removeTag('foodTypes', i)} className="hover:text-slate-900">×</button>
+                    </span>
+                  ))}
+                </div>
+              </div>
 
               {/* Favorite Dishes */}
               <div>
