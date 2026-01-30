@@ -83,7 +83,7 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             <div className="absolute inset-0 bg-slate-100" />
           )}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-          
+
           {/* Content Type Badge */}
           {review.contentType === 'list' && (
             <div className="absolute top-4 left-4 flex items-center gap-1 bg-white/90 backdrop-blur-sm text-slate-900 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider shadow-sm uppercase">
@@ -119,16 +119,9 @@ export default function ReviewCard({ review, index = 0 }: ReviewCardProps) {
           </div>
 
           {/* Excerpt */}
-          <p className="text-slate-600 text-sm leading-relaxed line-clamp-2 mb-4">
+          <p className="text-slate-600 text-sm leading-relaxed line-clamp-2">
             {review.excerpt}
           </p>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2">
-            <span className="text-[10px] px-2.5 py-1 rounded-md font-semibold bg-slate-900 text-white border border-slate-900 capitalize">
-              {review.venueType}
-            </span>
-          </div>
         </div>
       </article>
     </Link>
