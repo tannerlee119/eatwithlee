@@ -40,9 +40,10 @@ interface SortableImageProps {
   onRemove: () => void;
   onUpdateCaption: (caption: string) => void;
   onCrop: () => void;
+  onPreview: () => void;
 }
 
-function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCaption, onCrop }: SortableImageProps) {
+function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCaption, onCrop, onPreview }: SortableImageProps) {
   const {
     attributes,
     listeners,
@@ -72,30 +73,54 @@ function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCa
           className="w-full h-full object-cover"
         />
 
-        {/* Drag Handle */}
+        {/* Drag Handle - Always visible, high z-index */}
         <div
           {...attributes}
           {...listeners}
-          className="absolute top-2 left-2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg cursor-move hover:bg-white text-secondary shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute top-2 left-2 p-1.5 bg-white/95 backdrop-blur-sm rounded-lg cursor-move hover:bg-white text-secondary shadow-md z-20 opacity-70 group-hover:opacity-100 transition-opacity"
+          title="Drag to reorder"
         >
           <GripVertical size={16} />
         </div>
 
+        {/* Top Right Action Buttons */}
+        <div className="absolute top-2 right-2 flex items-center gap-1.5 z-20">
+          {/* Preview Button */}
+          <button
+            type="button"
+            onClick={onPreview}
+            className="p-1.5 bg-white/95 backdrop-blur-sm rounded-lg hover:bg-white text-secondary shadow-md opacity-70 group-hover:opacity-100 transition-opacity"
+            title="Preview image"
+          >
+            <Eye size={16} />
+          </button>
+
+          {/* Remove Button */}
+          <button
+            type="button"
+            onClick={onRemove}
+            className="p-1.5 bg-red-500/90 backdrop-blur-sm rounded-lg hover:bg-red-600 text-white shadow-md opacity-70 group-hover:opacity-100 transition-opacity"
+            title="Remove image"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
         {/* Cover Badge */}
         {isCover && (
-          <div className="absolute top-2 right-2 bg-primary text-primary-foreground text-[10px] font-bold py-1 px-2 rounded-full shadow-sm flex items-center gap-1">
+          <div className="absolute bottom-2 left-2 bg-primary text-primary-foreground text-[10px] font-bold py-1 px-2 rounded-full shadow-sm flex items-center gap-1 z-10">
             <CheckCircle2 size={12} />
             COVER
           </div>
         )}
 
-        {/* Overlay Controls */}
-        <div className="absolute inset-0 bg-secondary/80 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-2 p-4">
+        {/* Bottom Right Actions */}
+        <div className="absolute bottom-2 right-2 flex items-center gap-1.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
           {!isCover && (
             <button
               type="button"
               onClick={onSetCover}
-              className="w-full py-1.5 bg-white text-secondary text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-2 py-1 bg-white/95 backdrop-blur-sm text-secondary text-[10px] font-semibold rounded-lg hover:bg-white shadow-md transition-colors"
             >
               Set as Cover
             </button>
@@ -104,20 +129,12 @@ function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCa
             <button
               type="button"
               onClick={onCrop}
-              className="w-full py-1.5 bg-blue-500 text-white text-xs font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-1"
+              className="px-2 py-1 bg-blue-500/95 backdrop-blur-sm text-white text-[10px] font-semibold rounded-lg hover:bg-blue-600 shadow-md transition-colors flex items-center gap-1"
             >
-              <Crop size={12} />
-              Crop Image
+              <Crop size={10} />
+              Crop
             </button>
           )}
-          <button
-            type="button"
-            onClick={onRemove}
-            className="w-full py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-1"
-          >
-            <X size={12} />
-            Remove
-          </button>
         </div>
       </div>
 
@@ -185,6 +202,7 @@ function AdminForm() {
   const [isSaving, setIsSaving] = useState(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [cropperState, setCropperState] = useState<{ imageUrl: string; imageIndex: number } | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [activeUploads, setActiveUploads] = useState(0);
@@ -622,8 +640,8 @@ function AdminForm() {
                         type="button"
                         onClick={() => setFormData({ ...formData, venueType: type })}
                         className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all capitalize ${formData.venueType === type
-                            ? 'bg-white text-primary shadow-sm'
-                            : 'text-muted hover:text-secondary'
+                          ? 'bg-white text-primary shadow-sm'
+                          : 'text-muted hover:text-secondary'
                           }`}
                       >
                         {type}
@@ -673,8 +691,8 @@ function AdminForm() {
                         type="button"
                         onClick={() => setFormData({ ...formData, priceRange: price })}
                         className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-all ${formData.priceRange === price
-                            ? 'bg-white text-primary shadow-sm'
-                            : 'text-muted hover:text-secondary'
+                          ? 'bg-white text-primary shadow-sm'
+                          : 'text-muted hover:text-secondary'
                           }`}
                       >
                         {Array(price).fill('$').join('')}
@@ -883,6 +901,7 @@ function AdminForm() {
                             onRemove={() => removeImage(index)}
                             onUpdateCaption={(caption) => updateImageCaption(index, caption)}
                             onCrop={() => handleCropImage(index)}
+                            onPreview={() => setPreviewImage(image.url)}
                           />
                         ))}
                       </div>
@@ -1067,6 +1086,28 @@ function AdminForm() {
           onCropComplete={handleCropComplete}
           onCancel={() => setCropperState(null)}
         />
+      )}
+
+      {/* Image Preview Modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={() => setPreviewImage(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setPreviewImage(null)}
+            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+          >
+            <X size={24} />
+          </button>
+          <img
+            src={previewImage}
+            alt="Preview"
+            className="max-w-full max-h-full object-contain rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
       )}
     </div>
   );
