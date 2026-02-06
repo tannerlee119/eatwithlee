@@ -143,9 +143,8 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
               key={image.url}
               type="button"
               onClick={() => openModal(index)}
-              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-700 focus-visible:outline-none ${
-                index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-              }`}
+              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-700 focus-visible:outline-none ${index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                }`}
               aria-label={`Open image ${index + 1} of ${images.length} in fullscreen`}
             >
               <img
@@ -208,16 +207,15 @@ export default function ImageCarousel({ images, restaurantName }: ImageCarouselP
       {/* Thumbnail Navigation */}
       {images.length > 1 && (
         <div className="flex justify-center">
-          <div className="flex gap-2 overflow-x-auto pb-2 pt-1 px-1 max-w-full no-scrollbar">
+          <div className="flex gap-2 overflow-x-auto pb-3 pt-2 px-2 max-w-full no-scrollbar">
             {images.map((image, index) => (
               <button
                 key={index}
                 onClick={() => goToImage(index)}
-                className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden transition-all duration-300 ${
-                  currentIndex === index
+                className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden transition-all duration-300 ${currentIndex === index
                     ? 'ring-2 ring-slate-900 ring-offset-2 opacity-100 scale-105'
                     : 'opacity-50 hover:opacity-100 grayscale hover:grayscale-0'
-                }`}
+                  }`}
               >
                 <img
                   src={image.url}
