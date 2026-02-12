@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getAllReviews } from '@/lib/db-reviews';
+import { Star } from 'lucide-react';
 
 export const revalidate = 0;
 
@@ -9,6 +10,11 @@ export default async function ListsPage() {
   const lists = allReviews
     .filter((r) => !r.isDraft && r.contentType === 'list')
     .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+
+  // Count for the Top Eats 2025 card
+  const topEats2025Count = allReviews.filter(
+    (r) => !r.isDraft && r.contentType === 'review' && r.rating >= 8 && new Date(r.publishedAt).getFullYear() === 2025
+  ).length;
 
   return (
     <div className="min-h-screen bg-white">
@@ -20,8 +26,33 @@ export default async function ListsPage() {
           <p className="mt-2 text-slate-600">Curated restaurant rankings and guides.</p>
         </div>
 
+        {/* Featured List Cards */}
+        <div className="mb-12">
+          <Link
+            href="/lists/top-eats-2025"
+            className="block bg-slate-900 rounded-2xl overflow-hidden hover:bg-slate-800 transition-colors group"
+          >
+            <div className="p-8 sm:p-10">
+              <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">
+                <Star size={14} fill="currentColor" className="text-amber-400" />
+                <span>Curated List</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-display font-bold text-white tracking-tight leading-[1.05]">
+                Top Eats of 2025
+              </h2>
+              <p className="mt-3 text-slate-400 text-lg leading-relaxed max-w-lg">
+                The best restaurants of the year, rated 8/10 and above.
+              </p>
+              <div className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider group-hover:gap-3 transition-all">
+                View List ({topEats2025Count} spots) →
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Other lists */}
         {lists.length === 0 ? (
-          <p className="text-slate-600">No lists yet.</p>
+          <p className="text-slate-600">No other lists yet.</p>
         ) : (
           <ul className="space-y-4">
             {lists.map((review) => (
@@ -50,5 +81,6 @@ export default async function ListsPage() {
     </div>
   );
 }
+
 
 
