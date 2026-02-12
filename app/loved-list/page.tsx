@@ -6,8 +6,10 @@ export const revalidate = 0;
 export default async function LovedListPage() {
   const allReviews = await getAllReviews();
 
+  const currentYear = new Date().getFullYear();
+
   const loved = allReviews
-    .filter((r) => !r.isDraft && r.rating >= 8)
+    .filter((r) => !r.isDraft && r.rating >= 8 && new Date(r.publishedAt).getFullYear() === currentYear)
     .sort((a, b) => b.rating - a.rating);
 
   const getFeaturedTag = (review: any) =>
@@ -21,7 +23,7 @@ export default async function LovedListPage() {
             Loved List
           </h1>
           <p className="mt-2 text-slate-600">
-            Restaurants rated <span className="font-semibold">8/10</span> and above.
+            Restaurants rated <span className="font-semibold">8/10</span> and above in {currentYear}.
           </p>
         </div>
 
@@ -74,7 +76,7 @@ export default async function LovedListPage() {
                       </div>
 
                       <div className="mt-2 flex items-center gap-2">
-                        <span className="text-[10px] px-2.5 py-1 rounded-md font-semibold bg-slate-900 text-white border border-slate-900 capitalize">
+                        <span className="text-[10px] px-2 py-0.5 rounded-md font-medium bg-slate-100 text-slate-500 border border-slate-200 capitalize">
                           {review.venueType}
                         </span>
                       </div>
