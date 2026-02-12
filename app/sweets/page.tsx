@@ -32,7 +32,7 @@ export default async function SweetsPage({
                     <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-900">
                         Sweets
                     </h1>
-                    <p className="mt-2 text-slate-600">Ice cream, desserts, bakeries, and more.</p>
+                    <p className="mt-2 text-slate-600">Ice cream, desserts, and more.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

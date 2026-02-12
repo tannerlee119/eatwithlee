@@ -151,7 +151,7 @@ export default async function ReviewsPage({
           <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-900">
             Reviews
           </h1>
-          <p className="mt-2 text-slate-600">All restaurant & bar reviews.</p>
+          <p className="mt-2 text-slate-600">All restaurant reviews.</p>
         </div>
 
         {/* Mobile Featured Post - shown only on small screens */}
@@ -443,7 +443,7 @@ export default async function ReviewsPage({
 
             {/* Cuisines */}
             <div
-              className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+              className="hidden lg:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
               style={{ animation: 'fadeInUp 0.6s ease-out 0.14s both' }}
             >
               <div className="p-5 border-b border-slate-200">
@@ -478,7 +478,7 @@ export default async function ReviewsPage({
 
             {/* Locations */}
             <div
-              className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+              className="hidden lg:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
               style={{ animation: 'fadeInUp 0.6s ease-out 0.2s both' }}
             >
               <div className="p-5 border-b border-slate-200">
@@ -514,7 +514,7 @@ export default async function ReviewsPage({
             {(selectedCuisine || selectedLocation) && (
               <Link
                 href="/reviews"
-                className="block text-center px-4 py-2 text-sm font-semibold text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                className="hidden lg:block text-center px-4 py-2 text-sm font-semibold text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
               >
                 Clear filters
               </Link>

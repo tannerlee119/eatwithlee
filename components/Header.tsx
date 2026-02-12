@@ -26,7 +26,7 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Mobile dropdown menu (non-sticky) */}
+        {/* Mobile dropdown menu */}
         <div className="mt-6 md:hidden flex justify-center">
           <MobileNav items={navItems} />
         </div>
