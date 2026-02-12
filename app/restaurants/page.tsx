@@ -32,7 +32,7 @@ export default async function RestaurantsPage({
           <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-900">
             Restaurants
           </h1>
-          <p className="mt-2 text-slate-600">Food-first spots (non-bars).</p>
+          <p className="mt-2 text-slate-600">All the best places to eat.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -49,8 +49,8 @@ export default async function RestaurantsPage({
                 href={safePage <= 1 ? '/restaurants' : `/restaurants?page=${safePage - 1}`}
                 aria-disabled={safePage <= 1}
                 className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${safePage <= 1
-                    ? 'pointer-events-none opacity-50 bg-white border-slate-200 text-slate-500'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                  ? 'pointer-events-none opacity-50 bg-white border-slate-200 text-slate-500'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                   }`}
               >
                 Prev
@@ -62,8 +62,8 @@ export default async function RestaurantsPage({
                 href={safePage >= totalPages ? `/restaurants?page=${totalPages}` : `/restaurants?page=${safePage + 1}`}
                 aria-disabled={safePage >= totalPages}
                 className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${safePage >= totalPages
-                    ? 'pointer-events-none opacity-50 bg-white border-slate-200 text-slate-500'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                  ? 'pointer-events-none opacity-50 bg-white border-slate-200 text-slate-500'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                   }`}
               >
                 Next

@@ -6,7 +6,7 @@ export default function Header() {
   const navItems = [
     { href: '/reviews', label: 'Reviews' },
     { href: '/restaurants', label: 'Restaurants' },
-    { href: '/bars', label: 'Bars' },
+    { href: '/sweets', label: 'Sweets' },
     { href: '/cafes', label: 'Cafes' },
     { href: '/lists', label: 'Lists' },
     { href: '/loved-list', label: 'Loved List' },

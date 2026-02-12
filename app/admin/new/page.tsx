@@ -634,7 +634,7 @@ function AdminForm() {
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-secondary mb-1.5">Venue Type</label>
                   <div className="flex bg-surface border border-border rounded-lg p-1">
-                    {(['restaurant', 'bar', 'cafe'] as const).map((type) => (
+                    {(['restaurant', 'sweet', 'cafe'] as const).map((type) => (
                       <button
                         key={type}
                         type="button"
