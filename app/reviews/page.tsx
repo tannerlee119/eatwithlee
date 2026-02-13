@@ -163,33 +163,50 @@ export default async function ReviewsPage({
           <p className="mt-2 text-slate-600">All restaurant reviews.</p>
         </div>
 
-        {/* Featured List Card */}
-        {featuredList && (
-          <div className="mb-10" style={{ animation: 'fadeInUp 0.6s ease-out 0.05s both' }}>
-            <Link
-              href={`/lists/${featuredList.slug}`}
-              className="block bg-slate-900 rounded-2xl overflow-hidden hover:bg-slate-800 transition-colors group"
-            >
-              <div className="p-8 sm:p-10">
-                <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">
-                  <Star size={14} fill="currentColor" className="text-amber-400" />
-                  <span>Curated List</span>
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight leading-[1.05]">
-                  {featuredList.title}
-                </h2>
-                {featuredList.description && (
-                  <p className="mt-3 text-slate-400 text-base leading-relaxed max-w-lg">
-                    {featuredList.description}
-                  </p>
-                )}
-                <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider group-hover:gap-3 transition-all">
-                  View List ({featuredList.items.length} spots) →
-                </div>
-              </div>
-            </Link>
-          </div>
-        )}
+        {/* Featured List Card - styled like review cards */}
+        {featuredList && (() => {
+          const firstImage = featuredList.items[0]?.review?.coverImage || '';
+          return (
+            <div className="mb-10" style={{ animation: 'fadeInUp 0.6s ease-out 0.05s both' }}>
+              <Link
+                href={`/lists/${featuredList.slug}`}
+                className="group block"
+              >
+                <article className="bg-white rounded-xl overflow-hidden transition-all duration-300 group-hover:-translate-y-1">
+                  <div className="aspect-[4/3] bg-slate-100 overflow-hidden relative">
+                    {firstImage && (
+                      <img
+                        src={firstImage}
+                        alt={featuredList.title}
+                        loading="eager"
+                        decoding="async"
+                        className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                    <div className="absolute top-4 left-4 flex items-center gap-1 bg-white/90 backdrop-blur-sm text-slate-900 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider shadow-sm uppercase">
+                      <Star size={12} fill="currentColor" className="text-amber-400" />
+                      <span>Curated List</span>
+                    </div>
+                  </div>
+                  <div className="pt-5 pb-2">
+                    <h2 className="text-xl font-display font-bold mb-2 text-slate-900 group-hover:text-slate-700 transition-colors line-clamp-1">
+                      {featuredList.title}
+                    </h2>
+                    <div className="text-sm text-slate-700 mb-4">
+                      {featuredList.items.length} spots
+                    </div>
+                    {featuredList.description && (
+                      <p className="text-slate-600 text-sm leading-relaxed line-clamp-2">
+                        {featuredList.description}
+                      </p>
+                    )}
+                  </div>
+                </article>
+              </Link>
+            </div>
+          );
+        })()}
 
         {/* Mobile Featured Post - shown only on small screens */}
         {featuredReview && (
