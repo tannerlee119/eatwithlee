@@ -37,6 +37,7 @@ interface ListFormData {
     slug: string;
     description: string;
     isDraft: boolean;
+    publishedAt: string;
 }
 
 function EditListContent() {
@@ -50,6 +51,7 @@ function EditListContent() {
         slug: '',
         description: '',
         isDraft: true,
+        publishedAt: new Date().toISOString().split('T')[0],
     });
     const [items, setItems] = useState<ListItemData[]>([]);
     const [allReviews, setAllReviews] = useState<ReviewOption[]>([]);
@@ -95,6 +97,7 @@ function EditListContent() {
                     slug: data.slug,
                     description: data.description || '',
                     isDraft: data.isDraft,
+                    publishedAt: data.publishedAt ? new Date(data.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
                 });
                 setItems(
                     (data.items || []).map((item: any) => ({
@@ -199,7 +202,7 @@ function EditListContent() {
                 const res = await fetch(`/api/lists/${editId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...form, isDraft }),
+                    body: JSON.stringify({ ...form, isDraft, publishedAt: new Date(form.publishedAt).toISOString() }),
                 });
                 if (!res.ok) {
                     const err = await res.json();
@@ -231,7 +234,7 @@ function EditListContent() {
                 const res = await fetch('/api/lists', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...form, isDraft }),
+                    body: JSON.stringify({ ...form, isDraft, publishedAt: new Date(form.publishedAt).toISOString() }),
                 });
                 if (!res.ok) {
                     const err = await res.json();
@@ -353,6 +356,16 @@ function EditListContent() {
                             className="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                             rows={2}
                             placeholder="A brief description of this list"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-secondary mb-1">Published Date</label>
+                        <input
+                            type="date"
+                            value={form.publishedAt}
+                            onChange={(e) => setForm((f) => ({ ...f, publishedAt: e.target.value }))}
+                            className="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                         />
                     </div>
                 </div>

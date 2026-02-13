@@ -115,6 +115,7 @@ export async function createList(data: {
     description?: string;
     isDraft?: boolean;
     coverImage?: string;
+    publishedAt?: string;
 }): Promise<ListWithItems> {
     const list = await prisma.list.create({
         data: {
@@ -123,6 +124,7 @@ export async function createList(data: {
             description: data.description || '',
             isDraft: data.isDraft !== undefined ? data.isDraft : true,
             coverImage: data.coverImage || '',
+            ...(data.publishedAt ? { publishedAt: new Date(data.publishedAt) } : {}),
         },
         include: listInclude,
     });
@@ -137,11 +139,16 @@ export async function updateList(
         description?: string;
         isDraft?: boolean;
         coverImage?: string;
+        publishedAt?: string;
     }
 ): Promise<ListWithItems> {
+    const updateData: any = { ...data };
+    if (data.publishedAt) {
+        updateData.publishedAt = new Date(data.publishedAt);
+    }
     const list = await prisma.list.update({
         where: { id },
-        data,
+        data: updateData,
         include: listInclude,
     });
     return dbToList(list);

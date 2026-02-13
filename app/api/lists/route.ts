@@ -14,13 +14,13 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { title, slug, description, isDraft, coverImage } = body;
+        const { title, slug, description, isDraft, coverImage, publishedAt } = body;
 
         if (!title || !slug) {
             return NextResponse.json({ error: 'Title and slug are required' }, { status: 400 });
         }
 
-        const list = await createList({ title, slug, description, isDraft, coverImage });
+        const list = await createList({ title, slug, description, isDraft, coverImage, publishedAt });
         return NextResponse.json(list, { status: 201 });
     } catch (error: any) {
         if (error?.code === 'P2002') {
