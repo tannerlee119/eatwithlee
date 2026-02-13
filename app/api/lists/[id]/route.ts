@@ -28,8 +28,8 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await request.json();
-        const { title, slug, description, isDraft, coverImage } = body;
-        const list = await updateList(id, { title, slug, description, isDraft, coverImage });
+        const { title, slug, description, isDraft, coverImage, publishedAt } = body;
+        const list = await updateList(id, { title, slug, description, isDraft, coverImage, publishedAt });
         return NextResponse.json(list);
     } catch (error: any) {
         if (error?.code === 'P2025') {

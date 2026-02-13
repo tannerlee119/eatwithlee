@@ -186,7 +186,7 @@ function EditListContent() {
         setDragIdx(null);
     };
 
-    const handleSave = async (publish: boolean) => {
+    const handleSave = async (mode: 'draft' | 'save' | 'publish') => {
         if (!form.title.trim() || !form.slug.trim()) {
             setToast({ message: 'Title and slug are required', type: 'error' });
             return;
@@ -195,7 +195,7 @@ function EditListContent() {
         setIsSaving(true);
 
         try {
-            const isDraft = publish ? false : form.isDraft;
+            const isDraft = mode === 'publish' ? false : mode === 'draft' ? true : form.isDraft;
 
             if (isEditing) {
                 // Update list metadata
@@ -210,7 +210,6 @@ function EditListContent() {
                 }
 
                 // Sync items: delete existing, re-add in order
-                // First, get current items to delete
                 const listData = await res.json();
                 for (const existingItem of listData.items || []) {
                     await fetch(`/api/lists/${editId}/items?itemId=${existingItem.id}`, {
@@ -255,7 +254,11 @@ function EditListContent() {
                 }
             }
 
-            router.push('/admin/lists?message=List saved successfully');
+            if (mode === 'save') {
+                setToast({ message: 'Saved', type: 'success' });
+            } else {
+                router.push('/admin/lists?message=List saved successfully');
+            }
         } catch (error: any) {
             setToast({ message: error.message || 'Failed to save list', type: 'error' });
         } finally {
@@ -296,15 +299,22 @@ function EditListContent() {
                         </div>
                         <div className="flex items-center gap-2">
                             <button
-                                onClick={() => handleSave(false)}
+                                onClick={() => handleSave('draft')}
                                 disabled={isSaving}
                                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-secondary bg-accent hover:bg-accent/80 rounded-lg transition-colors disabled:opacity-50"
                             >
-                                <Save size={16} />
                                 Save Draft
                             </button>
                             <button
-                                onClick={() => handleSave(true)}
+                                onClick={() => handleSave('save')}
+                                disabled={isSaving}
+                                className="px-4 py-2 text-sm font-medium text-secondary bg-white border border-border hover:bg-accent/40 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                            >
+                                <Save size={16} />
+                                Save
+                            </button>
+                            <button
+                                onClick={() => handleSave('publish')}
                                 disabled={isSaving}
                                 className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-all disabled:opacity-50"
                             >
