@@ -1,4 +1,5 @@
 import { getAllReviews } from '@/lib/db-reviews';
+import { getAllLists } from '@/lib/db-lists';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, Star } from 'lucide-react';
@@ -18,6 +19,14 @@ export default async function ReviewsPage({
   const selectedLocation = (sp.location || '').trim();
 
   const allReviews = await getAllReviews();
+  let featuredList: Awaited<ReturnType<typeof getAllLists>>[0] | null = null;
+  try {
+    const lists = await getAllLists();
+    featuredList = lists.find((l) => !l.isDraft) || null;
+  } catch {
+    // List table may not exist yet
+  }
+
   const all = allReviews
     .filter((r) => !r.isDraft && r.contentType === 'review')
     .slice()
@@ -153,6 +162,34 @@ export default async function ReviewsPage({
           </h1>
           <p className="mt-2 text-slate-600">All restaurant reviews.</p>
         </div>
+
+        {/* Featured List Card */}
+        {featuredList && (
+          <div className="mb-10" style={{ animation: 'fadeInUp 0.6s ease-out 0.05s both' }}>
+            <Link
+              href={`/lists/${featuredList.slug}`}
+              className="block bg-slate-900 rounded-2xl overflow-hidden hover:bg-slate-800 transition-colors group"
+            >
+              <div className="p-8 sm:p-10">
+                <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">
+                  <Star size={14} fill="currentColor" className="text-amber-400" />
+                  <span>Curated List</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight leading-[1.05]">
+                  {featuredList.title}
+                </h2>
+                {featuredList.description && (
+                  <p className="mt-3 text-slate-400 text-base leading-relaxed max-w-lg">
+                    {featuredList.description}
+                  </p>
+                )}
+                <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider group-hover:gap-3 transition-all">
+                  View List ({featuredList.items.length} spots) →
+                </div>
+              </div>
+            </Link>
+          </div>
+        )}
 
         {/* Mobile Featured Post - shown only on small screens */}
         {featuredReview && (

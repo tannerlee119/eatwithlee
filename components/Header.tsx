@@ -4,7 +4,7 @@ import MobileNav from '@/components/MobileNav';
 
 export default function Header() {
   const navItems = [
-    { href: '/reviews', label: 'Reviews' },
+    { href: '/reviews', label: 'Home' },
     { href: '/restaurants', label: 'Restaurants' },
     { href: '/sweets', label: 'Sweets' },
     { href: '/cafes', label: 'Cafes' },
