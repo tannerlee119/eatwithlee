@@ -59,7 +59,7 @@ export default async function ListPage({ params }: { params: Promise<{ slug: str
                         <p className="text-slate-600 text-lg">No entries in this list yet.</p>
                     </div>
                 ) : (
-                    <ListPageClient items={list.items} />
+                    <ListPageClient items={list.items} headerBlurb={list.description} />
                 )}
             </div>
         </div>

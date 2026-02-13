@@ -32,6 +32,7 @@ export interface ListItemWithReview {
         address: string;
         lat: number;
         lng: number;
+        cuisines: string[];
         venueType: string;
     };
 }
@@ -68,6 +69,7 @@ function dbToList(dbList: any): ListWithItems {
                     address: item.review.address,
                     lat: item.review.lat,
                     lng: item.review.lng,
+                    cuisines: (() => { try { return JSON.parse(item.review.cuisines || '[]'); } catch { return []; } })(),
                     venueType: item.review.venueType || 'restaurant',
                 },
             })),
@@ -91,6 +93,7 @@ const listInclude = {
                     address: true,
                     lat: true,
                     lng: true,
+                    cuisines: true,
                     venueType: true,
                 },
             },

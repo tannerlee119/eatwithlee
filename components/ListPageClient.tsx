@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Star } from 'lucide-react';
 
-// Dynamically import map to avoid SSR issues with Leaflet
 const ListMapClient = dynamic(() => import('@/components/ListMapClient'), {
     ssr: false,
     loading: () => (
@@ -31,14 +30,16 @@ interface ListItem {
         address: string;
         lat: number;
         lng: number;
+        cuisines: string[];
     };
 }
 
 interface ListPageClientProps {
     items: ListItem[];
+    headerBlurb?: string;
 }
 
-export default function ListPageClient({ items }: ListPageClientProps) {
+export default function ListPageClient({ items, headerBlurb }: ListPageClientProps) {
     const [activeIndex, setActiveIndex] = useState(0);
     const entryRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -103,10 +104,22 @@ export default function ListPageClient({ items }: ListPageClientProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             {/* Left: Scrollable entries */}
             <div className="lg:pr-8">
+                {/* Header blurb */}
+                {headerBlurb && (
+                    <div className="pb-10 mb-2 border-b border-slate-100">
+                        <p className="text-lg md:text-xl text-slate-700 leading-relaxed">
+                            {headerBlurb}
+                        </p>
+                    </div>
+                )}
+
                 {items.map((item, index) => {
                     const imgSrc = normalizeImageSrc(item.review.coverImage || '');
                     const blurb = (item.blurb || '').trim();
                     const address = (item.review.address || '').trim();
+                    const city = (item.review.locationTag || '').trim();
+                    const cuisines = item.review.cuisines || [];
+                    const price = item.review.priceRange;
                     const mapLabel = index < 9 ? String(index + 1) : String.fromCharCode(65 + index - 9);
 
                     return (
@@ -120,7 +133,7 @@ export default function ListPageClient({ items }: ListPageClientProps) {
                             }}
                         >
                             {/* Number + Name */}
-                            <div className="flex items-start gap-4 mb-5">
+                            <div className="flex items-start gap-4 mb-4">
                                 <div className="shrink-0 w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center text-sm font-bold">
                                     {mapLabel}
                                 </div>
@@ -128,16 +141,25 @@ export default function ListPageClient({ items }: ListPageClientProps) {
                                     <h2 className="text-3xl md:text-4xl font-display font-bold text-slate-900 tracking-tight leading-[1.05]">
                                         {item.review.restaurantName}
                                     </h2>
+                                    {/* Cuisine · Price · City */}
+                                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500">
+                                        {cuisines.length > 0 && (
+                                            <span>{cuisines.slice(0, 2).join(', ')}</span>
+                                        )}
+                                        {price > 0 && (
+                                            <span className="font-medium text-slate-700">
+                                                {'$'.repeat(price)}
+                                            </span>
+                                        )}
+                                        {city && (
+                                            <span className="flex items-center gap-1">
+                                                <MapPin size={13} />
+                                                {city}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-
-                            {/* Address */}
-                            {address && (
-                                <div className="flex items-start gap-2 text-sm text-slate-500 mb-5 ml-14">
-                                    <MapPin size={14} className="mt-0.5 shrink-0" />
-                                    <span>{address}</span>
-                                </div>
-                            )}
 
                             {/* Image */}
                             {imgSrc && (
@@ -166,6 +188,14 @@ export default function ListPageClient({ items }: ListPageClientProps) {
                             {/* Blurb */}
                             {blurb && (
                                 <p className="text-lg text-slate-700 leading-relaxed mb-5 ml-14">{blurb}</p>
+                            )}
+
+                            {/* Address */}
+                            {address && (
+                                <div className="flex items-start gap-2 text-sm text-slate-500 mb-5 ml-14">
+                                    <MapPin size={14} className="mt-0.5 shrink-0" />
+                                    <span>{address}</span>
+                                </div>
                             )}
 
                             {/* Read Review */}

@@ -77,7 +77,7 @@ export default function ListMapClient({ entries, activeIndex }: ListMapClientPro
         // Fit bounds to all markers
         if (validEntries.length > 0) {
             const bounds = L.latLngBounds(validEntries.map((e) => [e.lat, e.lng]));
-            map.fitBounds(bounds, { padding: [40, 40] });
+            map.fitBounds(bounds, { padding: [30, 30], maxZoom: 13 });
         }
 
         mapRef.current = map;
