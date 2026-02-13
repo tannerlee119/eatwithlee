@@ -43,4 +43,29 @@ model Review {
   publishedAt    DateTime @default(now())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  listItems      ListItem[]
+}
+
+model List {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  description String     @default("")
+  isDraft     Boolean    @default(true)
+  coverImage  String     @default("")
+  items       ListItem[]
+  publishedAt DateTime   @default(now())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model ListItem {
+  id        String  @id @default(cuid())
+  listId    String
+  reviewId  String
+  blurb     String  @default("")
+  position  Int     @default(0)
+  list      List    @relation(fields: [listId], references: [id], onDelete: Cascade)
+  review    Review  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 }

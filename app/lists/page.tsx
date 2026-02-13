@@ -41,7 +41,7 @@ export default async function ListsPage() {
                 Top Eats of 2025
               </h2>
               <p className="mt-3 text-slate-400 text-lg leading-relaxed max-w-lg">
-                The best restaurants of the year, rated 8/10 and above.
+                The best restaurants of the year.
               </p>
               <div className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-white uppercase tracking-wider group-hover:gap-3 transition-all">
                 View List ({topEats2025Count} spots) →

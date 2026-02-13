@@ -2,7 +2,6 @@ import { getAllReviews } from '@/lib/db-reviews';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, Star, ArrowLeft } from 'lucide-react';
-import MultiPinMap from '@/components/MultiPinMap';
 
 export const revalidate = 0;
 
@@ -22,14 +21,7 @@ export default async function TopEats2025Page() {
             return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
         });
 
-    const mapLocations = topEats
-        .filter((r) => r.location?.lat && r.location?.lng)
-        .map((r, i) => ({
-            lat: r.location.lat,
-            lng: r.location.lng,
-            name: r.restaurantName,
-            label: String(i + 1),
-        }));
+
 
     const normalizeImageSrc = (src: string): string | null => {
         const trimmed = (src || '').trim();
@@ -78,7 +70,7 @@ export default async function TopEats2025Page() {
                     className="mt-6 text-xl md:text-2xl text-slate-600 leading-relaxed font-light max-w-2xl"
                     style={{ animation: 'fadeInUp 0.6s ease-out 0.1s both' }}
                 >
-                    Lee&apos;s favorite restaurants of the year, rated 8/10 and above.
+                    Tanner&apos;s favorite restaurants of the year.
                 </p>
                 <div
                     className="mt-4 text-sm text-slate-400 font-medium uppercase tracking-widest"
@@ -89,13 +81,7 @@ export default async function TopEats2025Page() {
                 </div>
             </div>
 
-            {/* Map */}
-            <div
-                className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-16"
-                style={{ animation: 'fadeInUp 0.6s ease-out 0.2s both' }}
-            >
-                <MultiPinMap locations={mapLocations} />
-            </div>
+
 
             {/* Entries */}
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
