@@ -94,11 +94,23 @@ export default async function ReviewsPage({
     return true;
   });
 
-  const totalPages = Math.max(1, Math.ceil(feedFiltered.length / pageSize));
+  // Build a unified feed merging reviews + lists, sorted by date
+  type FeedItem = { type: 'review'; data: typeof feedFiltered[0] } | { type: 'list'; data: NonNullable<typeof featuredList> };
+  const mergedFeed: FeedItem[] = feedFiltered.map((r) => ({ type: 'review' as const, data: r }));
+  if (featuredList && !selectedCuisine && !selectedLocation) {
+    mergedFeed.push({ type: 'list' as const, data: featuredList });
+    mergedFeed.sort((a, b) => {
+      const dateA = a.type === 'review' ? a.data.publishedAt : a.data.publishedAt;
+      const dateB = b.type === 'review' ? b.data.publishedAt : b.data.publishedAt;
+      return new Date(dateB).getTime() - new Date(dateA).getTime();
+    });
+  }
+
+  const totalPages = Math.max(1, Math.ceil(mergedFeed.length / pageSize));
   const safePage = Math.min(page, totalPages);
   const startIndex = (safePage - 1) * pageSize;
-  const endIndex = Math.min(startIndex + pageSize, feedFiltered.length);
-  const pageReviews = feedFiltered.slice(startIndex, endIndex);
+  const endIndex = Math.min(startIndex + pageSize, mergedFeed.length);
+  const pageFeed = mergedFeed.slice(startIndex, endIndex);
 
   const baseHref = (params: { page?: number; cuisine?: string; location?: string }) => {
     const qs = new URLSearchParams();
@@ -256,39 +268,41 @@ export default async function ReviewsPage({
               <>
                 <div
                   className="grid grid-cols-1 md:grid-cols-2 gap-8"
-                  // Re-run card animations on filter changes without re-animating the sidebar/featured blocks
                   key={`${selectedCuisine}::${selectedLocation}::${safePage}`}
                 >
-                  {/* List card in grid */}
-                  {featuredList && safePage === 1 && !selectedCuisine && !selectedLocation && (
-                    <div style={{ animation: 'fadeInUp 0.6s ease-out 0.06s both' }}>
-                      <Link
-                        href={`/lists/${featuredList.slug}`}
-                        className="group block"
-                      >
-                        <article className="bg-slate-900 rounded-xl overflow-hidden transition-all duration-300 group-hover:-translate-y-1 h-full flex flex-col">
-                          <div className="aspect-[4/3] flex flex-col items-center justify-center p-8 text-center">
-                            <div className="flex items-center gap-1.5 mb-4">
-                              <Star size={14} fill="currentColor" className="text-amber-400" />
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Curated List</span>
-                            </div>
-                            <h2 className="text-2xl font-display font-bold text-white mb-3 group-hover:text-slate-200 transition-colors">
-                              {featuredList.title}
-                            </h2>
-                            {featuredList.description && (
-                              <p className="text-slate-400 text-sm leading-relaxed line-clamp-2 max-w-xs">
-                                {featuredList.description}
-                              </p>
-                            )}
-                            <div className="mt-4 text-sm font-bold text-white uppercase tracking-wider group-hover:gap-3 inline-flex items-center gap-2 transition-all">
-                              {featuredList.items.length} spots →
-                            </div>
-                          </div>
-                        </article>
-                      </Link>
-                    </div>
-                  )}
-                  {pageReviews.map((review, index) => {
+                  {pageFeed.map((item, index) => {
+                    if (item.type === 'list') {
+                      const list = item.data;
+                      return (
+                        <div key={`list-${list.id}`} style={{ animation: `fadeInUp 0.6s ease-out ${0.06 + index * 0.05}s both` }}>
+                          <Link
+                            href={`/lists/${list.slug}`}
+                            className="group block"
+                          >
+                            <article className="bg-slate-900 rounded-xl overflow-hidden transition-all duration-300 group-hover:-translate-y-1 h-full flex flex-col">
+                              <div className="aspect-[4/3] flex flex-col items-center justify-center p-8 text-center">
+                                <div className="flex items-center gap-1.5 mb-4">
+                                  <Star size={14} fill="currentColor" className="text-amber-400" />
+                                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Curated List</span>
+                                </div>
+                                <h2 className="text-2xl font-display font-bold text-white mb-3 group-hover:text-slate-200 transition-colors">
+                                  {list.title}
+                                </h2>
+                                {list.description && (
+                                  <p className="text-slate-400 text-sm leading-relaxed line-clamp-2 max-w-xs">
+                                    {list.description}
+                                  </p>
+                                )}
+                                <div className="mt-4 text-sm font-bold text-white uppercase tracking-wider group-hover:gap-3 inline-flex items-center gap-2 transition-all">
+                                  {list.items.length} spots →
+                                </div>
+                              </div>
+                            </article>
+                          </Link>
+                        </div>
+                      );
+                    }
+                    const review = item.data;
                     const locationLabel = (review.locationTag || '').trim() || (review.location?.address || '').trim();
                     const excerpt = (review.excerpt || '').trim();
                     const shouldClamp = excerpt.length > 150;
@@ -366,7 +380,7 @@ export default async function ReviewsPage({
                 </div>
 
                 {/* Pagination */}
-                {feedFiltered.length > pageSize && (
+                {mergedFeed.length > pageSize && (
                   <div className="mt-12 flex justify-center">
                     <div className="flex items-center gap-2">
                       <Link
