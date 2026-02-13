@@ -1,25 +1,20 @@
-import { NextResponse } from 'next/server';
-import { getListBySlug, updateList, deleteList } from '@/lib/db-lists';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { getAllLists, updateList, deleteList } from '@/lib/db-lists';
 
 export async function GET(
-    request: Request,
-    { params }: { params: { id: string } }
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        // Try to find by ID first, then by slug
-        const list = await prisma.list.findFirst({
-            where: {
-                OR: [{ id: params.id }, { slug: params.id }],
-            },
-        });
+        const { id } = await params;
+        const lists = await getAllLists();
+        const list = lists.find((l) => l.id === id || l.slug === id);
 
         if (!list) {
             return NextResponse.json({ error: 'List not found' }, { status: 404 });
         }
 
-        const fullList = await getListBySlug(list.slug);
-        return NextResponse.json(fullList);
+        return NextResponse.json(list);
     } catch (error) {
         console.error('Failed to fetch list:', error);
         return NextResponse.json({ error: 'Failed to fetch list' }, { status: 500 });
@@ -27,13 +22,14 @@ export async function GET(
 }
 
 export async function PUT(
-    request: Request,
-    { params }: { params: { id: string } }
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const body = await request.json();
         const { title, slug, description, isDraft, coverImage } = body;
-        const list = await updateList(params.id, { title, slug, description, isDraft, coverImage });
+        const list = await updateList(id, { title, slug, description, isDraft, coverImage });
         return NextResponse.json(list);
     } catch (error: any) {
         if (error?.code === 'P2025') {
@@ -48,11 +44,12 @@ export async function PUT(
 }
 
 export async function DELETE(
-    request: Request,
-    { params }: { params: { id: string } }
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        await deleteList(params.id);
+        const { id } = await params;
+        await deleteList(id);
         return NextResponse.json({ success: true });
     } catch (error: any) {
         if (error?.code === 'P2025') {

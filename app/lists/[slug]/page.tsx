@@ -6,8 +6,9 @@ import { notFound } from 'next/navigation';
 
 export const revalidate = 0;
 
-export default async function ListPage({ params }: { params: { slug: string } }) {
-    const list = await getListBySlug(params.slug);
+export default async function ListPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const list = await getListBySlug(slug);
 
     if (!list || list.isDraft) {
         notFound();

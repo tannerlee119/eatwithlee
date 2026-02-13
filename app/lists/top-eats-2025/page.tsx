@@ -76,8 +76,7 @@ export default async function TopEats2025Page() {
                     className="mt-4 text-sm text-slate-400 font-medium uppercase tracking-widest"
                     style={{ animation: 'fadeInUp 0.6s ease-out 0.15s both' }}
                 >
-                    {topEats.length} {topEats.length === 1 ? 'spot' : 'spots'} · Updated{' '}
-                    {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    {topEats.length} {topEats.length === 1 ? 'spot' : 'spots'}
                 </div>
             </div>
 
