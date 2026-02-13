@@ -30,6 +30,8 @@ export interface ListItemWithReview {
         priceRange: number;
         locationTag: string;
         address: string;
+        lat: number;
+        lng: number;
         venueType: string;
     };
 }
@@ -64,6 +66,8 @@ function dbToList(dbList: any): ListWithItems {
                     priceRange: item.review.priceRange,
                     locationTag: item.review.locationTag || '',
                     address: item.review.address,
+                    lat: item.review.lat,
+                    lng: item.review.lng,
                     venueType: item.review.venueType || 'restaurant',
                 },
             })),
@@ -85,6 +89,8 @@ const listInclude = {
                     priceRange: true,
                     locationTag: true,
                     address: true,
+                    lat: true,
+                    lng: true,
                     venueType: true,
                 },
             },
