@@ -89,7 +89,10 @@ export default function ListMapClient({ entries, activeIndex }: ListMapClientPro
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Fly to active entry
+    // Fly to active entry (debounced to handle fast scrolling)
+    const flyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const lastIndexRef = useRef(activeIndex);
+
     useEffect(() => {
         const map = mapRef.current;
         if (!map) return;
@@ -97,12 +100,31 @@ export default function ListMapClient({ entries, activeIndex }: ListMapClientPro
         const entry = entries[activeIndex];
         if (!entry || !entry.lat || !entry.lng) return;
 
-        map.flyTo([entry.lat, entry.lng], 15, {
-            duration: 1.2,
-            easeLinearity: 0.25,
-        });
+        // Cancel any pending fly
+        if (flyTimerRef.current) {
+            clearTimeout(flyTimerRef.current);
+        }
 
-        // Update marker styles
+        // If the index changed very recently, skip animation for snappier feel
+        const indexDelta = Math.abs(activeIndex - lastIndexRef.current);
+        lastIndexRef.current = activeIndex;
+
+        if (indexDelta > 1) {
+            // Jumped multiple entries — teleport instantly
+            map.stop();
+            map.setView([entry.lat, entry.lng], 15, { animate: false });
+        } else {
+            // Debounce: wait a bit before flying in case user keeps scrolling
+            flyTimerRef.current = setTimeout(() => {
+                map.stop();
+                map.flyTo([entry.lat, entry.lng], 15, {
+                    duration: 0.8,
+                    easeLinearity: 0.35,
+                });
+            }, 150);
+        }
+
+        // Update marker styles immediately
         entries.forEach((e, i) => {
             if (!e.lat || !e.lng) return;
             const markerIndex = entries.slice(0, i + 1).filter((x) => x.lat && x.lng).length - 1;
@@ -132,6 +154,10 @@ export default function ListMapClient({ entries, activeIndex }: ListMapClientPro
             });
             marker.setIcon(icon);
         });
+
+        return () => {
+            if (flyTimerRef.current) clearTimeout(flyTimerRef.current);
+        };
     }, [activeIndex, entries]);
 
     return (
