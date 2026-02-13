@@ -266,11 +266,10 @@ export default async function ReviewsPage({
               </div>
             ) : (
               <>
-                <div
-                  className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start"
-                  key={`${selectedCuisine}::${selectedLocation}::${safePage}`}
-                >
-                  {pageFeed.map((item, index) => {
+                {(() => {
+                  const leftItems = pageFeed.filter((_, i) => i % 2 === 0);
+                  const rightItems = pageFeed.filter((_, i) => i % 2 === 1);
+                  const renderItem = (item: typeof pageFeed[0], index: number) => {
                     if (item.type === 'list') {
                       const list = item.data;
                       const listDate = new Date(list.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -384,8 +383,18 @@ export default async function ReviewsPage({
                         </Link>
                       </div>
                     );
-                  })}
-                </div>
+                  };
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8" key={`${selectedCuisine}::${selectedLocation}::${safePage}`}>
+                      <div className="flex flex-col gap-8">
+                        {leftItems.map((item, i) => renderItem(item, i * 2))}
+                      </div>
+                      <div className="flex flex-col gap-8">
+                        {rightItems.map((item, i) => renderItem(item, i * 2 + 1))}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Pagination */}
                 {mergedFeed.length > pageSize && (
@@ -582,7 +591,7 @@ export default async function ReviewsPage({
           </aside>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
