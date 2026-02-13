@@ -100,7 +100,7 @@ function AdminReviewsContent() {
 
   const filteredReviews = reviews
     .filter(review => activeTab === 'published' ? !review.isDraft : review.isDraft)
-    .filter(review => 
+    .filter(review =>
       review.restaurantName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       review.location.address.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -140,6 +140,12 @@ function AdminReviewsContent() {
                 View Site
               </Link>
               <Link
+                href="/admin/lists"
+                className="text-sm font-medium text-muted hover:text-secondary transition-colors"
+              >
+                Lists
+              </Link>
+              <Link
                 href="/admin/new"
                 className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-all shadow-sm hover:shadow-md"
               >
@@ -172,21 +178,19 @@ function AdminReviewsContent() {
           <div className="flex bg-white p-1 rounded-lg border border-border shadow-sm">
             <button
               onClick={() => setActiveTab('published')}
-              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
-                activeTab === 'published'
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === 'published'
                   ? 'bg-secondary text-secondary-foreground shadow-sm'
                   : 'text-muted hover:text-secondary'
-              }`}
+                }`}
             >
               Published
             </button>
             <button
               onClick={() => setActiveTab('drafts')}
-              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
-                activeTab === 'drafts'
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === 'drafts'
                   ? 'bg-secondary text-secondary-foreground shadow-sm'
                   : 'text-muted hover:text-secondary'
-              }`}
+                }`}
             >
               Drafts
             </button>
@@ -206,17 +210,15 @@ function AdminReviewsContent() {
             <div className="flex bg-white border border-border rounded-lg p-1">
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 rounded transition-colors ${
-                  viewMode === 'list' ? 'bg-accent text-accent-foreground' : 'text-muted hover:text-secondary'
-                }`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-accent text-accent-foreground' : 'text-muted hover:text-secondary'
+                  }`}
               >
                 <ListIcon size={18} />
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded transition-colors ${
-                  viewMode === 'grid' ? 'bg-accent text-accent-foreground' : 'text-muted hover:text-secondary'
-                }`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-accent text-accent-foreground' : 'text-muted hover:text-secondary'
+                  }`}
               >
                 <LayoutGrid size={18} />
               </button>
@@ -354,7 +356,7 @@ function AdminReviewsContent() {
                 <div className="p-4">
                   <h3 className="font-semibold text-secondary mb-1 truncate">{review.restaurantName}</h3>
                   <p className="text-xs text-muted mb-4 truncate">{review.location.address}</p>
-                  
+
                   <div className="flex items-center justify-between pt-4 border-t border-border">
                     <span className="text-xs text-muted">{formatDate(review.publishedAt)}</span>
                     <div className="flex gap-1">
