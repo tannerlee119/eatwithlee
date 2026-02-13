@@ -192,10 +192,15 @@ export default function ListPageClient({ items, headerBlurb }: ListPageClientPro
 
                             {/* Address */}
                             {address && (
-                                <div className="flex items-start gap-2 text-sm text-slate-500 mb-5 ml-14">
+                                <a
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.review.restaurantName + ', ' + address)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-start gap-2 text-sm text-slate-500 hover:text-slate-900 transition-colors mb-5 ml-14"
+                                >
                                     <MapPin size={14} className="mt-0.5 shrink-0" />
-                                    <span>{address}</span>
-                                </div>
+                                    <span className="underline decoration-slate-300 underline-offset-2 hover:decoration-slate-900">{address}</span>
+                                </a>
                             )}
 
                             {/* Read Review */}
