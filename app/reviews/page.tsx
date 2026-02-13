@@ -267,7 +267,7 @@ export default async function ReviewsPage({
             ) : (
               <>
                 <div
-                  className="md:columns-2 gap-8 space-y-8"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start"
                   key={`${selectedCuisine}::${selectedLocation}::${safePage}`}
                 >
                   {pageFeed.map((item, index) => {
