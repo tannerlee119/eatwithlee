@@ -267,19 +267,20 @@ export default async function ReviewsPage({
             ) : (
               <>
                 <div
-                  className="grid grid-cols-1 md:grid-cols-2 gap-8"
+                  className="md:columns-2 gap-8 space-y-8"
                   key={`${selectedCuisine}::${selectedLocation}::${safePage}`}
                 >
                   {pageFeed.map((item, index) => {
                     if (item.type === 'list') {
                       const list = item.data;
+                      const listDate = new Date(list.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                       return (
-                        <div key={`list-${list.id}`} style={{ animation: `fadeInUp 0.6s ease-out ${0.06 + index * 0.05}s both` }}>
+                        <div key={`list-${list.id}`} className="break-inside-avoid" style={{ animation: `fadeInUp 0.6s ease-out ${0.06 + index * 0.05}s both` }}>
                           <Link
                             href={`/lists/${list.slug}`}
                             className="group block"
                           >
-                            <article className="bg-slate-900 rounded-xl overflow-hidden transition-all duration-300 group-hover:-translate-y-1 h-full flex flex-col">
+                            <article className="bg-slate-900 rounded-xl overflow-hidden transition-all duration-300 group-hover:-translate-y-1">
                               <div className="aspect-[4/3] flex flex-col items-center justify-center p-8 text-center">
                                 <div className="flex items-center gap-1.5 mb-4">
                                   <Star size={14} fill="currentColor" className="text-amber-400" />
@@ -297,6 +298,9 @@ export default async function ReviewsPage({
                                   {list.items.length} spots →
                                 </div>
                               </div>
+                              <div className="px-6 pb-4">
+                                <span className="text-xs text-slate-500">{listDate}</span>
+                              </div>
                             </article>
                           </Link>
                         </div>
@@ -308,10 +312,11 @@ export default async function ReviewsPage({
                     const shouldClamp = excerpt.length > 150;
                     const imgSrc = normalizeImageSrc(review.coverImage || '');
                     const cropStyle = getCropStyle(review.coverImageCrop);
+                    const reviewDate = new Date(review.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                     return (
                       <div
                         key={review.id}
-                        className=""
+                        className="break-inside-avoid"
                         style={{ animation: `fadeInUp 0.6s ease-out ${0.06 + index * 0.05}s both` }}
                       >
                         <Link
@@ -372,6 +377,9 @@ export default async function ReviewsPage({
                                 {excerpt}
                               </p>
                             )}
+                            <div className="mt-3">
+                              <span className="text-xs text-slate-400">{reviewDate}</span>
+                            </div>
                           </div>
                         </Link>
                       </div>
