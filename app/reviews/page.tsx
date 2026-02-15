@@ -385,14 +385,21 @@ export default async function ReviewsPage({
                     );
                   };
                   return (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8" key={`${selectedCuisine}::${selectedLocation}::${safePage}`}>
-                      <div className="flex flex-col gap-8">
-                        {leftItems.map((item, i) => renderItem(item, i * 2))}
+                    <>
+                      {/* Mobile: single column, proper chronological order */}
+                      <div className="flex flex-col gap-8 md:hidden" key={`mobile-${selectedCuisine}::${selectedLocation}::${safePage}`}>
+                        {pageFeed.map((item, i) => renderItem(item, i))}
                       </div>
-                      <div className="flex flex-col gap-8">
-                        {rightItems.map((item, i) => renderItem(item, i * 2 + 1))}
+                      {/* Desktop: two-column masonry */}
+                      <div className="hidden md:grid grid-cols-2 gap-8" key={`desktop-${selectedCuisine}::${selectedLocation}::${safePage}`}>
+                        <div className="flex flex-col gap-8">
+                          {leftItems.map((item, i) => renderItem(item, i * 2))}
+                        </div>
+                        <div className="flex flex-col gap-8">
+                          {rightItems.map((item, i) => renderItem(item, i * 2 + 1))}
+                        </div>
                       </div>
-                    </div>
+                    </>
                   );
                 })()}
 
