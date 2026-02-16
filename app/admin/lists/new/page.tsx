@@ -319,7 +319,7 @@ function EditListContent() {
                                 className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-all disabled:opacity-50"
                             >
                                 <Globe size={16} />
-                                {isEditing ? 'Update' : 'Publish'}
+                                {isEditing && !form.isDraft ? 'Update' : 'Publish'}
                             </button>
                         </div>
                     </div>
