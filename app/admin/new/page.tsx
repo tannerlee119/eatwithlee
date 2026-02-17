@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useCallback, useRef, memo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
 import { X, ArrowLeft, Loader2, GripVertical, Crop, Save, Eye, MapPin, Globe, Instagram, DollarSign, Tag, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -42,6 +42,46 @@ interface SortableImageProps {
   onCrop: () => void;
   onPreview: () => void;
 }
+
+// Debounced textarea to avoid re-rendering the entire form on every keystroke
+const DebouncedTextarea = memo(function DebouncedTextarea({
+  value,
+  onChange,
+  delay = 300,
+  ...props
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  delay?: number;
+} & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'value'>) {
+  const [localValue, setLocalValue] = useState(value);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  // Sync from parent when value changes externally (e.g. loading a review)
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newVal = e.target.value;
+    setLocalValue(newVal);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      onChangeRef.current(newVal);
+    }, 300);
+  }, []);
+
+  // Flush on blur so data isn't lost
+  const handleBlur = useCallback((e: React.FocusEvent<HTMLTextAreaElement>) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    onChangeRef.current(localValue);
+    props.onBlur?.(e);
+  }, [localValue, props]);
+
+  return <textarea {...props} value={localValue} onChange={handleChange} onBlur={handleBlur} />;
+});
 
 function SortableImage({ image, index, isCover, onSetCover, onRemove, onUpdateCaption, onCrop, onPreview }: SortableImageProps) {
   const {
@@ -713,10 +753,10 @@ function AdminForm() {
 
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-secondary mb-1.5">Excerpt</label>
-                  <textarea
+                  <DebouncedTextarea
                     rows={2}
-                    value={formData.excerpt}
-                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                    value={formData.excerpt || ''}
+                    onChange={(val) => setFormData((prev) => ({ ...prev, excerpt: val }))}
                     className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"
                     placeholder="Brief summary for the card preview..."
                   />
@@ -724,10 +764,10 @@ function AdminForm() {
 
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-secondary mb-1.5">Full Review Content</label>
-                  <textarea
+                  <DebouncedTextarea
                     rows={12}
-                    value={formData.content}
-                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                    value={formData.content || ''}
+                    onChange={(val) => setFormData((prev) => ({ ...prev, content: val }))}
                     className="w-full px-4 py-2.5 bg-surface border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-serif text-lg leading-relaxed min-h-[320px] max-h-[70vh] overflow-y-auto resize-y"
                     placeholder="Write your delicious review here..."
                   />
