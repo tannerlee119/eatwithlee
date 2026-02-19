@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense, useCallback, useRef, memo } from 'react';
+import { useState, useEffect, Suspense, useCallback, useRef, memo, startTransition } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Review } from '@/lib/types';
 import { X, ArrowLeft, Loader2, GripVertical, Crop, Save, Eye, MapPin, Globe, Instagram, DollarSign, Tag, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -69,16 +69,19 @@ const DebouncedTextarea = memo(function DebouncedTextarea({
     setLocalValue(newVal);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      onChangeRef.current(newVal);
+      startTransition(() => {
+        onChangeRef.current(newVal);
+      });
     }, 300);
   }, []);
 
   // Flush on blur so data isn't lost
-  const handleBlur = useCallback((e: React.FocusEvent<HTMLTextAreaElement>) => {
+  const handleBlur = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-    onChangeRef.current(localValue);
-    props.onBlur?.(e);
-  }, [localValue, props]);
+    startTransition(() => {
+      onChangeRef.current(localValue);
+    });
+  }, [localValue]);
 
   return <textarea {...props} value={localValue} onChange={handleChange} onBlur={handleBlur} />;
 });
